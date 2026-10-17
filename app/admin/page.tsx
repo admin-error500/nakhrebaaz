@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { AdminPanel } from "@/components/admin-panel";
+import { loadSale } from "@/lib/sale";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,8 @@ export default async function AdminPage() {
       createdAt: "desc",
     },
   });
+
+  const sale = await loadSale();
 
   // Fetch all customer orders
   const orders = await db.order.findMany({
@@ -66,6 +69,7 @@ export default async function AdminPage() {
     id: product.id,
     name: product.name,
     price: product.price,
+    saleDiscountPercent: product.saleDiscountPercent ?? 0,
     description: product.description,
     image: product.image,
     active: product.active,
@@ -115,6 +119,7 @@ export default async function AdminPage() {
         orders={formattedOrders}
         totalSold={totalSold}
         totalAvailable={totalAvailable}
+        saleSettings={{...sale.settings,startsAt:sale.settings.startsAt?.toISOString()??null,endsAt:sale.settings.endsAt?.toISOString()??null}}
       />
     </main>
   );
