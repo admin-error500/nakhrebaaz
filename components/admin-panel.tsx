@@ -1,7 +1,8 @@
 "use client";
 import { useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-type Product = { id: string; name: string; price: number; category: string; festival: string | null; variants: { size: string; color: string; stock: number }[] };
+import { InventoryEditor, type InventoryProduct } from './inventory-editor';
+type Product = InventoryProduct;
 type Order = { id: string; name: string; email: string; total: number; status: string; paymentMethod: string; paymentStatus: string; addressJson: string; createdAt: string; items: { name: string; size: string; color: string; quantity: number }[] };
 const transitions: Record<string, { label: string; value: string }[]> = {
   PENDING: [{ label: 'Accept order', value: 'CONFIRMED' }, { label: 'Reject order', value: 'CANCELLED' }],
@@ -11,7 +12,7 @@ const transitions: Record<string, { label: string; value: string }[]> = {
 };
 const money = (n: number) => '₹' + n.toLocaleString('en-IN');
 const MAX_IMAGE_SIZE = 500 * 1024;
-export function AdminPanel({ products, orders }: { products: Product[]; orders: Order[] }) {
+export function AdminPanel({ products, orders, totalSold, totalAvailable }: { products: Product[]; orders: Order[]; totalSold: number; totalAvailable: number }) {
   const router = useRouter();
   const [message, setMessage] = useState('');
   const [productMessage, setProductMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -140,7 +141,7 @@ export function AdminPanel({ products, orders }: { products: Product[]; orders: 
         </article>;
       })}</div>}
     </section>
-    <section className="admin-block" id="inventory"><div className="admin-heading"><div><span className="eyebrow">YOUR CATALOGUE</span><h2>INVENTORY</h2></div><span className="admin-count">{products.length} PRODUCTS</span></div><div className="tablewrap"><table><thead><tr><th>Product</th><th>Category</th><th>Festival</th><th>Price</th><th>Variants / stock</th></tr></thead><tbody>{products.map(p => <tr key={p.id}><td>{p.name}</td><td>{p.category}</td><td>{p.festival || "—"}</td><td>{money(p.price)}</td><td>{p.variants.map(v => `${v.size}/${v.color}: ${v.stock}${v.stock === 0 ? ' (OUT OF STOCK)' : ''}`).join(', ')}</td></tr>)}</tbody></table></div></section>
+    <InventoryEditor products={products} totalSold={totalSold} totalAvailable={totalAvailable} />
     <section className="admin-block" id="image-link-generator">
       <div className="admin-heading"><div><span className="eyebrow">PRODUCT MEDIA</span><h2>IMAGE LINK GENERATOR</h2></div></div>
       <p>Upload a JPG, PNG or WebP product image (maximum 500 KB). A public image link will be generated for your product.</p>
