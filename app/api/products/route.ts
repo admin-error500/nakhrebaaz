@@ -1,0 +1,1 @@
+import {db} from '@/lib/db';import {NextResponse} from 'next/server';export async function GET(){return NextResponse.json(await db.product.findMany({where:{active:true},include:{variants:true}}))}

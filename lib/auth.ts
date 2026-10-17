@@ -1,0 +1,4 @@
+import {cookies} from 'next/headers'; import {SignJWT,jwtVerify} from 'jose'; import {db} from './db';
+const secret=()=>new TextEncoder().encode(process.env.SESSION_SECRET||'');
+export async function signIn(user:{id:string,role:string}) {if(secret().length<32)throw new Error('Configure SESSION_SECRET'); const token=await new SignJWT({role:user.role}).setProtectedHeader({alg:'HS256'}).setSubject(user.id).setIssuedAt().setExpirationTime('7d').sign(secret()); (await cookies()).set('nb_session',token,{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:604800});}
+export async function currentUser(){try{const token=(await cookies()).get('nb_session')?.value;if(!token)return null;const {payload}=await jwtVerify(token,secret());if(!payload.sub)return null;return await db.user.findUnique({where:{id:payload.sub},select:{id:true,name:true,email:true,role:true}});}catch{return null;}}
