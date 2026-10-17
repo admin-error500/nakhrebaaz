@@ -207,3 +207,23 @@ body{background:#fffaf2;color:#151515}
 .inventory-edit-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
 @media(max-width:950px){.inventory-variant-row{grid-template-columns:repeat(2,minmax(0,1fr))}.inventory-variant-row .admin-action{width:max-content}}
 @media(max-width:550px){.inventory-edit-grid{grid-template-columns:1fr}.inventory-wide{grid-column:auto}.inventory-edit-form{padding:15px}}
+
+/* Inventory action polish: compact, accessible, responsive */
+.inventory-edit-trigger{display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;padding:10px 14px;line-height:1.2;font-size:12px}
+.inventory-manage-heading{text-align:left}
+.inventory-edit-form{scroll-margin-top:135px;min-width:0;overflow-wrap:anywhere}
+.inventory-edit-form .admin-heading{align-items:flex-start}
+.inventory-edit-form .admin-heading h3{margin:5px 0 0;font-size:clamp(18px,2.5vw,26px);line-height:1.2}
+.inventory-icon-button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:42px;height:42px;border:1px solid #cfc6b6;border-radius:6px;background:#fff;color:#111;padding:0;cursor:pointer}
+.inventory-icon-button:hover:not(:disabled),.inventory-icon-button:focus-visible{background:#fff1ce;border-color:#171717}
+.inventory-icon-button:disabled{opacity:.35;cursor:not-allowed}
+.inventory-remove-variant{justify-self:end;align-self:end}
+.inventory-add-variant{display:inline-flex;align-items:center;gap:7px;justify-content:center;font-size:12px;line-height:1.2;white-space:nowrap;margin-top:14px}
+.inventory-variant-row{grid-template-columns:repeat(5,minmax(0,1fr)) 44px;align-items:end;gap:12px}
+.inventory-variant-row label{min-width:0;overflow-wrap:anywhere;line-height:1.4}
+.inventory-edit-actions .btn,.inventory-edit-actions .admin-action{min-height:44px;font-size:12px;line-height:1.2}
+.admin-brand-lockup{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.admin-brand-logo{display:block;width:clamp(130px,15vw,215px);height:62px;object-fit:contain;object-position:left center;max-width:100%}
+.admin-brand-lockup .eyebrow{margin:0}
+@media(max-width:950px){.inventory-variant-row{grid-template-columns:repeat(2,minmax(0,1fr)) 44px}.inventory-remove-variant{grid-column:3;grid-row:auto}}
+@media(max-width:600px){.inventory-variant-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.inventory-remove-variant{grid-column:auto;grid-row:auto}.inventory-edit-trigger{min-width:78px}.inventory-edit-actions .btn,.inventory-edit-actions .admin-action{flex:1 1 115px}.admin-brand-logo{width:145px;height:46px}.admin-brand-lockup{gap:8px}}
