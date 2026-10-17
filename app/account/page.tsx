@@ -35,11 +35,6 @@ export default async function Account() {
     },
   });
 
-  // Calculate total amount spent on paid orders
-  const spent = orders
-    .filter((order) => order.paymentStatus === "PAID")
-    .reduce((total, order) => total + order.total, 0);
-
   return (
     <main className="account-shell">
       {/* ACCOUNT HERO */}
@@ -141,14 +136,6 @@ export default async function Account() {
                 {orders.length
                   .toString()
                   .padStart(2, "0")}
-              </strong>
-            </div>
-
-            <div>
-              <small>PAID ORDER VALUE</small>
-
-              <strong>
-                ₹{spent.toLocaleString("en-IN")}
               </strong>
             </div>
 
