@@ -34,7 +34,7 @@ export async function PUT(req:Request){
   const ids=discounts.map(x=>x.productId);
   const existing=await db.product.count({where:{id:{in:ids}}});
   if(existing!==ids.length)return NextResponse.json({error:"Some products no longer exist. Refresh and retry."},{status:409});
-  if(c.enabled && !discounts.some(x=>x.percent>0) && !(await db.product.count({where:{saleDiscountPercent:{gt:0}}})>0 && discounts.length===0)){
+  if(c.enabled && discounts.length>0 && !discounts.some(x=>x.percent>0)){
    return NextResponse.json({error:"Select at least one product discount before enabling a sale."},{status:400});
   }
   await db.$transaction(async tx=>{
