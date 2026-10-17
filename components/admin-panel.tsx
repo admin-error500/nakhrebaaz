@@ -2,7 +2,8 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { InventoryEditor, type InventoryProduct } from './inventory-editor';
-type Product = InventoryProduct;
+import { SaleManagement, type SaleAdminCampaign } from './sale-management';
+type Product = InventoryProduct & {saleDiscountPercent:number};
 type Order = { id: string; name: string; email: string; total: number; status: string; paymentMethod: string; paymentStatus: string; addressJson: string; createdAt: string; items: { name: string; size: string; color: string; quantity: number }[] };
 const transitions: Record<string, { label: string; value: string }[]> = {
   PENDING: [{ label: 'Accept order', value: 'CONFIRMED' }, { label: 'Reject order', value: 'CANCELLED' }],
@@ -12,7 +13,7 @@ const transitions: Record<string, { label: string; value: string }[]> = {
 };
 const money = (n: number) => '₹' + n.toLocaleString('en-IN');
 const MAX_IMAGE_SIZE = 500 * 1024;
-export function AdminPanel({ products, orders, totalSold, totalAvailable }: { products: Product[]; orders: Order[]; totalSold: number; totalAvailable: number }) {
+export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSettings }: { products: Product[]; orders: Order[]; totalSold: number; totalAvailable: number; saleSettings: SaleAdminCampaign }) {
   const router = useRouter();
   const [message, setMessage] = useState('');
   const [productMessage, setProductMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -92,6 +93,7 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable }: { pr
       <a href="#inventory">Inventory</a>
       <a href="#image-link-generator">Image Link Generator</a>
       <a href="#add-product">Add Product</a>
+      <a href="#sale-management">Sale Management</a>
     </nav>
     <section className="admin-block" aria-label="Store performance">
       <div className="admin-heading"><div><span className="eyebrow">STORE OVERVIEW</span><h2>ORDER & PAYMENT SUMMARY</h2></div></div>
@@ -142,6 +144,7 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable }: { pr
       })}</div>}
     </section>
     <InventoryEditor products={products} totalSold={totalSold} totalAvailable={totalAvailable} />
+    <SaleManagement initial={saleSettings} products={products.map(p=>({id:p.id,name:p.name,price:p.price,category:p.category,image:p.image,discountPercent:p.saleDiscountPercent}))} />
     <section className="admin-block" id="image-link-generator">
       <div className="admin-heading"><div><span className="eyebrow">PRODUCT MEDIA</span><h2>IMAGE LINK GENERATOR</h2></div></div>
       <p>Upload a JPG, PNG or WebP product image (maximum 500 KB). A public image link will be generated for your product.</p>
