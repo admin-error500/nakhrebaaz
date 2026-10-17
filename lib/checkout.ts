@@ -4,6 +4,7 @@ import { db } from "./db";
 import { loadSale, salePrice } from "./sale";
 
 export const checkoutSchema = z.object({
+  expectedTotal: z.number().int().positive(),
   items: z
     .array(
       z.object({
