@@ -10,6 +10,7 @@ const transitions: Record<string, { label: string; value: string }[]> = {
   SHIPPED: [{ label: 'Mark delivered', value: 'DELIVERED' }],
 };
 const money = (n: number) => '₹' + n.toLocaleString('en-IN');
+const MAX_IMAGE_SIZE = 500 * 1024;
 export function AdminPanel({ products, orders }: { products: Product[]; orders: Order[] }) {
   const router = useRouter();
   const [message, setMessage] = useState('');
@@ -26,6 +27,7 @@ export function AdminPanel({ products, orders }: { products: Product[]; orders: 
   const totalPayments = orders.filter(order => order.paymentStatus === 'PAID').reduce((sum, order) => sum + order.total, 0);
   async function generateImageLink() {
     if (!imageFile) { setImageError('Choose an image first.'); return; }
+    if (imageFile.size > MAX_IMAGE_SIZE) { setImageError('Image must be 500 KB or smaller.'); return; }
     setImageBusy(true); setImageError('');
     try {
       const data = new FormData();
@@ -84,6 +86,12 @@ export function AdminPanel({ products, orders }: { products: Product[]; orders: 
     }
   }
   return <>
+    <nav className="admin-section-nav" aria-label="Admin dashboard sections">
+      <a href="#manage-orders">Manage Orders</a>
+      <a href="#inventory">Inventory</a>
+      <a href="#image-link-generator">Image Link Generator</a>
+      <a href="#add-product">Add Product</a>
+    </nav>
     <section className="admin-block" aria-label="Store performance">
       <div className="admin-heading"><div><span className="eyebrow">STORE OVERVIEW</span><h2>ORDER & PAYMENT SUMMARY</h2></div></div>
       <div className="admin-summary-grid">
@@ -132,17 +140,17 @@ export function AdminPanel({ products, orders }: { products: Product[]; orders: 
         </article>;
       })}</div>}
     </section>
-    <section className="admin-block"><div className="admin-heading"><div><span className="eyebrow">YOUR CATALOGUE</span><h2>INVENTORY</h2></div><span className="admin-count">{products.length} PRODUCTS</span></div><div className="tablewrap"><table><thead><tr><th>Product</th><th>Category</th><th>Festival</th><th>Price</th><th>Variants / stock</th></tr></thead><tbody>{products.map(p => <tr key={p.id}><td>{p.name}</td><td>{p.category}</td><td>{p.festival || "—"}</td><td>{money(p.price)}</td><td>{p.variants.map(v => `${v.size}/${v.color}: ${v.stock}${v.stock === 0 ? ' (OUT OF STOCK)' : ''}`).join(', ')}</td></tr>)}</tbody></table></div></section>
+    <section className="admin-block" id="inventory"><div className="admin-heading"><div><span className="eyebrow">YOUR CATALOGUE</span><h2>INVENTORY</h2></div><span className="admin-count">{products.length} PRODUCTS</span></div><div className="tablewrap"><table><thead><tr><th>Product</th><th>Category</th><th>Festival</th><th>Price</th><th>Variants / stock</th></tr></thead><tbody>{products.map(p => <tr key={p.id}><td>{p.name}</td><td>{p.category}</td><td>{p.festival || "—"}</td><td>{money(p.price)}</td><td>{p.variants.map(v => `${v.size}/${v.color}: ${v.stock}${v.stock === 0 ? ' (OUT OF STOCK)' : ''}`).join(', ')}</td></tr>)}</tbody></table></div></section>
     <section className="admin-block" id="image-link-generator">
       <div className="admin-heading"><div><span className="eyebrow">PRODUCT MEDIA</span><h2>IMAGE LINK GENERATOR</h2></div></div>
-      <p>Upload a JPG, PNG or WebP product image (maximum 5 MB). A public image link will be generated for your product.</p>
+      <p>Upload a JPG, PNG or WebP product image (maximum 500 KB). A public image link will be generated for your product.</p>
       <div className="admin-image-generator">
-        <input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Choose product image" onChange={e => { setImageFile(e.target.files?.[0] || null); setImageUrl(''); setImageError(''); }} />
+        <input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Choose product image" onChange={e => { const file = e.target.files?.[0] || null; setImageUrl(''); if (file && file.size > MAX_IMAGE_SIZE) { setImageFile(null); setImageError('Image must be 500 KB or smaller.'); e.target.value = ''; } else { setImageFile(file); setImageError(''); } }} />
         <button type="button" className="btn dark" disabled={imageBusy || !imageFile} onClick={generateImageLink}>{imageBusy ? 'UPLOADING...' : 'UPLOAD & GENERATE LINK'}</button>
         {imageError && <p role="alert" className="error">{imageError}</p>}
         {imageUrl && <div><label>Generated image URL<input readOnly value={imageUrl} onFocus={e => e.currentTarget.select()} /></label><button type="button" className="admin-action" onClick={() => navigator.clipboard.writeText(imageUrl)}>COPY LINK</button><p><img src={imageUrl} alt="Uploaded product preview" style={{maxWidth:190,maxHeight:190,objectFit:'contain'}} /></p></div>}
       </div>
     </section>
-    <section className="admin-block"><div className="admin-heading"><div><span className="eyebrow">NEW ARRIVALS</span><h2>ADD PRODUCT</h2></div></div><form className="admin-form" onSubmit={create}><input name="name" placeholder="Product name" required/><input name="description" placeholder="Description" required/><select name="category"><option>Men</option><option>Women</option><option>Kids</option></select><select name="festival" aria-label="Festival collection"><option value="">No festival / Everyday</option>{["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"].map(f => <option key={f} value={f}>{f}</option>)}</select><input name="image" type="url" placeholder="Image URL (https://...)" required/><input name="price" type="number" min="1" placeholder="Price ₹" required/><input name="size" placeholder="Size e.g. M" required/><input name="color" placeholder="Color e.g. Black" required/><input name="stock" type="number" min="0" placeholder="Stock" required/><input name="sku" placeholder="Unique SKU" required/><button className="btn dark" disabled={creatingProduct}>{creatingProduct ? 'ADDING PRODUCT...' : 'ADD PRODUCT'}</button></form>{productMessage && <p role={productMessage.type === 'error' ? 'alert' : 'status'} aria-live="polite" style={{ marginTop: 16, padding: 14, borderRadius: 6, border: `1px solid ${productMessage.type === 'error' ? '#dc2626' : '#15803d'}`, color: productMessage.type === 'error' ? '#991b1b' : '#166534', background: productMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', fontWeight: 600 }}>{productMessage.type === 'error' ? '⚠ ' : '✓ '}{productMessage.text}</p>}</section>
+    <section className="admin-block" id="add-product"><div className="admin-heading"><div><span className="eyebrow">NEW ARRIVALS</span><h2>ADD PRODUCT</h2></div></div><form className="admin-form" onSubmit={create}><input name="name" placeholder="Product name" required/><input name="description" placeholder="Description" required/><select name="category"><option>Men</option><option>Women</option><option>Kids</option></select><select name="festival" aria-label="Festival collection"><option value="">No festival / Everyday</option>{["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"].map(f => <option key={f} value={f}>{f}</option>)}</select><input name="image" type="url" placeholder="Image URL (https://...)" required/><input name="price" type="number" min="1" placeholder="Price ₹" required/><input name="size" placeholder="Size e.g. M" required/><input name="color" placeholder="Color e.g. Black" required/><input name="stock" type="number" min="0" placeholder="Stock" required/><input name="sku" placeholder="Unique SKU" required/><button className="btn dark" disabled={creatingProduct}>{creatingProduct ? 'ADDING PRODUCT...' : 'ADD PRODUCT'}</button></form>{productMessage && <p role={productMessage.type === 'error' ? 'alert' : 'status'} aria-live="polite" style={{ marginTop: 16, padding: 14, borderRadius: 6, border: `1px solid ${productMessage.type === 'error' ? '#dc2626' : '#15803d'}`, color: productMessage.type === 'error' ? '#991b1b' : '#166534', background: productMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', fontWeight: 600 }}>{productMessage.type === 'error' ? '⚠ ' : '✓ '}{productMessage.text}</p>}</section>
   </>;
 }

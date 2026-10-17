@@ -3,7 +3,7 @@ import { currentUser } from "@/lib/auth";
 import { createHash } from "node:crypto";
 
 export const runtime = "nodejs";
-const LIMIT=5*1024*1024;
+const LIMIT=500*1024;
 const allowed=new Map([
   ["image/jpeg",{extension:"jpg",magic:[0xff,0xd8,0xff]}],
   ["image/png",{extension:"png",magic:[0x89,0x50,0x4e,0x47]}],
@@ -21,7 +21,7 @@ export async function POST(req:Request){
  const file=form?.get("file");
  if(!(file instanceof File))return NextResponse.json({error:"Choose an image file"},{status:400});
  const kind=allowed.get(file.type);
- if(!kind||file.size<1||file.size>LIMIT)return NextResponse.json({error:"Use JPG, PNG or WebP image under 5 MB"},{status:400});
+ if(!kind||file.size<1||file.size>LIMIT)return NextResponse.json({error:"Use JPG, PNG or WebP image of 500 KB or smaller"},{status:400});
  const bytes=new Uint8Array(await file.arrayBuffer());
  if(!kind.magic.every((v,i)=>bytes[i]===v)||(file.type==="image/webp"&&String.fromCharCode(...bytes.slice(8,12))!=="WEBP")){
    return NextResponse.json({error:"Invalid image file"},{status:400});
