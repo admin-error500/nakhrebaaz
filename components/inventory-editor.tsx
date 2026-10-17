@@ -1,5 +1,6 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { Pencil, X, Trash2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export type InventoryVariant={id:string;size:string;color:string;stock:number;sku:string;sold:number};
@@ -19,6 +20,7 @@ export function InventoryEditor({products,totalSold,totalAvailable}:{products:In
   const [working,setWorking]=useState(false);
   const [notice,setNotice]=useState('');
   const [error,setError]=useState('');
+  useEffect(()=>{ if(editing) document.getElementById("inventory-editor")?.scrollIntoView({behavior:"smooth",block:"start"}); },[editing]);
   const money=(n:number)=>'₹'+n.toLocaleString('en-IN');
   const change=(field:keyof Omit<Draft,'variants'>,value:string|number|boolean)=>{
     setDraft(d=>d?{...d,[field]:value}:d);
@@ -66,16 +68,16 @@ export function InventoryEditor({products,totalSold,totalAvailable}:{products:In
     <p className="admin-packing-note">Pending online payments and cancelled orders are not counted as sales. Sold totals reflect order history; available stock is live inventory.</p>
     {notice&&<p role="status" className="admin-notice">{notice}</p>}
     {error&&<p role="alert" className="error">{error}</p>}
-    <div className="tablewrap"><table><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Sold</th><th>Available</th><th>Manage</th></tr></thead>
+    <div className="tablewrap"><table><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Sold</th><th>Available</th><th className="inventory-manage-heading">Edit</th></tr></thead>
       <tbody>{products.map(p=><tr key={p.id}>
         <td><strong>{p.name}</strong>{!p.active&&<small className="inventory-archived"> (Archived)</small>}<small className="inventory-secondary">{p.variants.map(v=>v.size+'/'+v.color+': '+v.stock+' left / '+v.sold+' sold').join(', ')}</small></td>
         <td>{p.category}{p.festival?' · '+p.festival:''}</td><td>{money(p.price)}</td>
         <td>{p.sold}</td><td>{p.active?p.variants.reduce((sum,v)=>sum+v.stock,0):0}</td>
-        <td><button type="button" className="admin-action" onClick={()=>start(p)}>EDIT PRODUCT</button></td>
+        <td><button type="button" className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name} onClick={()=>start(p)}><Pencil size={15} strokeWidth={2} aria-hidden="true"/> <span>Edit</span></button></td>
       </tr>)}</tbody></table></div>
     {draft&&editing&&<form className="inventory-edit-form" onSubmit={save} id="inventory-editor">
       <div className="admin-heading"><div><span className="eyebrow">SELECTED PRODUCT</span><h3>EDIT PRODUCT</h3></div>
-        <button type="button" className="admin-action" onClick={()=>{setEditing(null);setDraft(null);setError('');}} disabled={working}>CLOSE</button></div>
+        <button type="button" className="inventory-icon-button inventory-close" aria-label="Close edit section" title="Close" onClick={()=>{setEditing(null);setDraft(null);setError('');}} disabled={working}><X size={20} aria-hidden="true"/></button></div>
       <div className="inventory-edit-grid">
         <label>Product name<input required minLength={3} value={draft.name} onChange={e=>change('name',e.target.value)}/></label>
         <label>Price (₹)<input required type="number" min="1" step="1" value={draft.price} onChange={e=>change('price',Number(e.target.value))}/></label>
@@ -93,13 +95,13 @@ export function InventoryEditor({products,totalSold,totalAvailable}:{products:In
         <label>SKU<input required minLength={3} value={v.sku} onChange={e=>changeVariant(i,'sku',e.target.value)}/></label>
         <label>Set Stock<input required type="number" min="0" step="1" value={v.stock} onChange={e=>changeVariant(i,'stock',Number(e.target.value))}/></label>
         <label>Add Stock (+)<input type="number" min="0" step="1" value={v.addStock} onChange={e=>changeVariant(i,'addStock',Number(e.target.value))}/></label>
-        <button type="button" className="admin-action danger" disabled={draft.variants.length<=1||working} onClick={()=>setDraft(d=>d?{...d,variants:d.variants.filter((_,idx)=>idx!==i)}:d)}>REMOVE SIZE</button>
+        <button type="button" className="inventory-icon-button inventory-remove-variant" aria-label={"Remove size "+v.size+" color "+v.color} title={draft.variants.length<=1?"At least one size/color is required":"Remove size/color"} disabled={draft.variants.length<=1||working} onClick={()=>setDraft(d=>d?{...d,variants:d.variants.filter((_,idx)=>idx!==i)}:d)}><Trash2 size={19} aria-hidden="true"/></button>
       </div>)}
-      <button type="button" className="admin-action" onClick={()=>setDraft(d=>d?{...d,variants:[...d.variants,emptyVariant()]}:d)} disabled={working}>+ ADD SIZE / COLOR</button>
+      <button type="button" className="admin-action inventory-add-variant" onClick={()=>setDraft(d=>d?{...d,variants:[...d.variants,emptyVariant()]}:d)} disabled={working}><Plus size={16} aria-hidden="true"/> Add</button>
       {error&&<p role="alert" className="error">{error}</p>}
       <div className="inventory-edit-actions">
-        <button type="submit" className="btn dark" disabled={working}>{working?'SAVING...':'UPDATE PRODUCT'}</button>
-        <button type="button" className="admin-action danger" disabled={working} onClick={()=>{const p=products.find(x=>x.id===editing);if(p)void remove(p);}}>DELETE PRODUCT</button>
+        <button type="submit" className="btn dark" disabled={working}>{working?'SAVING...':'Update'}</button>
+        <button type="button" className="admin-action danger" disabled={working} onClick={()=>{const p=products.find(x=>x.id===editing);if(p)void remove(p);}}>Delete</button>
       </div>
     </form>}
   </section>;
