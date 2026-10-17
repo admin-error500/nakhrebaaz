@@ -26,6 +26,7 @@ model Product {
   festival    String?
   image       String
   price       Int
+  saleDiscountPercent Int? @default(0)
   active      Boolean   @default(true)
   variants    Variant[]
   createdAt   DateTime  @default(now())
@@ -82,4 +83,17 @@ model OrderItem {
   name      String
   size      String
   color     String
+}
+
+model SaleCampaign {
+  id         String    @id @map("_id")
+  enabled    Boolean   @default(false)
+  title      String    @default("NAKHREBAAZ SALE")
+  subtitle   String    @default("Limited-time offers on selected styles")
+  imageUrl   String?
+  buttonText String    @default("SHOP SALE")
+  buttonUrl  String    @default("/#shop")
+  startsAt   DateTime?
+  endsAt     DateTime?
+  updatedAt  DateTime  @updatedAt
 }
