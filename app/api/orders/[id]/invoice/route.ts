@@ -114,13 +114,12 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     const sellerState = process.env.SELLER_STATE?.trim() ?? "Uttar Pradesh";
     const rateRaw = process.env.INVOICE_GST_RATE_PERCENT;
     const gstRate = Number(rateRaw);
-    const hsn = process.env.INVOICE_PRODUCT_HSN?.trim() ?? "";
     const sellerCode = stateCode(sellerState);
     if (!/^\d{2}[A-Z0-9]{10}[1-9A-Z]Z[A-Z0-9]$/.test(gstin) || !sellerAddress ||
         !rateRaw || !Number.isFinite(gstRate) || gstRate < 0 || gstRate > 100 ||
-        !sellerCode || gstin.slice(0, 2) !== sellerCode || !/^\d{4,8}$/.test(hsn)) {
+        !sellerCode || gstin.slice(0, 2) !== sellerCode) {
       return NextResponse.json({
-        error: "Configure valid SELLER_GSTIN, SELLER_REGISTERED_ADDRESS, SELLER_STATE, INVOICE_GST_RATE_PERCENT and INVOICE_PRODUCT_HSN",
+        error: "Configure valid SELLER_GSTIN, SELLER_REGISTERED_ADDRESS, SELLER_STATE, INVOICE_GST_RATE_PERCENT",
       }, { status: 500 });
     }
 
@@ -133,7 +132,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     const sameState = sellerCode === customerCode;
 
     // Price and shipping are treated as GST-inclusive. This assumes one verified
-    // rate/HSN for the product and its allocated shipping. For mixed tax rates,
+    // tax rate for the product and its allocated shipping. For mixed tax rates,
     // persist item-level tax details at checkout and replace this calculation.
     const item = order.items[0];
     const inclusiveTotal = order.total;
@@ -209,7 +208,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 
     // Header: centered invoice title, logo, and aligned seller/customer columns.
     doc.fillColor(INK).font("Helvetica-Bold").fontSize(19)
-      .text("INVOICE", X, 40, { width: RIGHT - X, align: "center" });
+      .text("TAX INVOICE", X, 40, { width: RIGHT - X, align: "center" });
 
     const logoPath = path.join(process.cwd(), "public", "nakhrebaaz-logo.png");
 
@@ -301,7 +300,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     doc.font("Helvetica-Bold").fontSize(8);
     const productHeight = doc.heightOfString(item.name, { width: 166 });
     doc.font("Helvetica").fontSize(7);
-    const variantText = `Size: ${item.size} | Color: ${item.color} | HSN: ${hsn}`;
+    const variantText = `Size: ${item.size} | Color: ${item.color}`;
     const variantHeight = doc.heightOfString(variantText, { width: 166 });
     const rowHeight = Math.max(60, productHeight + variantHeight + 18);
     if (y + rowHeight > 685) {
