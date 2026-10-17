@@ -103,7 +103,7 @@ export default async function AdminPage() {
   return (
   <main className="admin-dashboard-shell">
     <section className="admin-header">
-        <span className="eyebrow">NAKHREBAAZ CONTROL CENTER</span>
+        <div className="admin-brand-lockup"><img src="/nakhrebaaz-logo.png" alt="NakhreBaaz" className="admin-brand-logo" /><span className="eyebrow">CONTROL CENTER</span></div>
         <h1>ADMIN DASHBOARD</h1>
         <p>
           Manage customer orders, product inventory,
