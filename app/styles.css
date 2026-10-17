@@ -227,3 +227,63 @@ body{background:#fffaf2;color:#151515}
 .admin-brand-lockup .eyebrow{margin:0}
 @media(max-width:950px){.inventory-variant-row{grid-template-columns:repeat(2,minmax(0,1fr)) 44px}.inventory-remove-variant{grid-column:3;grid-row:auto}}
 @media(max-width:600px){.inventory-variant-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.inventory-remove-variant{grid-column:auto;grid-row:auto}.inventory-edit-trigger{min-width:78px}.inventory-edit-actions .btn,.inventory-edit-actions .admin-action{flex:1 1 115px}.admin-brand-logo{width:145px;height:46px}.admin-brand-lockup{gap:8px}}
+
+/* Account-only overflow and alignment correction */
+.account-shell{width:100%;max-width:1450px;margin-inline:auto;padding-inline:clamp(16px,4vw,56px);overflow-x:clip}
+.account-shell .account-hero{width:100%;min-width:0;isolation:isolate}
+.account-hero::after{right:9%;width:38%;background-position:center;opacity:.08}
+.account-hero h1{max-width:calc(100% - 155px);font-size:clamp(33px,5.4vw,68px);letter-spacing:-.055em;overflow-wrap:anywhere;line-height:1.1}
+.account-hero p{max-width:calc(100% - 155px);font-size:clamp(13px,1.25vw,16px);line-height:1.55}
+.account-hero .account-avatar{z-index:2}
+.account-grid{min-width:0;grid-template-columns:minmax(205px,240px) minmax(0,1fr);align-items:start}
+.account-side,.account-main,.account-panel,.account-stats,.profile-details,.order-stack,.order-modern{min-width:0}
+.account-side{gap:8px}
+.account-shell .account-side-link{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%;padding:12px 10px;line-height:1.4;font-size:13px;font-weight:750;text-decoration:none;overflow-wrap:anywhere}
+.account-side-link span{display:block;min-width:0}
+.account-side-icon{display:block;flex:0 0 19px;width:19px;height:19px;stroke:currentColor;stroke-width:1.85;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.account-side .account-logout{width:100%}
+.account-side .account-logout .linkbtn{max-width:100%;text-align:left;font-size:13px;line-height:1.4}
+.account-panel .panel-heading{min-width:0;flex-wrap:wrap;align-items:center}
+.account-panel .panel-heading>div{min-width:0}
+.account-panel .panel-heading h2{font-size:clamp(23px,2.8vw,36px);line-height:1.16;letter-spacing:-.04em}
+.account-panel .eyebrow{font-size:clamp(10px,.85vw,12px);line-height:1.6;letter-spacing:1.8px}
+.account-shell .member-chip{display:inline-flex;align-items:center;justify-content:center;min-height:38px;font-size:11px;line-height:1.2;padding:10px 14px}
+.account-shell .profile-details{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.account-shell .profile-details>div{min-width:0;padding:clamp(14px,1.8vw,22px)}
+.account-shell .profile-details small,.account-shell .account-stats small,.account-shell .order-modern small{font-size:11px;line-height:1.4;letter-spacing:.8px}
+.account-shell .profile-details strong{display:block;font-size:clamp(13px,1vw,15px);line-height:1.5;overflow-wrap:anywhere;word-break:break-word}
+.account-shell .account-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.account-shell .account-stats>div{min-width:0;padding:clamp(15px,2vw,25px)}
+.account-shell .account-stats strong{font-size:clamp(18px,2.2vw,30px);line-height:1.2;letter-spacing:-.03em;overflow-wrap:anywhere;word-break:break-word}
+.account-shell .order-modern{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(100px,auto)}
+.account-shell .order-modern>div{min-width:0}
+.account-shell .order-modern strong,.account-shell .order-modern p,.account-shell .order-status{overflow-wrap:anywhere}
+.account-shell .account-shop-link{display:inline-flex;align-items:center;min-height:32px;white-space:nowrap}
+@media(max-width:1000px){
+  .account-shell .account-grid{grid-template-columns:1fr}
+  .account-shell .account-side{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px}
+  .account-shell .account-side-title{width:100%;margin:0 0 4px}
+  .account-shell .account-side-link{flex:0 1 auto}
+  .account-shell .account-side .account-logout{width:auto;margin-left:auto}
+}
+@media(max-width:700px){
+  .account-shell{padding:16px 16px 55px}
+  .account-shell .account-hero{min-height:220px;padding:74px 22px 30px}
+  .account-hero h1{max-width:100%;font-size:clamp(31px,8vw,49px);letter-spacing:-.045em}
+  .account-hero p{max-width:100%;padding-right:0}
+  .account-hero::after{width:55%;right:1%;opacity:.06}
+  .account-hero .account-avatar{width:58px;height:58px;top:18px;right:20px;font-size:27px;border-width:4px}
+  .account-shell .account-hero .account-eyebrow{display:block;max-width:calc(100% - 70px);font-size:10px;letter-spacing:1.25px;line-height:1.5}
+  .account-shell .profile-details{grid-template-columns:1fr}
+  .account-shell .account-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .account-shell .account-side-link{flex:1 1 145px}
+  .account-shell .account-side .account-logout{width:100%;margin:0}
+  .account-shell .order-modern{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:390px){
+  .account-shell{padding-inline:12px}
+  .account-shell .account-stats{grid-template-columns:1fr}
+  .account-shell .account-hero{padding-inline:16px}
+  .account-shell .order-modern{grid-template-columns:1fr}
+  .account-shell .order-modern>div:nth-child(3){grid-column:auto}
+}
