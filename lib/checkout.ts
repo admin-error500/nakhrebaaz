@@ -1,6 +1,7 @@
 
 import { z } from "zod";
 import { db } from "./db";
+import { loadSale, salePrice } from "./sale";
 
 export const checkoutSchema = z.object({
   items: z
@@ -79,6 +80,7 @@ export async function priceCart(items: CheckoutItem[]) {
     variants.map((variant) => [variant.id, variant])
   );
 
+  const { live } = await loadSale();
   const lines = items.map((item) => {
     const variant = variantMap.get(item.variantId);
 
@@ -93,7 +95,7 @@ export async function priceCart(items: CheckoutItem[]) {
       throw new Error("Item unavailable or out of stock");
     }
 
-    const price = variant.product.price;
+    const price = salePrice(variant.product.price, variant.product.saleDiscountPercent ?? 0, live);
 
     if (!Number.isSafeInteger(price) || price <= 0) {
       throw new Error("Invalid product price");
