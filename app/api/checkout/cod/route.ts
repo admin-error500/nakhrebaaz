@@ -19,6 +19,9 @@ export async function POST(req: Request) {
     const data = checkoutSchema.parse(await req.json());
 
     const priced = await priceCart(data.items);
+    if (priced.total !== data.expectedTotal) {
+      return NextResponse.json({ error: "Sale prices have changed. Please refresh checkout and confirm the new total." }, { status: 409 });
+    }
 
     const checkout = await reserveOrder(
       user.id,
