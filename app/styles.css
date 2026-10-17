@@ -185,3 +185,10 @@ body{background:#fffaf2;color:#151515}
 .ad-space{max-width:1220px;margin:38px auto;padding:0 4%;min-height:100px}
 .ad-space .adsbygoogle{display:block;min-height:90px;width:100%}
 @media(max-width:650px){.admin-summary-grid{grid-template-columns:1fr}}
+
+/* Admin dashboard section navigation */
+.admin-section-nav{display:flex;flex-wrap:wrap;gap:10px;padding:14px;margin:0 0 24px;background:#fff7e8;border:1px solid #f0ddb8;border-radius:8px;position:sticky;top:80px;z-index:4}
+.admin-section-nav a{display:inline-block;padding:11px 15px;background:#151515;color:white;border-radius:5px;font-size:12px;font-weight:800;text-decoration:none}
+.admin-section-nav a:hover,.admin-section-nav a:focus-visible{background:#ffae19;color:#151515}
+#manage-orders,#inventory,#image-link-generator,#add-product{scroll-margin-top:170px}
+@media(max-width:850px){.admin-section-nav{position:static}.admin-section-nav a{flex:1 1 42%;text-align:center}}
