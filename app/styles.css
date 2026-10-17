@@ -154,3 +154,21 @@ body{background:#fffaf2;color:#151515}
   justify-self: start;
   margin-top: 10px;
 }
+/* Account / admin usability improvements */
+.account-hero::after{
+  content:""; position:absolute; inset:0 0 0 auto; width:47%;
+  background:url("/nakhrebaaz-logo.png") center / contain no-repeat;
+  opacity:.12; pointer-events:none;
+}
+.account-hero > * {position:relative;z-index:1}
+.account-hero .account-avatar {position:absolute}
+.account-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.admin-order-details{border:1px solid #e9e3d8;border-radius:6px;margin:14px 0;padding:14px}
+.admin-order-details summary{cursor:pointer;font-weight:800;font-size:12px;letter-spacing:.6px}
+.admin-order-details[open] summary{margin-bottom:18px}
+.admin-packing-items{padding-left:18px}
+.admin-packing-items li{margin:0 0 14px}
+.admin-packing-items li span,.admin-packing-items li label{display:block;margin-top:5px;font-size:12px}
+.admin-packing-items li label{display:flex;align-items:center;gap:8px;font-weight:600}
+.admin-packing-note{font-size:12px;color:#6b6257}
+@media(max-width:600px){.account-hero::after{width:65%;opacity:.08}.account-stats{grid-template-columns:1fr}}

@@ -75,7 +75,33 @@ export function AdminPanel({ products, orders }: { products: Product[]; orders: 
         const options = (transitions[o.status] ?? []).filter(opt => opt.value === 'CANCELLED' || o.paymentMethod !== 'ONLINE' || o.paymentStatus === 'PAID');
         return <article key={o.id} className="admin-order-card">
           <div className="admin-order-top"><div><span className="eyebrow">ORDER #{o.id.slice(-8).toUpperCase()}</span><h3>{o.name}</h3><small>{o.email} · {new Date(o.createdAt).toLocaleString('en-IN')}</small></div><span className={'admin-status status-' + o.status.toLowerCase()}>{o.status}</span></div>
-          <div className="admin-order-columns"><div><strong>PRODUCTS</strong>{o.items.map((item, index) => <p key={index}>{item.name} — {item.size}/{item.color} × {item.quantity}</p>)}</div><div><strong>DELIVERY ADDRESS</strong><p>{[address.name,address.phone,address.line1,address.city,address.state,address.pincode].filter(Boolean).map(String).join(', ') || 'Address unavailable'}</p></div><div><strong>PAYMENT</strong><p>{o.paymentMethod} · {o.paymentStatus}</p><strong>{money(o.total)}</strong></div></div>
+          <details className="admin-order-details">
+            <summary>OPEN ORDER / VERIFY PACKING DETAILS</summary>
+            <div className="admin-order-columns">
+              <div>
+                <strong>PRODUCTS TO PACK</strong>
+                <ol className="admin-packing-items">
+                  {o.items.map((item, index) => (
+                    <li key={index}>
+                      <strong>{item.name}</strong>
+                      <span>Size: {item.size} · Color: {item.color} · Quantity: {item.quantity}</span>
+                      <label><input type="checkbox" /> Checked before packing</label>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div>
+                <strong>DELIVERY ADDRESS</strong>
+                <p>{[address.name,address.phone,address.line1,address.city,address.state,address.pincode].filter(Boolean).map(String).join(', ') || 'Address unavailable'}</p>
+              </div>
+              <div>
+                <strong>PAYMENT DETAILS</strong>
+                <p>{o.paymentMethod} · {o.paymentStatus}</p>
+                <strong>{money(o.total)}</strong>
+              </div>
+            </div>
+            <p className="admin-packing-note">Verify product, size, color, quantity and customer address before marking an order packed. This checklist is a visual aid and is not saved.</p>
+          </details>
           <div className="admin-order-actions">{options.map(opt => <button key={opt.value} type="button" className={'admin-action ' + (opt.value === 'CANCELLED' ? 'danger' : '')} disabled={working === o.id} onClick={() => update(o,opt.value)}>{working === o.id ? 'UPDATING...' : opt.label}</button>)}{o.paymentMethod === 'COD' && o.status === 'DELIVERED' && o.paymentStatus !== 'PAID' && <button type="button" className="admin-action" disabled={working === o.id} onClick={() => markCodReceived(o)}>MARK COD PAYMENT RECEIVED</button>}{options.length === 0 && <small>{o.status === 'CANCELLED' ? 'Order cancelled' : o.status === 'DELIVERED' ? 'Order delivered' : 'Awaiting verified payment'}</small>}{o.status === 'CANCELLED' && o.paymentStatus === 'PAID' && <strong className="refund-warning">Paid order: check refund in Razorpay</strong>}</div>
         </article>;
       })}</div>}
