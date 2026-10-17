@@ -2,6 +2,9 @@ import { db } from '@/lib/db';
 import Link from 'next/link';
 import { ShopSearch } from '@/components/shop-search';
 import { AdSlot } from '@/components/ad-slot';
+import { loadSale, salePrice } from '@/lib/sale';
+
+export const dynamic = 'force-dynamic';
 
 type Search = { category?: string; q?: string; type?: string; festival?: string };
 const categories = ['Men', 'Women', 'Kids'];
@@ -20,6 +23,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   const selectedCategory = categories.includes(category || '') ? category : undefined;
   const selectedType = types.includes(type || '') ? type : undefined;
   const filterUrl = (nextCategory?:string,nextType?:string) => '/?' + new URLSearchParams({ ...(nextCategory?{category:nextCategory}:{}), ...(nextType?{type:nextType}:{}), ...(selectedFestival?{festival:selectedFestival}:{}), ...(q?.trim()?{q:q.trim()}:{}), }).toString() + '#shop';
+  const sale = await loadSale();
   const products = await db.product.findMany({
     where: {
       active: true,
@@ -33,6 +37,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   });
   return (
     <main>
+      {sale.live && <section className="sale-hero-banner" aria-label="Current sale">
+        {sale.settings.imageUrl && <img src={sale.settings.imageUrl} alt="" className="sale-banner-background" />}
+        <div className="sale-hero-copy"><span className="eyebrow">LIMITED TIME · SELECTED STYLES</span><h2>{sale.settings.title}</h2><p>{sale.settings.subtitle}</p><Link className="btn dark" href={sale.settings.buttonUrl}>{sale.settings.buttonText} ↗</Link></div>
+      </section>}
       <section className="hero hero-redesign">
         <div className="hero-copy">
           <div className="hero-stamp">THE NAKHRA CLUB · EST. 2026</div>
@@ -63,7 +71,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
         <div className="type-tabs" aria-label="Shop by clothing type">{[['ALL STYLES',undefined],['T-SHIRTS','T-Shirts'],['HOODIES','Hoodies'],['SWEATSHIRTS','Sweatshirts']].map(([label,value])=><Link key={label} className={selectedType===value?'active':''} href={filterUrl(selectedCategory,value)}>{label}</Link>)}</div>
         {selectedFestival && <div className="festival-active"><span>FESTIVAL: {selectedFestival}</span><Link href="/#shop">CLEAR FILTER ✕</Link></div>}
         <div className="product-meta"><span>{products.length} STYLES TO LOVE</span><span>✳ NEW ARRIVALS</span></div>
-        <div className="products" id="filtered-products">{products.map((p,i)=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading={i<4?'eager':'lazy'}/><span className="pill">{p.variants.every(v => v.stock === 0) ? 'SOLD OUT' : p.festival || (i%3===0?'BESTSELLER':'NEW DROP')}</span><span className="product-arrow">↗</span></div><div className="product-line"><b>{p.name}</b><span>₹{p.price.toLocaleString('en-IN')}</span></div><small>{p.category.toUpperCase()} · {p.variants.every(v => v.stock === 0) ? 'OUT OF STOCK' : `${p.variants.length} OPTIONS`}</small></Link>)}</div>
+        <div className="products" id="filtered-products">{products.map((p,i)=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading={i<4?'eager':'lazy'}/><span className="pill">{p.variants.every(v => v.stock === 0) ? 'SOLD OUT' : sale.live && (p.saleDiscountPercent??0)>0 ? `${p.saleDiscountPercent}% OFF` : p.festival || (i%3===0?'BESTSELLER':'NEW DROP')}</span><span className="product-arrow">↗</span></div><div className="product-line"><b>{p.name}</b><span className="sale-price-pair">{sale.live && (p.saleDiscountPercent??0)>0 && <del>₹{p.price.toLocaleString('en-IN')}</del>}<strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></span></div><small>{p.category.toUpperCase()} · {p.variants.every(v => v.stock === 0) ? 'OUT OF STOCK' : `${p.variants.length} OPTIONS`}</small></Link>)}</div>
         {products.length===0&&<div className="empty-products"><h3>No styles found yet.</h3><p>Try another category or add demo products using <code>node prisma/seed.cjs</code>.</p><Link className="btn dark" href="/#shop">VIEW ALL STYLES</Link></div>}
       </section>
       <AdSlot />
