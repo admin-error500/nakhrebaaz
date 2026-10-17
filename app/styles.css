@@ -172,3 +172,16 @@ body{background:#fffaf2;color:#151515}
 .admin-packing-items li label{display:flex;align-items:center;gap:8px;font-weight:600}
 .admin-packing-note{font-size:12px;color:#6b6257}
 @media(max-width:600px){.account-hero::after{width:65%;opacity:.08}.account-stats{grid-template-columns:1fr}}
+
+/* NakhreBaaz merchant dashboard & ad placement */
+.admin-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}
+.admin-summary-stat{background:#151515;color:white;padding:24px;border-left:5px solid #ffae19}
+.admin-summary-stat small,.admin-summary-stat span{display:block;color:#ded6c7}
+.admin-summary-stat small{font-size:11px;font-weight:900;letter-spacing:1px}
+.admin-summary-stat strong{display:block;color:#ffae19;font-size:clamp(24px,3.5vw,42px);margin:12px 0}
+.admin-summary-stat span{font-size:12px;line-height:1.5}
+.admin-image-generator{display:grid;gap:14px;max-width:650px;margin-top:16px}
+.admin-image-generator input[readonly]{width:100%}
+.ad-space{max-width:1220px;margin:38px auto;padding:0 4%;min-height:100px}
+.ad-space .adsbygoogle{display:block;min-height:90px;width:100%}
+@media(max-width:650px){.admin-summary-grid{grid-template-columns:1fr}}

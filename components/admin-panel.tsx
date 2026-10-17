@@ -18,6 +18,25 @@ export function AdminPanel({ products, orders }: { products: Product[]; orders: 
   const [filter, setFilter] = useState('ALL');
   const [search, setSearch] = useState('');
   const [working, setWorking] = useState<string | null>(null);
+  const [imageBusy, setImageBusy] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageError, setImageError] = useState('');
+  const totalOrders = orders.length;
+  const totalPayments = orders.filter(order => order.paymentStatus === 'PAID').reduce((sum, order) => sum + order.total, 0);
+  async function generateImageLink() {
+    if (!imageFile) { setImageError('Choose an image first.'); return; }
+    setImageBusy(true); setImageError('');
+    try {
+      const data = new FormData();
+      data.append('file', imageFile);
+      const response = await fetch('/api/admin/image-upload', { method: 'POST', body: data });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || typeof result.url !== 'string') throw new Error(result.error || 'Image upload failed');
+      setImageUrl(result.url);
+    } catch (error) { setImageError(error instanceof Error ? error.message : 'Upload failed'); }
+    finally { setImageBusy(false); }
+  }
   const visible = useMemo(() => orders.filter(o => (filter === 'ALL' || o.status === filter) && [o.id, o.name, o.email].some(v => v.toLowerCase().includes(search.toLowerCase()))), [orders, filter, search]);
   async function update(order: Order, status: string) {
     const isCancel = status === 'CANCELLED';
@@ -65,6 +84,13 @@ export function AdminPanel({ products, orders }: { products: Product[]; orders: 
     }
   }
   return <>
+    <section className="admin-block" aria-label="Store performance">
+      <div className="admin-heading"><div><span className="eyebrow">STORE OVERVIEW</span><h2>ORDER & PAYMENT SUMMARY</h2></div></div>
+      <div className="admin-summary-grid">
+        <div className="admin-summary-stat"><small>TOTAL ORDERS</small><strong>{totalOrders}</strong><span>Includes orders in all statuses</span></div>
+        <div className="admin-summary-stat"><small>TOTAL PAYMENT RECEIVED</small><strong>{money(totalPayments)}</strong><span>Orders marked PAID, including paid COD; before refunds</span></div>
+      </div>
+    </section>
     <section className="admin-block" id="manage-orders">
       <div className="admin-heading"><div><span className="eyebrow">LIVE FULFILMENT</span><h2>MANAGE ORDERS</h2></div><span className="admin-count">{visible.length} ORDERS</span></div>
       <div className="admin-toolbar"><input aria-label="Search orders" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search order ID, name or email" /><select aria-label="Filter orders" value={filter} onChange={e => setFilter(e.target.value)}>{['ALL','PENDING','CONFIRMED','PACKED','SHIPPED','DELIVERED','CANCELLED'].map(s => <option key={s}>{s}</option>)}</select></div>
@@ -107,6 +133,16 @@ export function AdminPanel({ products, orders }: { products: Product[]; orders: 
       })}</div>}
     </section>
     <section className="admin-block"><div className="admin-heading"><div><span className="eyebrow">YOUR CATALOGUE</span><h2>INVENTORY</h2></div><span className="admin-count">{products.length} PRODUCTS</span></div><div className="tablewrap"><table><thead><tr><th>Product</th><th>Category</th><th>Festival</th><th>Price</th><th>Variants / stock</th></tr></thead><tbody>{products.map(p => <tr key={p.id}><td>{p.name}</td><td>{p.category}</td><td>{p.festival || "—"}</td><td>{money(p.price)}</td><td>{p.variants.map(v => `${v.size}/${v.color}: ${v.stock}${v.stock === 0 ? ' (OUT OF STOCK)' : ''}`).join(', ')}</td></tr>)}</tbody></table></div></section>
+    <section className="admin-block" id="image-link-generator">
+      <div className="admin-heading"><div><span className="eyebrow">PRODUCT MEDIA</span><h2>IMAGE LINK GENERATOR</h2></div></div>
+      <p>Upload a JPG, PNG or WebP product image (maximum 5 MB). A public image link will be generated for your product.</p>
+      <div className="admin-image-generator">
+        <input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Choose product image" onChange={e => { setImageFile(e.target.files?.[0] || null); setImageUrl(''); setImageError(''); }} />
+        <button type="button" className="btn dark" disabled={imageBusy || !imageFile} onClick={generateImageLink}>{imageBusy ? 'UPLOADING...' : 'UPLOAD & GENERATE LINK'}</button>
+        {imageError && <p role="alert" className="error">{imageError}</p>}
+        {imageUrl && <div><label>Generated image URL<input readOnly value={imageUrl} onFocus={e => e.currentTarget.select()} /></label><button type="button" className="admin-action" onClick={() => navigator.clipboard.writeText(imageUrl)}>COPY LINK</button><p><img src={imageUrl} alt="Uploaded product preview" style={{maxWidth:190,maxHeight:190,objectFit:'contain'}} /></p></div>}
+      </div>
+    </section>
     <section className="admin-block"><div className="admin-heading"><div><span className="eyebrow">NEW ARRIVALS</span><h2>ADD PRODUCT</h2></div></div><form className="admin-form" onSubmit={create}><input name="name" placeholder="Product name" required/><input name="description" placeholder="Description" required/><select name="category"><option>Men</option><option>Women</option><option>Kids</option></select><select name="festival" aria-label="Festival collection"><option value="">No festival / Everyday</option>{["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"].map(f => <option key={f} value={f}>{f}</option>)}</select><input name="image" type="url" placeholder="Image URL (https://...)" required/><input name="price" type="number" min="1" placeholder="Price ₹" required/><input name="size" placeholder="Size e.g. M" required/><input name="color" placeholder="Color e.g. Black" required/><input name="stock" type="number" min="0" placeholder="Stock" required/><input name="sku" placeholder="Unique SKU" required/><button className="btn dark" disabled={creatingProduct}>{creatingProduct ? 'ADDING PRODUCT...' : 'ADD PRODUCT'}</button></form>{productMessage && <p role={productMessage.type === 'error' ? 'alert' : 'status'} aria-live="polite" style={{ marginTop: 16, padding: 14, borderRadius: 6, border: `1px solid ${productMessage.type === 'error' ? '#dc2626' : '#15803d'}`, color: productMessage.type === 'error' ? '#991b1b' : '#166534', background: productMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', fontWeight: 600 }}>{productMessage.type === 'error' ? '⚠ ' : '✓ '}{productMessage.text}</p>}</section>
   </>;
 }

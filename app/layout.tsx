@@ -1,5 +1,6 @@
 import './styles.css';
 import Link from 'next/link';
+import Script from 'next/script';
 import { currentUser } from '@/lib/auth';
 import { CartProvider, CartCount } from '@/components/cart';
 
@@ -13,6 +14,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <html lang="en">
       <body>
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && /^ca-pub-\d{16}$/.test(process.env.NEXT_PUBLIC_ADSENSE_CLIENT) && <Script async strategy="afterInteractive" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`} crossOrigin="anonymous" />}
         <CartProvider>
           <div className="announcement">FREE SHIPPING ABOVE ₹1,499 <span>✦</span> NEW DROPS EVERY WEEK <span>✦</span> WEAR YOUR NAKHRA</div>
           <header className="header">

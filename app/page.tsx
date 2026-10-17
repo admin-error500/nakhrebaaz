@@ -1,5 +1,7 @@
 import { db } from '@/lib/db';
 import Link from 'next/link';
+import { ShopSearch } from '@/components/shop-search';
+import { AdSlot } from '@/components/ad-slot';
 
 type Search = { category?: string; q?: string; type?: string; festival?: string };
 const categories = ['Men', 'Women', 'Kids'];
@@ -17,6 +19,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   const selectedFestival = festivals.includes(festival || '') ? festival : undefined;
   const selectedCategory = categories.includes(category || '') ? category : undefined;
   const selectedType = types.includes(type || '') ? type : undefined;
+  const filterUrl = (nextCategory?:string,nextType?:string) => '/?' + new URLSearchParams({ ...(nextCategory?{category:nextCategory}:{}), ...(nextType?{type:nextType}:{}), ...(selectedFestival?{festival:selectedFestival}:{}), ...(q?.trim()?{q:q.trim()}:{}), }).toString() + '#shop';
   const products = await db.product.findMany({
     where: {
       active: true,
@@ -55,14 +58,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
       </section>
       <section className="promo-ribbon"><div><span>✳ FRESH DROP</span><h2>GOOD CLOTHES.<br/>BAD ATTITUDE.</h2></div><Link href="/#shop">FIND YOUR FIT ↗</Link></section>
       <section className="section shop-section" id="shop">
-        <div className="editorial-heading shop-heading"><div><span className="eyebrow">THE GOOD STUFF</span><h2>{selectedFestival ? selectedFestival.toUpperCase() : selectedCategory ? `${selectedCategory.toUpperCase()}'S` : 'THE'} <em>COLLECTION.</em></h2><p>Easy fits. Bold prints. A little extra Nakhra.</p></div><form className="shop-search" action="/" method="get"><input name="q" placeholder="Search styles..." defaultValue={q || ''} aria-label="Search products"/>{selectedCategory&&<input type="hidden" name="category" value={selectedCategory}/>}<button type="submit">SEARCH ↗</button></form></div>
-        <div className="tabs" aria-label="Shop by category">{[['ALL',undefined],['MEN','Men'],['WOMEN','Women'],['KIDS','Kids']].map(([label,value])=><Link key={label} className={selectedCategory===value?'active':''} href={url(value,selectedType)}>{label}</Link>)}</div>
-        <div className="type-tabs" aria-label="Shop by clothing type">{[['ALL STYLES',undefined],['T-SHIRTS','T-Shirts'],['HOODIES','Hoodies'],['SWEATSHIRTS','Sweatshirts']].map(([label,value])=><Link key={label} className={selectedType===value?'active':''} href={url(selectedCategory,value)}>{label}</Link>)}</div>
+        <div className="editorial-heading shop-heading"><div><span className="eyebrow">THE GOOD STUFF</span><h2>{selectedFestival ? selectedFestival.toUpperCase() : selectedCategory ? `${selectedCategory.toUpperCase()}'S` : 'THE'} <em>COLLECTION.</em></h2><p>Easy fits. Bold prints. A little extra Nakhra.</p></div><ShopSearch q={q || ''} category={selectedCategory} type={selectedType} festival={selectedFestival}/></div>
+        <div className="tabs" aria-label="Shop by category">{[['ALL',undefined],['MEN','Men'],['WOMEN','Women'],['KIDS','Kids']].map(([label,value])=><Link key={label} className={selectedCategory===value?'active':''} href={filterUrl(value,selectedType)}>{label}</Link>)}</div>
+        <div className="type-tabs" aria-label="Shop by clothing type">{[['ALL STYLES',undefined],['T-SHIRTS','T-Shirts'],['HOODIES','Hoodies'],['SWEATSHIRTS','Sweatshirts']].map(([label,value])=><Link key={label} className={selectedType===value?'active':''} href={filterUrl(selectedCategory,value)}>{label}</Link>)}</div>
         {selectedFestival && <div className="festival-active"><span>FESTIVAL: {selectedFestival}</span><Link href="/#shop">CLEAR FILTER ✕</Link></div>}
         <div className="product-meta"><span>{products.length} STYLES TO LOVE</span><span>✳ NEW ARRIVALS</span></div>
-        <div className="products">{products.map((p,i)=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading={i<4?'eager':'lazy'}/><span className="pill">{p.variants.every(v => v.stock === 0) ? 'SOLD OUT' : p.festival || (i%3===0?'BESTSELLER':'NEW DROP')}</span><span className="product-arrow">↗</span></div><div className="product-line"><b>{p.name}</b><span>₹{p.price.toLocaleString('en-IN')}</span></div><small>{p.category.toUpperCase()} · {p.variants.every(v => v.stock === 0) ? 'OUT OF STOCK' : `${p.variants.length} OPTIONS`}</small></Link>)}</div>
+        <div className="products" id="filtered-products">{products.map((p,i)=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading={i<4?'eager':'lazy'}/><span className="pill">{p.variants.every(v => v.stock === 0) ? 'SOLD OUT' : p.festival || (i%3===0?'BESTSELLER':'NEW DROP')}</span><span className="product-arrow">↗</span></div><div className="product-line"><b>{p.name}</b><span>₹{p.price.toLocaleString('en-IN')}</span></div><small>{p.category.toUpperCase()} · {p.variants.every(v => v.stock === 0) ? 'OUT OF STOCK' : `${p.variants.length} OPTIONS`}</small></Link>)}</div>
         {products.length===0&&<div className="empty-products"><h3>No styles found yet.</h3><p>Try another category or add demo products using <code>node prisma/seed.cjs</code>.</p><Link className="btn dark" href="/#shop">VIEW ALL STYLES</Link></div>}
       </section>
+      <AdSlot />
       <section className="bottom-banner"><span>THE NAKHREBAAZ MANIFESTO</span><h2>TOO MUCH<br/><em>PERSONALITY?</em><br/>NEVER.</h2><p>For every mood that refuses to blend in.</p><Link className="btn dark" href="/#shop">EXPLORE THE COLLECTION ↗</Link></section>
     </main>
   );
