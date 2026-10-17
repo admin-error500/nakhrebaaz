@@ -7,7 +7,11 @@ export type SaleAdminCampaign={
  enabled:boolean;title:string;subtitle:string;imageUrl:string|null;
  buttonText:string;buttonUrl:string;startsAt:string|null;endsAt:string|null;
 };
-const localDate=(date:string|null)=>date?date.slice(0,16):"";
+const localDate=(date:string|null)=>{
+ if(!date)return "";
+ const d=new Date(date),two=(n:number)=>String(n).padStart(2,"0");
+ return [d.getFullYear(),two(d.getMonth()+1),two(d.getDate())].join("-")+"T"+two(d.getHours())+":"+two(d.getMinutes());
+};
 export function SaleManagement({initial,products}:{initial:SaleAdminCampaign;products:SaleAdminProduct[]}){
  const router=useRouter();
  const [enabled,setEnabled]=useState(initial.enabled);
