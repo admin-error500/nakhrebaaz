@@ -58,7 +58,7 @@ export function AddressBook({initial}:{initial:SavedAddress[]}){
   setError("");setNotice("");setBusy(true);
   try{
    const res=await fetch("/api/account/addresses/"+a.id,{method:"DELETE"});
-   if(!res.ok)throw new Error((await res.json().catch(()=>({})).error||"Could not delete address");
+   if(!res.ok){const result=await res.json().catch(()=>({error:"Could not delete address"}));throw new Error(result.error||"Could not delete address");}
    await refresh();setNotice("Address deleted.");
   }catch(e){setError(e instanceof Error?e.message:"Could not delete address");}
   finally{setBusy(false);}
@@ -67,7 +67,7 @@ export function AddressBook({initial}:{initial:SavedAddress[]}){
   setBusy(true);setError("");setNotice("");
   try{
    const res=await fetch("/api/account/addresses/"+a.id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({...fromSaved(a),isDefault:true})});
-   if(!res.ok)throw new Error((await res.json().catch(()=>({})).error||"Could not select default address");
+   if(!res.ok){const result=await res.json().catch(()=>({error:"Could not select default address"}));throw new Error(result.error||"Could not select default address");}
    await refresh();setNotice("Default address updated.");
   }catch(e){setError(e instanceof Error?e.message:"Could not change default address");}
   finally{setBusy(false);}
