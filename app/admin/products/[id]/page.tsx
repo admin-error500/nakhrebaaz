@@ -16,6 +16,6 @@ export default async function EditProductPage({params}:{params:Promise<{id:strin
  };
  return <>
   <p><Link href="/admin/inventory">← Back to Inventory</Link></p>
-  <InventoryEditor products={[product]} totalSold={0} totalAvailable={p.active?p.variants.reduce((n,v)=>n+v.stock,0):0} />
+  <InventoryEditor products={[product]} initialEditId={id} totalSold={0} totalAvailable={p.active?p.variants.reduce((n,v)=>n+v.stock,0):0} />
  </>;
 }
