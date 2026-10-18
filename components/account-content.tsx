@@ -96,11 +96,11 @@ export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | '
         <div className="account-main">
           {mode !== "orders" && <>
           {/* PROFILE */}
-          <ProfileEditor name={user.name} email={user.email} phone={profile?.phone??""} />
-          {mode !== "orders" && <AddressBook initial={savedAddresses} />}
+          {mode !== "addresses" && <ProfileEditor name={user.name} email={user.email} phone={profile?.phone??""} />}
+          {mode !== "profile" && <AddressBook initial={savedAddresses} />}
 
           {/* ACCOUNT STATS */}
-          {mode !== "addresses" && <div className="account-stats">
+          {mode === "overview" && <div className="account-stats">
             <div>
               <small>TOTAL ORDERS</small>
 
