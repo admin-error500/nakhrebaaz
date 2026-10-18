@@ -17,10 +17,10 @@ const toDraft=(p:InventoryProduct):Draft=>({
   category:p.category,festival:p.festival??'',active:p.active,
   variants:p.variants.map(v=>({...v,addStock:0})),
 });
-export function InventoryEditor({products,totalSold,totalAvailable}:{products:InventoryProduct[];totalSold:number;totalAvailable:number}){
+export function InventoryEditor({products,totalSold,totalAvailable,initialEditId}:{products:InventoryProduct[];totalSold:number;totalAvailable:number;initialEditId?:string}){
   const router=useRouter();
-  const [editing,setEditing]=useState<string|null>(null);
-  const [draft,setDraft]=useState<Draft|null>(null);
+  const [editing,setEditing]=useState<string|null>(initialEditId??null);
+  const [draft,setDraft]=useState<Draft|null>(()=>initialEditId?toDraft(products.find(p=>p.id===initialEditId)??products[0]):null);
   const [working,setWorking]=useState(false);
   const [notice,setNotice]=useState('');
   const [error,setError]=useState('');
