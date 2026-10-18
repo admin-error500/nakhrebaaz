@@ -3,6 +3,7 @@ import { useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { InventoryEditor, type InventoryProduct } from './inventory-editor';
 import { SaleManagement, type SaleAdminCampaign } from './sale-management';
+import { AdminDropdown } from './admin-dropdown';
 type Product = InventoryProduct & {saleDiscountPercent:number};
 type Order = { id: string; name: string; email: string; total: number; status: string; paymentMethod: string; paymentStatus: string; addressJson: string; createdAt: string; items: { name: string; size: string; color: string; quantity: number }[] };
 const transitions: Record<string, { label: string; value: string }[]> = {
@@ -15,6 +16,15 @@ const money = (n: number) => '₹' + n.toLocaleString('en-IN');
 const MAX_IMAGE_SIZE = 500 * 1024;
 export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSettings }: { products: Product[]; orders: Order[]; totalSold: number; totalAvailable: number; saleSettings: SaleAdminCampaign }) {
   const router = useRouter();
+  const sections = ['overview','manage-orders','inventory','sale-management','image-link-generator','add-product'] as const;
+  type SectionName = typeof sections[number];
+  const [openSections, setOpenSections] = useState<Record<SectionName, boolean>>({
+    overview: true, 'manage-orders': false, inventory: false,
+    'sale-management': false, 'image-link-generator': false, 'add-product': false,
+  });
+  const toggleSection = (id: SectionName) => setOpenSections(old => ({ ...old, [id]: !old[id] }));
+  const showSection = (id: SectionName) => setOpenSections(old => ({ ...old, [id]: true }));
+  const setAll = (open: boolean) => setOpenSections({overview:open,'manage-orders':open,inventory:open,'sale-management':open,'image-link-generator':open,'add-product':open});
   const [message, setMessage] = useState('');
   const [productMessage, setProductMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [creatingProduct, setCreatingProduct] = useState(false);
@@ -89,12 +99,18 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSe
   }
   return <>
     <nav className="admin-section-nav" aria-label="Admin dashboard sections">
-      <a href="#manage-orders">Manage Orders</a>
-      <a href="#inventory">Inventory</a>
-      <a href="#image-link-generator">Image Link Generator</a>
-      <a href="#add-product">Add Product</a>
-      <a href="#sale-management">Sale Management</a>
+      <a href="#overview" onClick={() => showSection('overview')}>Overview</a>
+      <a href="#manage-orders" onClick={() => showSection('manage-orders')}>Manage Orders</a>
+      <a href="#inventory" onClick={() => showSection('inventory')}>Inventory</a>
+      <a href="#sale-management" onClick={() => showSection('sale-management')}>Sale Management</a>
+      <a href="#image-link-generator" onClick={() => showSection('image-link-generator')}>Image Link Generator</a>
+      <a href="#add-product" onClick={() => showSection('add-product')}>Add Product</a>
+      <div className="admin-collapse-controls">
+        <button type="button" onClick={() => setAll(true)}>Expand all</button>
+        <button type="button" onClick={() => setAll(false)}>Collapse all</button>
+      </div>
     </nav>
+    <AdminDropdown id="overview" title="Overview" eyebrow="STORE PERFORMANCE" open={openSections['overview']} onToggle={() => toggleSection('overview')}>
     <section className="admin-block" aria-label="Store performance">
       <div className="admin-heading"><div><span className="eyebrow">STORE OVERVIEW</span><h2>ORDER & PAYMENT SUMMARY</h2></div></div>
       <div className="admin-summary-grid">
@@ -102,7 +118,9 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSe
         <div className="admin-summary-stat"><small>TOTAL PAYMENT RECEIVED</small><strong>{money(totalPayments)}</strong><span>Orders marked PAID, including paid COD; before refunds</span></div>
       </div>
     </section>
-    <section className="admin-block" id="manage-orders">
+    </AdminDropdown>
+    <AdminDropdown id="manage-orders" title="Manage Orders" eyebrow="LIVE FULFILMENT" detail={`${visible.length} orders`} open={openSections['manage-orders']} onToggle={() => toggleSection('manage-orders')}>
+    <section className="admin-block">
       <div className="admin-heading"><div><span className="eyebrow">LIVE FULFILMENT</span><h2>MANAGE ORDERS</h2></div><span className="admin-count">{visible.length} ORDERS</span></div>
       <div className="admin-toolbar"><input aria-label="Search orders" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search order ID, name or email" /><select aria-label="Filter orders" value={filter} onChange={e => setFilter(e.target.value)}>{['ALL','PENDING','CONFIRMED','PACKED','SHIPPED','DELIVERED','CANCELLED'].map(s => <option key={s}>{s}</option>)}</select></div>
       {message && <p role="status" className="admin-notice">{message}</p>}
@@ -143,9 +161,15 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSe
         </article>;
       })}</div>}
     </section>
-    <InventoryEditor products={products} totalSold={totalSold} totalAvailable={totalAvailable} />
-    <SaleManagement initial={saleSettings} products={products.map(p=>({id:p.id,name:p.name,price:p.price,category:p.category,image:p.image,discountPercent:p.saleDiscountPercent}))} />
-    <section className="admin-block" id="image-link-generator">
+    </AdminDropdown>
+    <AdminDropdown id="inventory" title="Inventory" eyebrow="PRODUCTS & STOCK" detail={`${products.length} products`} open={openSections.inventory} onToggle={() => toggleSection('inventory')}>
+      <InventoryEditor products={products} totalSold={totalSold} totalAvailable={totalAvailable} />
+    </AdminDropdown>
+    <AdminDropdown id="sale-management" title="Sale Management" eyebrow="PROMOTIONS" open={openSections['sale-management']} onToggle={() => toggleSection('sale-management')}>
+      <SaleManagement initial={saleSettings} products={products.map(p=>({id:p.id,name:p.name,price:p.price,category:p.category,image:p.image,discountPercent:p.saleDiscountPercent}))} />
+    </AdminDropdown>
+    <AdminDropdown id="image-link-generator" title="Image Link Generator" eyebrow="PRODUCT MEDIA" open={openSections['image-link-generator']} onToggle={() => toggleSection('image-link-generator')}>
+    <section className="admin-block">
       <div className="admin-heading"><div><span className="eyebrow">PRODUCT MEDIA</span><h2>IMAGE LINK GENERATOR</h2></div></div>
       <p>Upload a JPG, PNG or WebP product image (maximum 500 KB). A public image link will be generated for your product.</p>
       <div className="admin-image-generator">
@@ -155,6 +179,9 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSe
         {imageUrl && <div><label>Generated image URL<input readOnly value={imageUrl} onFocus={e => e.currentTarget.select()} /></label><button type="button" className="admin-action" onClick={() => navigator.clipboard.writeText(imageUrl)}>COPY LINK</button><p><img src={imageUrl} alt="Uploaded product preview" style={{maxWidth:190,maxHeight:190,objectFit:'contain'}} /></p></div>}
       </div>
     </section>
-    <section className="admin-block" id="add-product"><div className="admin-heading"><div><span className="eyebrow">NEW ARRIVALS</span><h2>ADD PRODUCT</h2></div></div><form className="admin-form" onSubmit={create}><input name="name" placeholder="Product name" required/><input name="description" placeholder="Description" required/><select name="category"><option>Men</option><option>Women</option><option>Kids</option></select><select name="festival" aria-label="Festival collection"><option value="">No festival / Everyday</option>{["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"].map(f => <option key={f} value={f}>{f}</option>)}</select><input name="image" type="url" placeholder="Image URL (https://...)" required/><input name="price" type="number" min="1" placeholder="Price ₹" required/><input name="size" placeholder="Size e.g. M" required/><input name="color" placeholder="Color e.g. Black" required/><input name="stock" type="number" min="0" placeholder="Stock" required/><input name="sku" placeholder="Unique SKU" required/><button className="btn dark" disabled={creatingProduct}>{creatingProduct ? 'ADDING PRODUCT...' : 'ADD PRODUCT'}</button></form>{productMessage && <p role={productMessage.type === 'error' ? 'alert' : 'status'} aria-live="polite" style={{ marginTop: 16, padding: 14, borderRadius: 6, border: `1px solid ${productMessage.type === 'error' ? '#dc2626' : '#15803d'}`, color: productMessage.type === 'error' ? '#991b1b' : '#166534', background: productMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', fontWeight: 600 }}>{productMessage.type === 'error' ? '⚠ ' : '✓ '}{productMessage.text}</p>}</section>
+    </AdminDropdown>
+    <AdminDropdown id="add-product" title="Add Product" eyebrow="NEW ARRIVALS" open={openSections['add-product']} onToggle={() => toggleSection('add-product')}>
+    <section className="admin-block"><div className="admin-heading"><div><span className="eyebrow">NEW ARRIVALS</span><h2>ADD PRODUCT</h2></div></div><form className="admin-form" onSubmit={create}><input name="name" placeholder="Product name" required/><input name="description" placeholder="Description" required/><select name="category"><option>Men</option><option>Women</option><option>Kids</option></select><select name="festival" aria-label="Festival collection"><option value="">No festival / Everyday</option>{["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"].map(f => <option key={f} value={f}>{f}</option>)}</select><input name="image" type="url" placeholder="Image URL (https://...)" required/><input name="price" type="number" min="1" placeholder="Price ₹" required/><input name="size" placeholder="Size e.g. M" required/><input name="color" placeholder="Color e.g. Black" required/><input name="stock" type="number" min="0" placeholder="Stock" required/><input name="sku" placeholder="Unique SKU" required/><button className="btn dark" disabled={creatingProduct}>{creatingProduct ? 'ADDING PRODUCT...' : 'ADD PRODUCT'}</button></form>{productMessage && <p role={productMessage.type === 'error' ? 'alert' : 'status'} aria-live="polite" style={{ marginTop: 16, padding: 14, borderRadius: 6, border: `1px solid ${productMessage.type === 'error' ? '#dc2626' : '#15803d'}`, color: productMessage.type === 'error' ? '#991b1b' : '#166534', background: productMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', fontWeight: 600 }}>{productMessage.type === 'error' ? '⚠ ' : '✓ '}{productMessage.text}</p>}</section>
+    </AdminDropdown>
   </>;
 }
