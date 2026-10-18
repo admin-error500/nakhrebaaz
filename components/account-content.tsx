@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { OrderTracker } from "@/components/order-tracker";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Logout } from "@/components/logout";
+import { AccountNavigation } from "@/components/account-navigation";
+import { CartCount } from "@/components/cart";
 import { ProfileEditor } from "@/components/profile-editor";
 import { AddressBook } from "@/components/address-book";
 
@@ -63,35 +64,7 @@ export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | '
 
       <div className="account-grid">
         {/* SIDEBAR */}
-        <aside className="account-side">
-          <div className="account-side-title">
-            MY SPACE
-          </div>
-
-          <a href="/account/profile" className="account-side-link">
-            <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>
-            <span>My profile</span>
-          </a>
-
-          <a href="/account/orders" className="account-side-link">
-            <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><path d="M5 3h14v18l-3-2-4 2-4-2-3 2V3Z"/><path d="M8 9h8M8 13h6"/></svg>
-            <span>My orders</span>
-          </a>
-
-          <Link href="/account/addresses" className="account-side-link">
-            <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-            <span>Saved addresses</span>
-          </Link>
-
-          <Link href="/shop" className="account-side-link">
-            <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><path d="M5 19 19 5M8 5h11v11"/></svg>
-            <span>Continue shopping</span>
-          </Link>
-
-          <div className="account-logout">
-            <Logout />
-          </div>
-        </aside>
+        <AccountNavigation />
 
         <div className="account-main">
           {mode !== "orders" && <>
@@ -99,27 +72,19 @@ export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | '
           {mode !== "addresses" && <ProfileEditor name={user.name} email={user.email} phone={profile?.phone??""} />}
           {mode !== "profile" && <AddressBook initial={savedAddresses} />}
 
-          {/* ACCOUNT STATS */}
+          {/* Cart quantity is client-side and always reflects the current bag. */}
           {mode === "overview" && <div className="account-stats">
-            <div>
-              <small>TOTAL ORDERS</small>
-
-              <strong>
-                {orders.length
-                  .toString()
-                  .padStart(2, "0")}
-              </strong>
-            </div>
-
-            <div>
-              <small>YOUR STATUS</small>
-              <strong>NAKHREBAAZ</strong>
-            </div>
+            <Link href="/cart" className="account-cart-stat">
+              <small>ITEMS IN YOUR BAG</small>
+              <strong><CartCount /></strong>
+              <span>VIEW CART ↗</span>
+            </Link>
           </div>}
 
           </>}
           {mode === "orders" && <>
           {/* ORDER HISTORY */}
+          <div className="account-orders-count"><small>TOTAL ORDERS</small><strong>{orders.length}</strong></div>
           <section
             id="orders"
             className="account-panel"
@@ -135,7 +100,7 @@ export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | '
 
               <Link
                 className="account-shop-link"
-                href="/#shop"
+                href="/shop"
               >
                 SHOP MORE ↗
               </Link>
@@ -156,7 +121,7 @@ export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | '
 
                 <Link
                   className="btn dark"
-                  href="/#shop"
+                  href="/shop"
                 >
                   EXPLORE THE DROP ↗
                 </Link>

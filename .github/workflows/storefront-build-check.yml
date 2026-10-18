@@ -1,0 +1,26 @@
+name: Storefront Feature Build Check
+on:
+  push:
+    branches:
+      - feature/storefront-merchandising-sizeguide-navigation
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      DATABASE_URL: mongodb://127.0.0.1:27017/nakhrebaaz?replicaSet=rs0
+      SESSION_SECRET: local-ci-demo-secret-32-characters-minimum
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - name: Validate TypeScript
+        run: npx tsc --noEmit
+      - name: Production build
+        run: npm run build

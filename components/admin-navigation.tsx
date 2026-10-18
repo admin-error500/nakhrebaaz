@@ -8,6 +8,7 @@ const items=[
  {href:"/admin/orders",label:"Orders",icon:"▤"},
  {href:"/admin/inventory",label:"Inventory",icon:"▧"},
  {href:"/admin/sales",label:"Sale Management",icon:"%"},
+ {href:"/admin/collections",label:"Featured Collections",icon:"✳"},
  {href:"/admin/products/new",label:"Add Product",icon:"+"},
  {href:"/admin/images",label:"Image Generator",icon:"▣"},
 ] as const;

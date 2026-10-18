@@ -387,3 +387,58 @@ body{background:#fffaf2;color:#151515}
 .checkout-address-choice small{font-size:11px;line-height:1.55;color:#665e53;overflow-wrap:anywhere}
 @media(max-width:760px){.address-book-grid,.address-form-grid{grid-template-columns:1fr}.address-form-grid .address-full-row{grid-column:auto}.account-address-form{padding:15px}.account-panel .panel-heading{align-items:flex-start}.account-edit-form{max-width:100%}}
 @media(max-width:450px){.address-card{padding:14px}.account-panel .panel-heading .account-outline-btn{font-size:11px;padding:9px 10px}.account-address-form{padding:12px}.address-card-actions button{flex:1 1 auto}}
+
+/* Navigation, curated shop and fit guide — Oct 2026 */
+.account-side-link.active,.account-side-link[aria-current="page"]{background:#fff0d1;color:#171717;outline:1px solid #f0d493}
+.account-cart-stat{display:block;background:#171717;color:#fff;padding:22px;min-width:0}
+.account-cart-stat small{display:block;color:#e5ceb2;font-size:11px;font-weight:850;letter-spacing:1px;margin-bottom:8px}
+.account-cart-stat strong{display:block;color:#ffae19;font-size:clamp(25px,3vw,38px);line-height:1.2}
+.account-cart-stat span{display:block;margin-top:9px;color:#fff;font-size:11px;font-weight:850;letter-spacing:.8px}
+.account-orders-count{display:flex;align-items:center;gap:14px;max-width:100%;padding:15px 18px;margin:0 0 16px;background:#171717;color:#fff}
+.account-orders-count small{font-size:11px;letter-spacing:.8px;font-weight:800;color:#d1c5b5}
+.account-orders-count strong{color:#ffae19;font-size:26px}
+.home-featured-section .shop-heading{align-items:center;gap:18px}
+.home-shop-more{text-align:center;margin-top:24px}
+.storefront-shelf{padding-top:35px;padding-bottom:35px}
+.storefront-shelf .editorial-heading h2{margin-bottom:22px}
+.merch-admin .merch-tabs{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}
+.merch-tabs button{border:1px solid #d7ccba;background:#fff;color:#171717;padding:13px 16px;border-radius:4px;font-weight:800;font-size:12px}
+.merch-tabs button.active{background:#171717;color:#ffae19;border-color:#171717}
+.merch-shuffle{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:750;margin:18px 0}
+.merch-shuffle input,.merch-product input{accent-color:#171717;flex-shrink:0}
+.merch-search{display:block;width:min(420px,100%);margin:10px 0 15px}
+.merch-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-height:520px;overflow:auto}
+.merch-product{display:flex;align-items:center;gap:10px;padding:10px;min-width:0;border:1px solid #e4dbcd;background:#fffaf2;cursor:pointer}
+.merch-product img{width:46px;height:55px;flex-shrink:0;object-fit:cover}
+.merch-product span{display:grid;gap:5px;min-width:0}
+.merch-product strong{font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.merch-product small{font-size:11px;color:#665e51}
+.merch-selected{display:grid;gap:7px;margin:10px 0 20px}
+.merch-picked{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px;background:#fff6e7;border:1px solid #e7dcca;font-size:12px;font-weight:750}
+.merch-picked span{min-width:0;overflow-wrap:anywhere}
+.merch-picked>div{display:flex;gap:5px;flex-shrink:0}
+.merch-picked button{border:1px solid #b5a997;background:#fff;color:#171717;padding:7px 9px;border-radius:4px;font-size:12px;font-weight:800}
+.merch-picked button:disabled{opacity:.4;cursor:not-allowed}
+.size-guide-link{background:transparent;border:0;border-bottom:2px solid #ffae19;color:#171717;padding:10px 0;margin:14px 0;font-size:13px;font-weight:900;text-align:left}
+.size-guide-link:hover{color:#8a5700}
+.size-chart-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.size-chart-modal{background:#fff;color:#171717;width:min(850px,100%);max-height:min(92vh,920px);overflow-y:auto;border-radius:8px;padding:clamp(16px,3vw,30px);box-shadow:0 20px 65px #0005}
+.size-chart-header{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}
+.size-chart-header h2{font-size:clamp(22px,3vw,32px);letter-spacing:-.03em;margin:0 0 10px}
+.size-chart-header>button{width:42px;height:42px;flex-shrink:0;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:20px}
+.size-chart-note{font-size:12px;line-height:1.65;color:#675b4a}
+.size-chart-table-wrap{max-width:100%;overflow-x:auto}
+.size-chart-table{border-collapse:collapse;width:100%;font-size:13px;text-align:center;min-width:520px}
+.size-chart-table th,.size-chart-table td{padding:12px 9px;border:1px solid #e6ddce}
+.size-chart-table thead th{background:#171717;color:#ffae19;font-size:12px}
+.size-chart-table tbody th{text-align:left;background:#fff4dd}
+.size-chart-howto h3{font-size:17px;margin:19px 0 7px}
+.size-chart-howto p{font-size:12px;line-height:1.6;margin:6px 0}
+.size-fit-tip{background:#ffedbf;padding:13px 15px;border-left:4px solid #171717;font-size:13px;line-height:1.6}
+.detail-ad-placement{grid-column:1/-1;width:100%;margin-top:18px}
+.ad-placement-home,.ad-placement-shop,.ad-placement-product{max-width:1320px;margin:20px auto;padding:12px 5%}
+@media(max-width:720px){.merch-products{grid-template-columns:1fr}.home-featured-section .shop-heading{align-items:flex-start;flex-wrap:wrap}.size-chart-modal{padding:16px}.merch-picked{align-items:flex-start}.account-orders-count{flex-wrap:wrap}}
+
+.detail-related-products{grid-column:1/-1;min-width:0;width:100%;margin-top:22px;padding-top:22px;border-top:1px solid #e3d8c7}
+.detail-related-products .editorial-heading h2{font-size:clamp(23px,3vw,34px);margin:8px 0 18px}
+.detail-related-products .product-line{min-width:0}

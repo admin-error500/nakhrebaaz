@@ -2,6 +2,8 @@ import { db } from '@/lib/db';
 import Link from 'next/link';
 import { ShopSearch } from '@/components/shop-search';
 import { loadSale, salePrice } from '@/lib/sale';
+import {loadMerchandising,curate} from '@/lib/merchandising';
+import {AdSlot} from '@/components/ad-slot';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +24,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   const selectedCategory = categories.includes(category || '') ? category : undefined;
   const selectedType = types.includes(type || '') ? type : undefined;
   const filterUrl = (nextCategory?:string,nextType?:string) => '/shop?' + new URLSearchParams({ ...(nextCategory?{category:nextCategory}:{}), ...(nextType?{type:nextType}:{}), ...(selectedFestival?{festival:selectedFestival}:{}), ...(q?.trim()?{q:q.trim()}:{}), }).toString() + '#shop';
-  const sale = await loadSale();
+  const [sale,merch]=await Promise.all([loadSale(),loadMerchandising()]);
   const products = await db.product.findMany({
     where: {
       active: true,
@@ -34,8 +36,18 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
     include: { variants: true },
     orderBy: { createdAt: 'desc' },
   });
+  const curatedTop=curate(products,merch.topIds,merch.shuffleTop).filter(p=>merch.topIds.includes(p.id)).slice(0,8);
+  const curatedNew=curate(products,merch.newIds,merch.shuffleNew).filter(p=>merch.newIds.includes(p.id)).slice(0,8);
   return (
     <main className="shop-catalogue-page">
+      {curatedTop.length>0 && <section className="section storefront-shelf" aria-label="Top collection">
+        <div className="editorial-heading"><div><span className="eyebrow">HANDPICKED</span><h2>TOP <em>COLLECTION.</em></h2></div></div>
+        <div className="products">{curatedTop.map(p=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link>)}</div>
+      </section>}
+      {curatedNew.length>0 && <section className="section storefront-shelf" aria-label="New arrivals">
+        <div className="editorial-heading"><div><span className="eyebrow">JUST LANDED</span><h2>NEW <em>ARRIVALS.</em></h2></div></div>
+        <div className="products">{curatedNew.map(p=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link>)}</div>
+      </section>}
       <section className="section shop-section" id="shop">
         <div className="editorial-heading shop-heading"><div><span className="eyebrow">THE GOOD STUFF</span><h2>{selectedFestival ? selectedFestival.toUpperCase() : selectedCategory ? `${selectedCategory.toUpperCase()}'S` : 'THE'} <em>COLLECTION.</em></h2><p>Easy fits. Bold prints. A little extra Nakhra.</p></div><ShopSearch q={q || ''} category={selectedCategory} type={selectedType} festival={selectedFestival}/></div>
         <div className="tabs" aria-label="Shop by category">{[['ALL',undefined],['MEN','Men'],['WOMEN','Women'],['KIDS','Kids']].map(([label,value])=><Link key={label} className={selectedCategory===value?'active':''} href={filterUrl(value,selectedType)}>{label}</Link>)}</div>
@@ -45,6 +57,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
         <div className="products" id="filtered-products">{products.map((p,i)=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading={i<4?'eager':'lazy'}/><span className="pill">{p.variants.every(v => v.stock === 0) ? 'SOLD OUT' : sale.live && (p.saleDiscountPercent??0)>0 ? `${p.saleDiscountPercent}% OFF` : p.festival || (i%3===0?'BESTSELLER':'NEW DROP')}</span><span className="product-arrow">↗</span></div><div className="product-line"><b>{p.name}</b><span className="sale-price-pair">{sale.live && (p.saleDiscountPercent??0)>0 && <del>₹{p.price.toLocaleString('en-IN')}</del>}<strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></span></div><small>{p.category.toUpperCase()} · {p.variants.every(v => v.stock === 0) ? 'OUT OF STOCK' : `${p.variants.length} OPTIONS`}</small></Link>)}</div>
         {products.length===0&&<div className="empty-products"><h3>No styles found yet.</h3><p>Try another category or add demo products using <code>node prisma/seed.cjs</code>.</p><Link className="btn dark" href="/#shop">VIEW ALL STYLES</Link></div>}
       </section>
+      <AdSlot placement="shop" />
     </main>
   );
 }
