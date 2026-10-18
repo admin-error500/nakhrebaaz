@@ -342,3 +342,48 @@ body{background:#fffaf2;color:#151515}
 .admin-page-shortcuts a:hover{background:#eaa315}
 .shop-catalogue-page .shop-section{padding-top:clamp(30px,5vw,70px)}
 @media(max-width:650px){.admin-multipage-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:8px}.admin-multipage-nav a{font-size:11px;padding:10px 8px}.admin-multipage-stats,.admin-page-shortcuts{grid-template-columns:1fr}.admin-multipage-shell{padding:14px 12px 50px}}
+
+/* Account profile editing, Home/Office saved address book and checkout selection */
+.account-outline-btn{border:1px solid #171717;border-radius:5px;padding:10px 14px;min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff;color:#171717;font-size:12px;line-height:1.3;font-weight:800;cursor:pointer;white-space:nowrap}
+.account-outline-btn:hover,.account-outline-btn:focus-visible{background:#ffae19}
+.account-outline-btn:disabled{opacity:.45;cursor:not-allowed}
+.account-edit-form{display:grid;gap:15px;min-width:0;max-width:890px}
+.account-edit-form>label,.account-edit-form .address-form-grid>label{display:grid;gap:7px;min-width:0;font-size:12px;line-height:1.4;font-weight:800}
+.account-edit-form input:not([type=radio]):not([type=checkbox]){display:block;width:100%;min-width:0;border:1px solid #d3c8b6;border-radius:5px;background:#fff;color:#171717;padding:12px 13px;font-size:14px;line-height:1.35}
+.account-edit-form input:disabled{background:#f2efe9;color:#686158}
+.account-edit-form .btn{justify-self:start;min-width:145px}
+.address-book-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.address-card{min-width:0;border:1px solid #e7decc;border-radius:7px;padding:18px;background:#fffaf1}
+.address-card-top{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.address-tag{background:#171717;color:white;font-size:11px;font-weight:850;padding:6px 10px;border-radius:4px}
+.address-default{background:#ffae19;color:#111;font-size:11px;font-weight:800;padding:6px 10px;border-radius:4px}
+.address-card>strong{display:block;font-size:15px;overflow-wrap:anywhere;line-height:1.4}
+.address-card>p{font-size:13px;line-height:1.6;color:#51493f;margin:7px 0;overflow-wrap:anywhere}
+.address-card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}
+.address-card-actions button{padding:9px 12px;border:1px solid #191919;border-radius:4px;background:#fff;font-weight:800;font-size:11px;cursor:pointer;color:#171717}
+.address-card-actions button:hover{background:#ffae19}
+.address-card-actions button:disabled{opacity:.5;cursor:not-allowed}
+.account-address-form{background:#fff6e6;border:1px solid #eddbba;padding:clamp(15px,2.2vw,25px);border-radius:7px;margin-top:20px}
+.address-form-header{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.address-form-header h3{font-size:clamp(17px,2vw,23px);margin:0}
+.address-form-header button{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;background:white;color:#171717;border:1px solid #d9ceb9;border-radius:5px;cursor:pointer;font-size:18px}
+.account-address-form .address-tag-options{display:flex;align-items:center;gap:18px;flex-wrap:wrap;border:0;margin:0;padding:0}
+.account-address-form .address-tag-options legend{font-size:12px;font-weight:850;margin-bottom:9px}
+.account-address-form .address-tag-options label{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:750}
+.address-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.address-form-grid .address-full-row{grid-column:1/-1}
+.address-default-check{display:flex!important;flex-direction:row;align-items:center;gap:10px}
+.address-default-check input{width:19px;height:19px;accent-color:#171717;flex-shrink:0}
+.checkout-saved-address{margin:12px 0 23px;padding:17px;background:#fffaf1;border:1px solid #e8d6b7;border-radius:7px;min-width:0}
+.checkout-address-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.checkout-address-header strong{font-size:14px;line-height:1.4}
+.checkout-address-header a{font-size:12px;font-weight:800;text-decoration:underline}
+.checkout-address-options{display:grid;gap:9px;margin-top:14px}
+.checkout-address-choice{display:flex!important;align-items:flex-start;gap:11px;padding:12px;background:#fff;border:1px solid #e0d3c0;border-radius:5px;cursor:pointer;min-width:0}
+.checkout-address-choice.selected{border-color:#171717;background:#fff1d2}
+.checkout-address-choice input{flex:0 0 17px;width:17px;height:17px;margin:3px 0 0;accent-color:#171717}
+.checkout-address-choice span{display:grid;gap:5px;min-width:0}
+.checkout-address-choice strong{font-size:13px;line-height:1.3}
+.checkout-address-choice small{font-size:11px;line-height:1.55;color:#665e53;overflow-wrap:anywhere}
+@media(max-width:760px){.address-book-grid,.address-form-grid{grid-template-columns:1fr}.address-form-grid .address-full-row{grid-column:auto}.account-address-form{padding:15px}.account-panel .panel-heading{align-items:flex-start}.account-edit-form{max-width:100%}}
+@media(max-width:450px){.address-card{padding:14px}.account-panel .panel-heading .account-outline-btn{font-size:11px;padding:9px 10px}.account-address-form{padding:12px}.address-card-actions button{flex:1 1 auto}}

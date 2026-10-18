@@ -1,0 +1,29 @@
+name: Validate NakhreBaaz Build
+on:
+  push:
+    branches:
+      - feature/account-profile-address-book
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    env:
+      DATABASE_URL: mongodb://127.0.0.1:27017/nakhrebaaz?replicaSet=rs0
+      SESSION_SECRET: local-ci-only-demo-secret-must-be-at-least-32-chars
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - name: TypeScript validation
+        run: npx tsc --noEmit
+      - name: Next.js production build
+        run: npm run build
