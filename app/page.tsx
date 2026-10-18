@@ -37,15 +37,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   }
   const [sale,merch]=await Promise.all([loadSale(),loadMerchandising()]);
   const products = await db.product.findMany({
-    where: {
-      active: true,
-      ...(selectedCategory ? { category: selectedCategory } : {}),
-      ...(selectedFestival ? { festival: selectedFestival } : {}),
-      ...(selectedType ? { name: { contains: selectedType === 'T-Shirts' ? 'T-Shirt' : selectedType === 'Hoodies' ? 'Hoodie' : 'Sweatshirt', mode: 'insensitive' as const } } : {}),
-      ...(q?.trim() ? { AND: [{ name: { contains: q.trim(), mode: 'insensitive' as const } }] } : {}),
-    },
-    include: { variants: true },
-    orderBy: { createdAt: 'desc' },
+    where:{active:true,...(merch.homepageIds.length?{id:{in:merch.homepageIds}}:{})},
+    include:{variants:true},
+    orderBy:{createdAt:"desc"},
+    ...(!merch.homepageIds.length?{take:6}:{}),
   });
   const homeProducts=curate(products,merch.homepageIds,merch.shuffleHome,6);
   return (
