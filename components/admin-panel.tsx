@@ -13,7 +13,7 @@ const transitions: Record<string, { label: string; value: string }[]> = {
 };
 const money = (n: number) => '₹' + n.toLocaleString('en-IN');
 const MAX_IMAGE_SIZE = 500 * 1024;
-export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSettings }: { products: Product[]; orders: Order[]; totalSold: number; totalAvailable: number; saleSettings: SaleAdminCampaign }) {
+export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAvailable = 0, saleSettings, view = 'all' }: { products?: Product[]; orders?: Order[]; totalSold?: number; totalAvailable?: number; saleSettings?: SaleAdminCampaign; view?: 'all' | 'orders' | 'images' | 'new' }) {
   const router = useRouter();
   const [message, setMessage] = useState('');
   const [productMessage, setProductMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -88,6 +88,7 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSe
     }
   }
   return <>
+    {view === 'all' && <>
     <nav className="admin-section-nav" aria-label="Admin dashboard sections">
       <a href="#manage-orders">Manage Orders</a>
       <a href="#inventory">Inventory</a>
@@ -102,6 +103,8 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSe
         <div className="admin-summary-stat"><small>TOTAL PAYMENT RECEIVED</small><strong>{money(totalPayments)}</strong><span>Orders marked PAID, including paid COD; before refunds</span></div>
       </div>
     </section>
+</>}
+    {(view === 'all' || view === 'orders') && <>
     <section className="admin-block" id="manage-orders">
       <div className="admin-heading"><div><span className="eyebrow">LIVE FULFILMENT</span><h2>MANAGE ORDERS</h2></div><span className="admin-count">{visible.length} ORDERS</span></div>
       <div className="admin-toolbar"><input aria-label="Search orders" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search order ID, name or email" /><select aria-label="Filter orders" value={filter} onChange={e => setFilter(e.target.value)}>{['ALL','PENDING','CONFIRMED','PACKED','SHIPPED','DELIVERED','CANCELLED'].map(s => <option key={s}>{s}</option>)}</select></div>
@@ -143,8 +146,12 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSe
         </article>;
       })}</div>}
     </section>
+</>}
+    {view === 'all' && <>
     <InventoryEditor products={products} totalSold={totalSold} totalAvailable={totalAvailable} />
-    <SaleManagement initial={saleSettings} products={products.map(p=>({id:p.id,name:p.name,price:p.price,category:p.category,image:p.image,discountPercent:p.saleDiscountPercent}))} />
+    <SaleManagement initial={saleSettings!} products={products.map(p=>({id:p.id,name:p.name,price:p.price,category:p.category,image:p.image,discountPercent:p.saleDiscountPercent}))} />
+</>}
+    {(view === 'all' || view === 'images') && <>
     <section className="admin-block" id="image-link-generator">
       <div className="admin-heading"><div><span className="eyebrow">PRODUCT MEDIA</span><h2>IMAGE LINK GENERATOR</h2></div></div>
       <p>Upload a JPG, PNG or WebP product image (maximum 500 KB). A public image link will be generated for your product.</p>
@@ -155,6 +162,9 @@ export function AdminPanel({ products, orders, totalSold, totalAvailable, saleSe
         {imageUrl && <div><label>Generated image URL<input readOnly value={imageUrl} onFocus={e => e.currentTarget.select()} /></label><button type="button" className="admin-action" onClick={() => navigator.clipboard.writeText(imageUrl)}>COPY LINK</button><p><img src={imageUrl} alt="Uploaded product preview" style={{maxWidth:190,maxHeight:190,objectFit:'contain'}} /></p></div>}
       </div>
     </section>
+</>}
+    {(view === 'all' || view === 'new') && <>
     <section className="admin-block" id="add-product"><div className="admin-heading"><div><span className="eyebrow">NEW ARRIVALS</span><h2>ADD PRODUCT</h2></div></div><form className="admin-form" onSubmit={create}><input name="name" placeholder="Product name" required/><input name="description" placeholder="Description" required/><select name="category"><option>Men</option><option>Women</option><option>Kids</option></select><select name="festival" aria-label="Festival collection"><option value="">No festival / Everyday</option>{["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"].map(f => <option key={f} value={f}>{f}</option>)}</select><input name="image" type="url" placeholder="Image URL (https://...)" required/><input name="price" type="number" min="1" placeholder="Price ₹" required/><input name="size" placeholder="Size e.g. M" required/><input name="color" placeholder="Color e.g. Black" required/><input name="stock" type="number" min="0" placeholder="Stock" required/><input name="sku" placeholder="Unique SKU" required/><button className="btn dark" disabled={creatingProduct}>{creatingProduct ? 'ADDING PRODUCT...' : 'ADD PRODUCT'}</button></form>{productMessage && <p role={productMessage.type === 'error' ? 'alert' : 'status'} aria-live="polite" style={{ marginTop: 16, padding: 14, borderRadius: 6, border: `1px solid ${productMessage.type === 'error' ? '#dc2626' : '#15803d'}`, color: productMessage.type === 'error' ? '#991b1b' : '#166534', background: productMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', fontWeight: 600 }}>{productMessage.type === 'error' ? '⚠ ' : '✓ '}{productMessage.text}</p>}</section>
+</>}
   </>;
 }

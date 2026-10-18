@@ -17,10 +17,10 @@ const toDraft=(p:InventoryProduct):Draft=>({
   category:p.category,festival:p.festival??'',active:p.active,
   variants:p.variants.map(v=>({...v,addStock:0})),
 });
-export function InventoryEditor({products,totalSold,totalAvailable}:{products:InventoryProduct[];totalSold:number;totalAvailable:number}){
+export function InventoryEditor({products,totalSold,totalAvailable,initialEditId,editOnSeparatePage=false}:{products:InventoryProduct[];totalSold:number;totalAvailable:number;initialEditId?:string;editOnSeparatePage?:boolean}){
   const router=useRouter();
-  const [editing,setEditing]=useState<string|null>(null);
-  const [draft,setDraft]=useState<Draft|null>(null);
+  const [editing,setEditing]=useState<string|null>(initialEditId??null);
+  const [draft,setDraft]=useState<Draft|null>(()=>initialEditId?toDraft(products.find(p=>p.id===initialEditId)??products[0]):null);
   const [working,setWorking]=useState(false);
   const [notice,setNotice]=useState('');
   const [error,setError]=useState('');
@@ -47,7 +47,7 @@ export function InventoryEditor({products,totalSold,totalAvailable}:{products:In
       const res=await fetch('/api/admin/products/'+editing,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
       const json=await res.json().catch(()=>({}));
       if(!res.ok)throw new Error(json.error||'Unable to update product');
-      setEditing(null);setDraft(null);setNotice('Product updated successfully.');router.refresh();
+      setEditing(null);setDraft(null);setNotice('Product updated successfully.');if(initialEditId)router.push('/admin/inventory');else router.refresh();
     }catch(e){setError(e instanceof Error?e.message:'Update failed');}
     finally{setWorking(false);}
   }
@@ -59,12 +59,13 @@ export function InventoryEditor({products,totalSold,totalAvailable}:{products:In
       const json=await res.json().catch(()=>({}));
       if(!res.ok)throw new Error(json.error||'Unable to delete product');
       setEditing(null);setDraft(null);
-      setNotice(json.message||'Product removed.');router.refresh();
+      setNotice(json.message||'Product removed.');if(initialEditId)router.push('/admin/inventory');else router.refresh();
     }catch(e){setError(e instanceof Error?e.message:'Delete failed');}
     finally{setWorking(false);}
   }
   return <section className="admin-block" id="inventory">
     <div className="admin-heading"><div><span className="eyebrow">YOUR CATALOGUE</span><h2>INVENTORY</h2></div><span className="admin-count">{products.length} PRODUCTS</span></div>
+    {!initialEditId && <>
     <div className="admin-summary-grid">
       <div className="admin-summary-stat"><small>TOTAL SOLD</small><strong>{totalSold}</strong><span>Units from non-cancelled COD and verified paid online orders</span></div>
       <div className="admin-summary-stat"><small>AVAILABLE STOCK</small><strong>{totalAvailable}</strong><span>Units remaining across active products and variants</span></div>
@@ -77,11 +78,12 @@ export function InventoryEditor({products,totalSold,totalAvailable}:{products:In
         <td><strong>{p.name}</strong>{!p.active&&<small className="inventory-archived"> (Archived)</small>}<small className="inventory-secondary">{p.variants.map(v=>v.size+'/'+v.color+': '+v.stock+' left / '+v.sold+' sold').join(', ')}</small></td>
         <td>{p.category}{p.festival?' · '+p.festival:''}</td><td>{money(p.price)}</td>
         <td>{p.sold}</td><td>{p.active?p.variants.reduce((sum,v)=>sum+v.stock,0):0}</td>
-        <td><button type="button" className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name} onClick={()=>start(p)}><Pencil size={15} strokeWidth={2} aria-hidden="true"/> <span>Edit</span></button></td>
+        <td>{editOnSeparatePage?<a href={"/admin/products/"+p.id} className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name}><Pencil size={15} strokeWidth={2} aria-hidden="true"/><span>Edit</span></a>:<button type="button" className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name} onClick={()=>start(p)}><Pencil size={15} strokeWidth={2} aria-hidden="true"/><span>Edit</span></button>}</td>
       </tr>)}</tbody></table></div>
+    </>}
     {draft&&editing&&<form className="inventory-edit-form" onSubmit={save} id="inventory-editor">
       <div className="admin-heading"><div><span className="eyebrow">SELECTED PRODUCT</span><h3>EDIT PRODUCT</h3></div>
-        <button type="button" className="inventory-icon-button inventory-close" aria-label="Close edit section" title="Close" onClick={()=>{setEditing(null);setDraft(null);setError('');}} disabled={working}><X size={20} aria-hidden="true"/></button></div>
+        <button type="button" className="inventory-icon-button inventory-close" aria-label="Close edit section" title="Close" onClick={()=>{if(initialEditId)router.push('/admin/inventory');else {setEditing(null);setDraft(null);setError('');}}} disabled={working}><X size={20} aria-hidden="true"/></button></div>
       <div className="inventory-edit-grid">
         <label>Product name<input required minLength={3} value={draft.name} onChange={e=>change('name',e.target.value)}/></label>
         <label>Price (₹)<input required type="number" min="1" step="1" value={draft.price} onChange={e=>change('price',Number(e.target.value))}/></label>

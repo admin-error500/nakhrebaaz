@@ -324,3 +324,21 @@ body{background:#fffaf2;color:#151515}
 .sale-product-result strong{font-size:13px}
 @media(max-width:700px){.sale-admin-fields{grid-template-columns:1fr}.sale-product-row{grid-template-columns:54px minmax(0,1fr) 95px;gap:9px;padding:10px}.sale-product-row img{width:54px;height:60px}.sale-product-result{grid-column:2/-1;display:flex;justify-content:flex-end;gap:10px}.sale-price-pair{justify-content:flex-start}}
 @media(max-width:450px){.sale-product-row{grid-template-columns:48px minmax(0,1fr) 75px}.sale-product-row img{width:48px;height:58px}.sale-product-row input{padding:9px}.sale-hero-banner{min-height:210px}}
+
+/* Multipage admin and customer catalogue layout */
+.admin-multipage-shell{width:min(100%,1420px);margin:0 auto;padding:25px clamp(12px,3.5vw,50px) 80px}
+.admin-multipage-shell>.admin-header{margin:0 0 16px;padding:15px 0 23px}
+.admin-multipage-shell>.admin-header h1{font-size:clamp(28px,4vw,48px);letter-spacing:-.035em;line-height:1.12;margin:5px 0 8px}
+.admin-multipage-shell>.admin-header p{font-size:clamp(12px,1.2vw,15px);color:#6c6256;line-height:1.5;margin:0}
+.admin-multipage-nav{display:flex;gap:8px;flex-wrap:wrap;padding:12px;background:#fff6e6;border:1px solid #ead9b9;border-radius:8px;margin-bottom:20px}
+.admin-multipage-nav a{display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:10px 12px;border-radius:5px;background:#fff;color:#181818;border:1px solid #e2d6c4;font-size:12px;line-height:1.2;font-weight:800;text-decoration:none}
+.admin-multipage-nav a.active,.admin-multipage-nav a:hover{background:#171717;color:#ffae19;border-color:#171717}
+.admin-nav-icon{display:grid;place-items:center;min-width:18px;font-size:17px;line-height:1}
+.admin-multipage-main{min-width:0}
+.admin-multipage-main>.admin-block,.admin-multipage-main>section.admin-block{margin-top:0}
+.admin-multipage-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.admin-page-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:25px 0 10px}
+.admin-page-shortcuts a{background:#ffae19;border-radius:5px;color:#171717;display:flex;align-items:center;justify-content:space-between;padding:17px;font-size:13px;font-weight:900;min-height:54px}
+.admin-page-shortcuts a:hover{background:#eaa315}
+.shop-catalogue-page .shop-section{padding-top:clamp(30px,5vw,70px)}
+@media(max-width:650px){.admin-multipage-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:8px}.admin-multipage-nav a{font-size:11px;padding:10px 8px}.admin-multipage-stats,.admin-page-shortcuts{grid-template-columns:1fr}.admin-multipage-shell{padding:14px 12px 50px}}
