@@ -2,16 +2,16 @@ import {db} from "@/lib/db";
 
 export const MERCH_ID="storefront";
 export type MerchConfig={
- homepageIds:string[];topIds:string[];newIds:string[];
- shuffleHome:boolean;shuffleTop:boolean;shuffleNew:boolean;
+ homepageIds:string[];topIds:string[];newIds:string[];detailIds:string[];
+ shuffleHome:boolean;shuffleTop:boolean;shuffleNew:boolean;shuffleDetail:boolean;
 };
 export const DEFAULT_MERCH:MerchConfig={
- homepageIds:[],topIds:[],newIds:[],shuffleHome:false,shuffleTop:false,shuffleNew:false,
+ homepageIds:[],topIds:[],newIds:[],detailIds:[],shuffleHome:false,shuffleTop:false,shuffleNew:false,shuffleDetail:false,
 };
 export async function loadMerchandising():Promise<MerchConfig>{
  const s=await db.storefrontMerchandising.findUnique({where:{id:MERCH_ID}});
- return s?{homepageIds:s.homepageIds,topIds:s.topIds,newIds:s.newIds,
- shuffleHome:s.shuffleHome,shuffleTop:s.shuffleTop,shuffleNew:s.shuffleNew}:DEFAULT_MERCH;
+ return s?{homepageIds:s.homepageIds,topIds:s.topIds,newIds:s.newIds,detailIds:s.detailIds,
+ shuffleHome:s.shuffleHome,shuffleTop:s.shuffleTop,shuffleNew:s.shuffleNew,shuffleDetail:s.shuffleDetail}:DEFAULT_MERCH;
 }
 function dailyScore(id:string){
  const day=new Date().toISOString().slice(0,10);
