@@ -47,7 +47,7 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
       const res=await fetch('/api/admin/products/'+editing,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
       const json=await res.json().catch(()=>({}));
       if(!res.ok)throw new Error(json.error||'Unable to update product');
-      setEditing(null);setDraft(null);setNotice('Product updated successfully.');router.refresh();
+      setEditing(null);setDraft(null);setNotice('Product updated successfully.');if(initialEditId)router.push('/admin/inventory');else router.refresh();
     }catch(e){setError(e instanceof Error?e.message:'Update failed');}
     finally{setWorking(false);}
   }
@@ -59,7 +59,7 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
       const json=await res.json().catch(()=>({}));
       if(!res.ok)throw new Error(json.error||'Unable to delete product');
       setEditing(null);setDraft(null);
-      setNotice(json.message||'Product removed.');router.refresh();
+      setNotice(json.message||'Product removed.');if(initialEditId)router.push('/admin/inventory');else router.refresh();
     }catch(e){setError(e instanceof Error?e.message:'Delete failed');}
     finally{setWorking(false);}
   }
@@ -83,7 +83,7 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
     </>}
     {draft&&editing&&<form className="inventory-edit-form" onSubmit={save} id="inventory-editor">
       <div className="admin-heading"><div><span className="eyebrow">SELECTED PRODUCT</span><h3>EDIT PRODUCT</h3></div>
-        <button type="button" className="inventory-icon-button inventory-close" aria-label="Close edit section" title="Close" onClick={()=>{setEditing(null);setDraft(null);setError('');}} disabled={working}><X size={20} aria-hidden="true"/></button></div>
+        <button type="button" className="inventory-icon-button inventory-close" aria-label="Close edit section" title="Close" onClick={()=>{if(initialEditId)router.push('/admin/inventory');else {setEditing(null);setDraft(null);setError('');}}} disabled={working}><X size={20} aria-hidden="true"/></button></div>
       <div className="inventory-edit-grid">
         <label>Product name<input required minLength={3} value={draft.name} onChange={e=>change('name',e.target.value)}/></label>
         <label>Price (₹)<input required type="number" min="1" step="1" value={draft.price} onChange={e=>change('price',Number(e.target.value))}/></label>
