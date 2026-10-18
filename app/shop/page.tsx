@@ -4,7 +4,7 @@ import { ShopSearch } from '@/components/shop-search';
 import { loadSale, salePrice } from '@/lib/sale';
 import {loadMerchandising,curate} from '@/lib/merchandising';
 import {AdSlot} from '@/components/ad-slot';
-import {shopBatch,normalizeShopFilters} from '@/lib/shop-catalog';
+import {shopBatch,normalizeShopFilters,shopWhere} from '@/lib/shop-catalog';
 import {ShopProductList} from '@/components/shop-product-list';
 
 export const dynamic = 'force-dynamic';
@@ -27,18 +27,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   const selectedType = types.includes(type || '') ? type : undefined;
   const filterUrl = (nextCategory?:string,nextType?:string) => '/shop?' + new URLSearchParams({ ...(nextCategory?{category:nextCategory}:{}), ...(nextType?{type:nextType}:{}), ...(selectedFestival?{festival:selectedFestival}:{}), ...(q?.trim()?{q:q.trim()}:{}), }).toString() + '#shop';
   const [sale,merch]=await Promise.all([loadSale(),loadMerchandising()]);
-  const shelfProducts = await db.product.findMany({
-    where: {
-      active: true,
-      ...(selectedCategory ? { category: selectedCategory } : {}),
-      ...(selectedFestival ? { festival: selectedFestival } : {}),
-      ...(selectedType ? { name: { contains: selectedType === 'T-Shirts' ? 'T-Shirt' : selectedType === 'Hoodies' ? 'Hoodie' : 'Sweatshirt', mode: 'insensitive' as const } } : {}),
-      ...(q?.trim() ? { AND: [{ name: { contains: q.trim(), mode: 'insensitive' as const } }] } : {}),
-    },
+  const shelfIds=[...new Set([...merch.topIds,...merch.newIds])];
+  const shelfProducts=shelfIds.length?await db.product.findMany({
+    where:{...shopWhere({category:selectedCategory,type:selectedType,festival:selectedFestival,q}),id:{in:shelfIds}},
     select:{id:true,name:true,image:true,price:true,category:true,festival:true,saleDiscountPercent:true},
-    take:60,
-    orderBy: { createdAt: 'desc' },
-  });
+  }):[];
   const firstBatch=await shopBatch(normalizeShopFilters({category:selectedCategory,type:selectedType,festival:selectedFestival,q}));
   const curatedTop=curate(shelfProducts,merch.topIds,merch.shuffleTop).filter(p=>merch.topIds.includes(p.id)).slice(0,8);
   const curatedNew=curate(shelfProducts,merch.newIds,merch.shuffleNew).filter(p=>merch.newIds.includes(p.id)).slice(0,8);
