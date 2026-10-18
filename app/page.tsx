@@ -5,6 +5,7 @@ import { AdSlot } from '@/components/ad-slot';
 import { loadSale, salePrice } from '@/lib/sale';
 import {loadMerchandising,curate} from '@/lib/merchandising';
 import {redirect} from 'next/navigation';
+import {FeaturedSlider} from '@/components/featured-slider';
 
 export const dynamic = 'force-dynamic';
 
@@ -82,12 +83,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
           <div><span className="eyebrow">HANDPICKED FOR YOU</span><h2>FEATURED <em>DESIGNS.</em></h2><p>Just a taste of NakhreBaaz. Explore every style in the full shop.</p></div>
           <Link className="btn dark" href="/shop">EXPLORE ALL PRODUCTS ↗</Link>
         </div>
-        <div className="products" id="filtered-products">{homeProducts.map((p,i)=><Link href={`/product/${p.id}`} className="product" key={p.id}>
-          <div className="product-img"><img src={p.image} alt={p.name} loading={i<4?'eager':'lazy'}/>
-            <span className="pill">{p.variants.every(v=>v.stock===0)?'SOLD OUT':sale.live&&(p.saleDiscountPercent??0)>0?`${p.saleDiscountPercent}% OFF`:'FEATURED'}</span><span className="product-arrow">↗</span></div>
-          <div className="product-line"><b>{p.name}</b><span className="sale-price-pair">{sale.live&&(p.saleDiscountPercent??0)>0&&<del>₹{p.price.toLocaleString('en-IN')}</del>}<strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></span></div>
-          <small>{p.category.toUpperCase()} · {p.variants.every(v=>v.stock===0)?'OUT OF STOCK':`${p.variants.length} OPTIONS`}</small>
-        </Link>)}</div>
+        <FeaturedSlider products={homeProducts.map(p=>({
+          id:p.id,name:p.name,image:p.image,category:p.category,
+          originalPrice:p.price,price:salePrice(p.price,p.saleDiscountPercent??0,sale.live),
+          discountPercent:sale.live?(p.saleDiscountPercent??0):0,
+          stock:p.variants.reduce((sum,v)=>sum+v.stock,0),variantCount:p.variants.length,
+        }))}/>
         <div className="home-shop-more"><Link className="btn dark" href="/shop">VIEW FULL COLLECTION ↗</Link></div>
       </section>
       <AdSlot />
