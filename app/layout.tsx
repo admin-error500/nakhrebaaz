@@ -20,10 +20,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
           <header className="header">
             <Link className="logo" href="/" aria-label="Nakhrebaaz home"><img src="/nakhrebaaz-logo.png" alt="NakhreBaaz" className="brand-logo-img"/></Link>
             <nav aria-label="Main navigation" className="main-nav">
-              <Link href="/?category=Men#shop">MEN</Link>
-              <Link href="/?category=Women#shop">WOMEN</Link>
-              <Link href="/?category=Kids#shop">KIDS</Link>
-              <Link href="/#shop">SHOP ALL</Link>
+              <Link href="/shop?category=Men#shop">MEN</Link>
+              <Link href="/shop?category=Women#shop">WOMEN</Link>
+              <Link href="/shop?category=Kids#shop">KIDS</Link>
+              <Link href="/shop">SHOP ALL</Link>
             </nav>
             <div className="header-actions">
               {user ? <Link href="/account" aria-label="My account">ACCOUNT</Link> : <Link href="/login">LOGIN</Link>}
@@ -56,7 +56,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   <div className="footer-column">
     <strong>YOUR ACCOUNT</strong>
-    <Link href="/account">Orders</Link>
+    <Link href="/account/orders">Orders</Link>
     <Link href="/cart">Shopping bag</Link>
     <Link href="/login">Sign in</Link>
   </div>
