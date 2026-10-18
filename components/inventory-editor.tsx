@@ -17,7 +17,7 @@ const toDraft=(p:InventoryProduct):Draft=>({
   category:p.category,festival:p.festival??'',active:p.active,
   variants:p.variants.map(v=>({...v,addStock:0})),
 });
-export function InventoryEditor({products,totalSold,totalAvailable,initialEditId}:{products:InventoryProduct[];totalSold:number;totalAvailable:number;initialEditId?:string}){
+export function InventoryEditor({products,totalSold,totalAvailable,initialEditId,editOnSeparatePage=false}:{products:InventoryProduct[];totalSold:number;totalAvailable:number;initialEditId?:string;editOnSeparatePage?:boolean}){
   const router=useRouter();
   const [editing,setEditing]=useState<string|null>(initialEditId??null);
   const [draft,setDraft]=useState<Draft|null>(()=>initialEditId?toDraft(products.find(p=>p.id===initialEditId)??products[0]):null);
@@ -65,6 +65,7 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
   }
   return <section className="admin-block" id="inventory">
     <div className="admin-heading"><div><span className="eyebrow">YOUR CATALOGUE</span><h2>INVENTORY</h2></div><span className="admin-count">{products.length} PRODUCTS</span></div>
+    {!initialEditId && <>
     <div className="admin-summary-grid">
       <div className="admin-summary-stat"><small>TOTAL SOLD</small><strong>{totalSold}</strong><span>Units from non-cancelled COD and verified paid online orders</span></div>
       <div className="admin-summary-stat"><small>AVAILABLE STOCK</small><strong>{totalAvailable}</strong><span>Units remaining across active products and variants</span></div>
@@ -77,8 +78,9 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
         <td><strong>{p.name}</strong>{!p.active&&<small className="inventory-archived"> (Archived)</small>}<small className="inventory-secondary">{p.variants.map(v=>v.size+'/'+v.color+': '+v.stock+' left / '+v.sold+' sold').join(', ')}</small></td>
         <td>{p.category}{p.festival?' · '+p.festival:''}</td><td>{money(p.price)}</td>
         <td>{p.sold}</td><td>{p.active?p.variants.reduce((sum,v)=>sum+v.stock,0):0}</td>
-        <td><button type="button" className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name} onClick={()=>start(p)}><Pencil size={15} strokeWidth={2} aria-hidden="true"/> <span>Edit</span></button></td>
+        <td>{editOnSeparatePage?<a href={"/admin/products/"+p.id} className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name}><Pencil size={15} strokeWidth={2} aria-hidden="true"/><span>Edit</span></a>:<button type="button" className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name} onClick={()=>start(p)}><Pencil size={15} strokeWidth={2} aria-hidden="true"/><span>Edit</span></button>}</td>
       </tr>)}</tbody></table></div>
+    </>}
     {draft&&editing&&<form className="inventory-edit-form" onSubmit={save} id="inventory-editor">
       <div className="admin-heading"><div><span className="eyebrow">SELECTED PRODUCT</span><h3>EDIT PRODUCT</h3></div>
         <button type="button" className="inventory-icon-button inventory-close" aria-label="Close edit section" title="Close" onClick={()=>{setEditing(null);setDraft(null);setError('');}} disabled={working}><X size={20} aria-hidden="true"/></button></div>
