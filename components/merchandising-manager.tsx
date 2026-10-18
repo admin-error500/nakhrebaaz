@@ -4,11 +4,12 @@ import {useRouter} from "next/navigation";
 import type {MerchConfig} from "@/lib/merchandising";
 
 type Product={id:string;name:string;category:string;image:string;price:number};
-type Group="homepageIds"|"topIds"|"newIds";
+type Group="homepageIds"|"topIds"|"newIds"|"detailIds";
 const groupInfo:{id:Group;title:string;help:string;shuffle:keyof MerchConfig}[]=[
  {id:"homepageIds",title:"Homepage Featured Designs",help:"Maximum 6 designs. Leave empty to automatically show 6 latest designs.",shuffle:"shuffleHome"},
  {id:"topIds",title:"Top Collection",help:"Choose products to feature above the main shop catalogue.",shuffle:"shuffleTop"},
  {id:"newIds",title:"New Arrivals",help:"Choose new-arrival designs to feature on the shop page.",shuffle:"shuffleNew"},
+ {id:"detailIds",title:"Product Page Recommendations",help:"Choose up to 8 designs to suggest below each product detail page.",shuffle:"shuffleDetail"},
 ];
 export function MerchandisingManager({products,initial}:{products:Product[];initial:MerchConfig}){
  const router=useRouter();
@@ -21,6 +22,7 @@ export function MerchandisingManager({products,initial}:{products:Product[];init
  function toggle(id:string){
   const selected=config[active];
   if(!selected.includes(id)&&active==="homepageIds"&&selected.length>=6){setError("Homepage can show a maximum of 6 designs.");return;}
+  if(!selected.includes(id)&&active==="detailIds"&&selected.length>=8){setError("Product detail recommendations can show a maximum of 8 designs.");return;}
   setError("");setGroup(active,selected.includes(id)?selected.filter(x=>x!==id):[...selected,id]);
  }
  function move(group:Group,index:number,delta:number){
