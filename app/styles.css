@@ -438,3 +438,7 @@ body{background:#fffaf2;color:#151515}
 .detail-ad-placement{grid-column:1/-1;width:100%;margin-top:18px}
 .ad-placement-home,.ad-placement-shop,.ad-placement-product{max-width:1320px;margin:20px auto;padding:12px 5%}
 @media(max-width:720px){.merch-products{grid-template-columns:1fr}.home-featured-section .shop-heading{align-items:flex-start;flex-wrap:wrap}.size-chart-modal{padding:16px}.merch-picked{align-items:flex-start}.account-orders-count{flex-wrap:wrap}}
+
+.detail-related-products{grid-column:1/-1;min-width:0;width:100%;margin-top:22px;padding-top:22px;border-top:1px solid #e3d8c7}
+.detail-related-products .editorial-heading h2{font-size:clamp(23px,3vw,34px);margin:8px 0 18px}
+.detail-related-products .product-line{min-width:0}
