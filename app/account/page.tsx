@@ -8,7 +8,7 @@ import { Logout } from "@/components/logout";
 
 export const dynamic = "force-dynamic";
 
-export default async function Account() {
+export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | 'profile' | 'orders'}) {
   const user = await currentUser();
 
   if (!user) {
@@ -62,17 +62,17 @@ export default async function Account() {
             MY SPACE
           </div>
 
-          <a href="#profile" className="account-side-link">
+          <a href="/account/profile" className="account-side-link">
             <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>
             <span>My profile</span>
           </a>
 
-          <a href="#orders" className="account-side-link">
+          <a href="/account/orders" className="account-side-link">
             <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><path d="M5 3h14v18l-3-2-4 2-4-2-3 2V3Z"/><path d="M8 9h8M8 13h6"/></svg>
             <span>My orders</span>
           </a>
 
-          <Link href="/#shop" className="account-side-link">
+          <Link href="/shop" className="account-side-link">
             <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><path d="M5 19 19 5M8 5h11v11"/></svg>
             <span>Continue shopping</span>
           </Link>
@@ -83,6 +83,7 @@ export default async function Account() {
         </aside>
 
         <div className="account-main">
+          {mode !== "orders" && <>
           {/* PROFILE */}
           <section
             id="profile"
@@ -148,6 +149,8 @@ export default async function Account() {
             </div>
           </div>
 
+          </>}
+          {mode === "orders" && <>
           {/* ORDER HISTORY */}
           <section
             id="orders"
@@ -316,8 +319,12 @@ export default async function Account() {
               </div>
             )}
           </section>
+          </>}
         </div>
       </div>
     </main>
   );
 }
+
+export default async function Account(){return <AccountContent mode="overview"/>;}
+
