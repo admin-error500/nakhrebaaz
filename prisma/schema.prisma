@@ -13,8 +13,10 @@ model User {
   name         String
   email        String   @unique
   passwordHash String
+  phone        String?
   role         String   @default("CUSTOMER")
   orders       Order[]
+  savedAddresses SavedAddress[]
   createdAt    DateTime @default(now())
 }
 
@@ -96,4 +98,24 @@ model SaleCampaign {
   startsAt   DateTime?
   endsAt     DateTime?
   updatedAt  DateTime  @updatedAt
+}
+
+model SavedAddress {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag           String   @default("HOME")
+  recipientName String
+  phone         String
+  line1         String
+  line2         String?
+  landmark      String?
+  city          String
+  state         String
+  pincode       String
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
 }
