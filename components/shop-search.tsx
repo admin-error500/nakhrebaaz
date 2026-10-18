@@ -12,7 +12,7 @@ export function ShopSearch({q,category,type,festival}:{q:string;category?:string
    if(type) params.set("type",type);
    if(festival) params.set("festival",festival);
    if(search.trim()) params.set("q",search.trim());
-   router.push(`/${params.size?"?"+params.toString():""}#shop`,{scroll:true});
+   router.push(`/shop${params.size?"?"+params.toString():""}#shop`,{scroll:true});
  }
  return <form className="shop-search" onSubmit={submit} role="search">
    <input name="q" placeholder="Search styles..." value={search} onChange={e=>setSearch(e.target.value)} aria-label="Search products"/>
