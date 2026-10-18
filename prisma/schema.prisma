@@ -119,3 +119,14 @@ model SavedAddress {
 
   @@index([userId])
 }
+
+model StorefrontMerchandising {
+  id          String   @id @map("_id")
+  homepageIds String[] @default([])
+  topIds      String[] @default([])
+  newIds      String[] @default([])
+  shuffleHome Boolean  @default(false)
+  shuffleTop  Boolean  @default(false)
+  shuffleNew  Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}
