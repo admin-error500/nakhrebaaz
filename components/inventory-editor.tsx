@@ -17,11 +17,30 @@ const toDraft=(p:InventoryProduct):Draft=>({
   category:p.category,festival:p.festival??'',active:p.active,
   variants:p.variants.map(v=>({...v,addStock:0})),
 });
-export function InventoryEditor({products,totalSold,totalAvailable,initialEditId,editOnSeparatePage=false}:{products:InventoryProduct[];totalSold:number;totalAvailable:number;initialEditId?:string;editOnSeparatePage?:boolean}){
+export function InventoryEditor({products,totalSold,totalAvailable,initialEditId,editOnSeparatePage=false,nextCursor:initialCursor=null}:{products:InventoryProduct[];totalSold:number;totalAvailable:number;initialEditId?:string;editOnSeparatePage?:boolean;nextCursor?:string|null}){
   const router=useRouter();
   const [editing,setEditing]=useState<string|null>(initialEditId??null);
   const [draft,setDraft]=useState<Draft|null>(()=>initialEditId?toDraft(products.find(p=>p.id===initialEditId)??products[0]):null);
   const [working,setWorking]=useState(false);
+  const [inventoryRows,setInventoryRows]=useState(products);
+  const [nextCursor,setNextCursor]=useState(initialCursor);
+  const [pageBusy,setPageBusy]=useState(false);
+  const [pageError,setPageError]=useState("");
+  async function loadMoreInventory(){
+    if(!nextCursor||pageBusy)return;
+    setPageBusy(true);setPageError("");
+    try{
+      const res=await fetch("/api/admin/inventory/page?cursor="+encodeURIComponent(nextCursor),{cache:"no-store"});
+      const json=await res.json() as {products?:InventoryProduct[];nextCursor?:string|null;error?:string};
+      if(!res.ok)throw new Error(json.error||"Unable to load inventory");
+      setInventoryRows(old=>{
+       const ids=new Set(old.map(p=>p.id));
+       return [...old,...(json.products??[]).filter(p=>!ids.has(p.id))];
+      });
+      setNextCursor(json.nextCursor??null);
+    }catch(e){setPageError(e instanceof Error?e.message:"Unable to load inventory");}
+    finally{setPageBusy(false);}
+  }
   const [notice,setNotice]=useState('');
   const [error,setError]=useState('');
   useEffect(()=>{ if(editing) document.getElementById("inventory-editor")?.scrollIntoView({behavior:"smooth",block:"start"}); },[editing]);
@@ -64,22 +83,23 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
     finally{setWorking(false);}
   }
   return <section className="admin-block" id="inventory">
-    <div className="admin-heading"><div><span className="eyebrow">YOUR CATALOGUE</span><h2>INVENTORY</h2></div><span className="admin-count">{products.length} PRODUCTS</span></div>
+    <div className="admin-heading"><div><span className="eyebrow">YOUR CATALOGUE</span><h2>INVENTORY</h2></div><span className="admin-count">{inventoryRows.length} LOADED</span></div>
     {!initialEditId && <>
     <div className="admin-summary-grid">
-      <div className="admin-summary-stat"><small>TOTAL SOLD</small><strong>{totalSold}</strong><span>Units from non-cancelled COD and verified paid online orders</span></div>
       <div className="admin-summary-stat"><small>AVAILABLE STOCK</small><strong>{totalAvailable}</strong><span>Units remaining across active products and variants</span></div>
     </div>
-    <p className="admin-packing-note">Pending online payments and cancelled orders are not counted as sales. Sold totals reflect order history; available stock is live inventory.</p>
+    <p className="admin-packing-note">Available stock is live. Sales counts are shown per loaded product; cancelled orders and unverified online payments are excluded.</p>
     {notice&&<p role="status" className="admin-notice">{notice}</p>}
     {error&&<p role="alert" className="error">{error}</p>}
     <div className="tablewrap"><table><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Sold</th><th>Available</th><th className="inventory-manage-heading">Edit</th></tr></thead>
-      <tbody>{products.map(p=><tr key={p.id}>
+      <tbody>{inventoryRows.map(p=><tr key={p.id}>
         <td><strong>{p.name}</strong>{!p.active&&<small className="inventory-archived"> (Archived)</small>}<small className="inventory-secondary">{p.variants.map(v=>v.size+'/'+v.color+': '+v.stock+' left / '+v.sold+' sold').join(', ')}</small></td>
         <td>{p.category}{p.festival?' · '+p.festival:''}</td><td>{money(p.price)}</td>
         <td>{p.sold}</td><td>{p.active?p.variants.reduce((sum,v)=>sum+v.stock,0):0}</td>
         <td>{editOnSeparatePage?<a href={"/admin/products/"+p.id} className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name}><Pencil size={15} strokeWidth={2} aria-hidden="true"/><span>Edit</span></a>:<button type="button" className="admin-action inventory-edit-trigger" aria-label={"Edit "+p.name} onClick={()=>start(p)}><Pencil size={15} strokeWidth={2} aria-hidden="true"/><span>Edit</span></button>}</td>
       </tr>)}</tbody></table></div>
+    {pageError&&<p role="alert" className="error">{pageError}</p>}
+    {nextCursor&&<button className="load-next-batch" type="button" disabled={pageBusy} onClick={()=>void loadMoreInventory()}>{pageBusy?"LOADING…":"SHOW NEXT 20 PRODUCTS ↓"}</button>}
     </>}
     {draft&&editing&&<form className="inventory-edit-form" onSubmit={save} id="inventory-editor">
       <div className="admin-heading"><div><span className="eyebrow">SELECTED PRODUCT</span><h3>EDIT PRODUCT</h3></div>

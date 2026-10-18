@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, useRef, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { InventoryEditor, type InventoryProduct } from './inventory-editor';
 import { SaleManagement, type SaleAdminCampaign } from './sale-management';
@@ -13,13 +13,54 @@ const transitions: Record<string, { label: string; value: string }[]> = {
 };
 const money = (n: number) => '₹' + n.toLocaleString('en-IN');
 const MAX_IMAGE_SIZE = 500 * 1024;
-export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAvailable = 0, saleSettings, view = 'all' }: { products?: Product[]; orders?: Order[]; totalSold?: number; totalAvailable?: number; saleSettings?: SaleAdminCampaign; view?: 'all' | 'orders' | 'images' | 'new' }) {
+export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAvailable = 0, saleSettings, view = 'all', nextCursor:initialCursor=null }: { products?: Product[]; orders?: Order[]; totalSold?: number; totalAvailable?: number; saleSettings?: SaleAdminCampaign; view?: 'all' | 'orders' | 'images' | 'new'; nextCursor?:string|null }) {
   const router = useRouter();
   const [message, setMessage] = useState('');
   const [productMessage, setProductMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [creatingProduct, setCreatingProduct] = useState(false);
   const [filter, setFilter] = useState('ALL');
   const [search, setSearch] = useState('');
+  const [orderRows,setOrderRows]=useState<Order[]>(orders);
+  useEffect(()=>{if(view==="orders"){setOrderRows(orders);setNextCursor(initialCursor);}},[orders,initialCursor,view]);
+  const [nextCursor,setNextCursor]=useState(initialCursor);
+  const [loadingPage,setLoadingPage]=useState(false);
+  const [pageError,setPageError]=useState("");
+  const pageRequest=useRef(0);
+  useEffect(()=>{
+   if(view!=="orders")return;
+   const controller=new AbortController();
+   const request=++pageRequest.current;
+   const timer=setTimeout(async()=>{
+    setLoadingPage(true);setPageError("");
+    try{
+     const q=new URLSearchParams({status:filter,q:search.trim()});
+     const res=await fetch("/api/admin/orders/page?"+q.toString(),{cache:"no-store",signal:controller.signal});
+     const json=await res.json() as {orders?:Order[];nextCursor?:string|null;error?:string};
+     if(!res.ok)throw new Error(json.error||"Unable to filter orders");
+     if(request!==pageRequest.current)return;
+     setOrderRows(json.orders??[]);
+     setNextCursor(json.nextCursor??null);
+    }catch(e){if(!controller.signal.aborted)setPageError(e instanceof Error?e.message:"Unable to load orders");}
+    finally{if(request===pageRequest.current)setLoadingPage(false);}
+   },search||filter!=="ALL"?350:0);
+   return()=>{clearTimeout(timer);controller.abort();};
+  },[filter,search,view]);
+  async function loadMoreOrders(){
+   if(!nextCursor||loadingPage)return;
+   const request=pageRequest.current;
+   setLoadingPage(true);setPageError("");
+   try{
+    const q=new URLSearchParams({status:filter,q:search.trim(),cursor:nextCursor});
+    const res=await fetch("/api/admin/orders/page?"+q.toString(),{cache:"no-store"});
+    const json=await res.json() as {orders?:Order[];nextCursor?:string|null;error?:string};
+    if(!res.ok)throw new Error(json.error||"Unable to fetch next orders");
+    if(request!==pageRequest.current)return;
+    setOrderRows(prev=>{const ids=new Set(prev.map(p=>p.id));return [...prev,...(json.orders??[]).filter(p=>!ids.has(p.id))];});
+    setNextCursor(json.nextCursor??null);
+   }catch(e){if(request===pageRequest.current)setPageError(e instanceof Error?e.message:"Load failed");}
+   finally{if(request===pageRequest.current)setLoadingPage(false);}
+  }
+
   const [working, setWorking] = useState<string | null>(null);
   const [imageBusy, setImageBusy] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -41,7 +82,7 @@ export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAva
     } catch (error) { setImageError(error instanceof Error ? error.message : 'Upload failed'); }
     finally { setImageBusy(false); }
   }
-  const visible = useMemo(() => orders.filter(o => (filter === 'ALL' || o.status === filter) && [o.id, o.name, o.email].some(v => v.toLowerCase().includes(search.toLowerCase()))), [orders, filter, search]);
+  const visible = useMemo(() => view==='orders'?orderRows:orders.filter(o => (filter === 'ALL' || o.status === filter) && [o.id, o.name, o.email].some(v => v.toLowerCase().includes(search.toLowerCase()))), [orders, orderRows,filter,search,view]);
   async function update(order: Order, status: string) {
     const isCancel = status === 'CANCELLED';
     const note = isCancel ? (order.paymentStatus === 'PAID' ? 'Cancel this paid order? Stock will be restored, but you MUST process the refund separately in Razorpay.' : 'Reject/cancel this order and restore its stock?') : `Change order #${order.id.slice(-8).toUpperCase()} to ${status}?`;
@@ -109,6 +150,7 @@ export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAva
       <div className="admin-heading"><div><span className="eyebrow">LIVE FULFILMENT</span><h2>MANAGE ORDERS</h2></div><span className="admin-count">{visible.length} ORDERS</span></div>
       <div className="admin-toolbar"><input aria-label="Search orders" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search order ID, name or email" /><select aria-label="Filter orders" value={filter} onChange={e => setFilter(e.target.value)}>{['ALL','PENDING','CONFIRMED','PACKED','SHIPPED','DELIVERED','CANCELLED'].map(s => <option key={s}>{s}</option>)}</select></div>
       {message && <p role="status" className="admin-notice">{message}</p>}
+      {pageError&&<p role="alert" className="error">{pageError}</p>}
       {visible.length === 0 ? <p>No orders match your filter.</p> : <div className="admin-order-list">{visible.map(o => {
         let address: Record<string, unknown> = {};
         try { const parsed: unknown = JSON.parse(o.addressJson); if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) address = parsed as Record<string, unknown>; } catch {}
@@ -145,6 +187,7 @@ export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAva
           <div className="admin-order-actions">{options.map(opt => <button key={opt.value} type="button" className={'admin-action ' + (opt.value === 'CANCELLED' ? 'danger' : '')} disabled={working === o.id} onClick={() => update(o,opt.value)}>{working === o.id ? 'UPDATING...' : opt.label}</button>)}{o.paymentMethod === 'COD' && o.status === 'DELIVERED' && o.paymentStatus !== 'PAID' && <button type="button" className="admin-action" disabled={working === o.id} onClick={() => markCodReceived(o)}>MARK COD PAYMENT RECEIVED</button>}{options.length === 0 && <small>{o.status === 'CANCELLED' ? 'Order cancelled' : o.status === 'DELIVERED' ? 'Order delivered' : 'Awaiting verified payment'}</small>}{o.status === 'CANCELLED' && o.paymentStatus === 'PAID' && <strong className="refund-warning">Paid order: check refund in Razorpay</strong>}</div>
         </article>;
       })}</div>}
+      {view==="orders"&&nextCursor&&<button type="button" className="load-next-batch" disabled={loadingPage} onClick={()=>void loadMoreOrders()}>{loadingPage?"LOADING…":"SHOW NEXT 20 ORDERS ↓"}</button>}
     </section>
 </>}
     {view === 'all' && <>
