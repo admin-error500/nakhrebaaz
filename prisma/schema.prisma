@@ -125,6 +125,8 @@ model StorefrontMerchandising {
   homepageIds String[] @default([])
   topIds      String[] @default([])
   newIds      String[] @default([])
+  detailIds   String[] @default([])
+  shuffleDetail Boolean @default(false)
   shuffleHome Boolean  @default(false)
   shuffleTop  Boolean  @default(false)
   shuffleNew  Boolean  @default(false)
