@@ -21,6 +21,7 @@ export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAva
   const [filter, setFilter] = useState('ALL');
   const [search, setSearch] = useState('');
   const [orderRows,setOrderRows]=useState<Order[]>(orders);
+  useEffect(()=>{if(view==="orders"){setOrderRows(orders);setNextCursor(initialCursor);}},[orders,initialCursor,view]);
   const [nextCursor,setNextCursor]=useState(initialCursor);
   const [loadingPage,setLoadingPage]=useState(false);
   const [pageError,setPageError]=useState("");
