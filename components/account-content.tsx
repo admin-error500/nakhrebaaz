@@ -5,14 +5,21 @@ import { OrderTracker } from "@/components/order-tracker";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Logout } from "@/components/logout";
+import { ProfileEditor } from "@/components/profile-editor";
+import { AddressBook } from "@/components/address-book";
 
 
-export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | 'profile' | 'orders'}) {
+export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | 'profile' | 'orders' | 'addresses'}) {
   const user = await currentUser();
 
   if (!user) {
     redirect("/login");
   }
+
+  const [profile, savedAddresses] = await Promise.all([
+    db.user.findUnique({where:{id:user.id},select:{phone:true}}),
+    db.savedAddress.findMany({where:{userId:user.id},orderBy:[{isDefault:"desc"},{createdAt:"desc"}]}),
+  ]);
 
   const orders = await db.order.findMany({
     where: {
@@ -71,6 +78,11 @@ export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | '
             <span>My orders</span>
           </a>
 
+          <Link href="/account/addresses" className="account-side-link">
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <span>Saved addresses</span>
+          </Link>
+
           <Link href="/shop" className="account-side-link">
             <svg viewBox="0 0 24 24" aria-hidden="true" className="account-side-icon"><path d="M5 19 19 5M8 5h11v11"/></svg>
             <span>Continue shopping</span>
@@ -84,54 +96,11 @@ export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | '
         <div className="account-main">
           {mode !== "orders" && <>
           {/* PROFILE */}
-          <section
-            id="profile"
-            className="account-panel"
-          >
-            <div className="panel-heading">
-              <div>
-                <span className="eyebrow">
-                  THE PERSON BEHIND THE NAKHRA
-                </span>
-
-                <h2>MY PROFILE</h2>
-              </div>
-
-              <span className="member-chip">
-                CLUB MEMBER
-              </span>
-            </div>
-
-            <div className="profile-details">
-              <div>
-                <small>FULL NAME</small>
-                <strong>{user.name}</strong>
-              </div>
-
-              <div>
-                <small>EMAIL ADDRESS</small>
-                <strong>{user.email}</strong>
-              </div>
-
-              <div>
-                <small>ACCOUNT TYPE</small>
-                <strong>
-                  {user.role === "ADMIN"
-                    ? "Administrator"
-                    : "Customer"}
-                </strong>
-              </div>
-            </div>
-
-            <p className="profile-note">
-              Account details are shown securely.
-              Profile editing will be available
-              in a future update.
-            </p>
-          </section>
+          <ProfileEditor name={user.name} email={user.email} phone={profile?.phone??""} />
+          {mode !== "orders" && <AddressBook initial={savedAddresses} />}
 
           {/* ACCOUNT STATS */}
-          <div className="account-stats">
+          {mode !== "addresses" && <div className="account-stats">
             <div>
               <small>TOTAL ORDERS</small>
 
@@ -146,7 +115,7 @@ export async function AccountContent({mode = 'overview'}: {mode?: 'overview' | '
               <small>YOUR STATUS</small>
               <strong>NAKHREBAAZ</strong>
             </div>
-          </div>
+          </div>}
 
           </>}
           {mode === "orders" && <>
