@@ -32,6 +32,7 @@ export function FeaturedSlider({products}:{products:SlideProduct[]}){
  }
  return <div className="featured-slider-root">
   <div className="featured-slider-stage">
+  <button className="featured-slider-edge-button" type="button" aria-label="Previous designs" disabled={edges.start} onClick={()=>scroll(-1)}>&lt;</button>
   <div ref={container} onScroll={updateEdges} className="featured-slider-track" role="region" aria-label="Featured product designs, swipe horizontally" tabIndex={0}>
    {products.map((p,i)=><Link href={`/product/${p.id}`} className="product featured-slide" key={p.id}>
     <div className="product-img"><img src={p.image} alt={p.name} loading={i<3?"eager":"lazy"}/>
@@ -41,10 +42,7 @@ export function FeaturedSlider({products}:{products:SlideProduct[]}){
     <small>{p.category.toUpperCase()} · {p.stock===0?"OUT OF STOCK":`${p.variantCount} OPTIONS`}</small>
    </Link>)}
   </div>
-  <div className="featured-slider-controls" aria-label="Featured design carousel controls">
-   <button type="button" aria-label="Previous designs" disabled={edges.start} onClick={()=>scroll(-1)}>←</button>
-   <button type="button" aria-label="Next designs" disabled={edges.end} onClick={()=>scroll(1)}>→</button>
-  </div>
+  <button className="featured-slider-edge-button" type="button" aria-label="Next designs" disabled={edges.end} onClick={()=>scroll(1)}>&gt;</button>
   </div>
   <p className="featured-swipe-hint">SWIPE TO DISCOVER MORE DESIGNS →</p>
  </div>;
