@@ -445,10 +445,10 @@ body{background:#fffaf2;color:#151515}
 
 /* Sliding featured designs and on-demand list navigation */
 .featured-slider-root{position:relative;min-width:0}
-.featured-slider-controls{display:flex;justify-content:flex-end;gap:9px;margin:0 0 13px}
-.featured-slider-controls button{display:grid;place-items:center;width:44px;height:44px;background:#171717;color:#ffae19;border:0;border-radius:50%;font-size:22px;font-weight:900;cursor:pointer}
+.featured-slider-stage{position:relative;min-width:0}.featured-slider-controls{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none;padding:0 8px}
+.featured-slider-controls button{display:grid;place-items:center;width:44px;height:44px;background:#171717;color:#ffae19;border:0;border-radius:50%;font-size:22px;font-weight:900;cursor:pointer;pointer-events:auto;box-shadow:0 3px 16px #0003}
 .featured-slider-controls button:hover,.featured-slider-controls button:focus-visible{background:#ffae19;color:#171717}
-.featured-slider-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scroll-padding-inline:4px;padding:3px 3px 13px;scrollbar-width:thin}
+.featured-slider-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scroll-padding-inline:4px;padding:3px 3px 13px;scrollbar-width:none}
 .featured-slider-track .featured-slide{display:block;flex:0 0 clamp(190px,24%,300px);min-width:0;scroll-snap-align:start}
 .featured-slider-track:focus-visible{outline:3px solid #ffae19;outline-offset:3px}
 .featured-swipe-hint{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#655a4b;margin:8px 0 0}
@@ -457,3 +457,16 @@ body{background:#fffaf2;color:#151515}
 .load-next-batch:disabled{cursor:wait;opacity:.65}
 @media(max-width:760px){.featured-slider-track .featured-slide{flex-basis:clamp(180px,63vw,270px)}.featured-slider-controls button{width:40px;height:40px}}
 @media(prefers-reduced-motion:reduce){.featured-slider-track{scroll-behavior:auto}}
+
+/* Carousel edges, cancel action and customer policy pages */
+.featured-slider-track::-webkit-scrollbar{display:none}
+.featured-slider-controls button:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+.featured-slider-controls button:disabled:hover{background:#171717;color:#ffae19}
+.order-cancel-button{border:1px solid #a7352a;color:#a7352a;background:#fff;padding:10px 15px;font-size:11px;font-weight:850;cursor:pointer;border-radius:4px}
+.order-cancel-button:hover{background:#fff0ee}.order-cancel-button:disabled{opacity:.55;cursor:wait}
+.order-cancel-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}
+.order-cancel-note{font-size:12px;color:#795f3b;margin-top:8px}
+.policy-page{max-width:900px;margin:0 auto;padding:55px 5% 95px;line-height:1.75}
+.policy-page h1{font-size:clamp(32px,5vw,54px);line-height:1.08}
+.policy-page h2{font-size:22px;margin-top:30px}.policy-page p,.policy-page li{font-size:15px}
+.policy-page a{text-decoration:underline}.footer-column a{display:block}
