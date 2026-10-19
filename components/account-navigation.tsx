@@ -4,7 +4,7 @@ import {usePathname} from "next/navigation";
 import {Logout} from "@/components/logout";
 
 const pages=[
- {href:"/account/profile",label:"My profile",icon:"person"},
+ {href:"/account",label:"My profile",icon:"person"},
  {href:"/account/orders",label:"My orders",icon:"orders"},
  {href:"/account/addresses",label:"Saved addresses",icon:"location"},
  {href:"/shop",label:"Continue shopping",icon:"shop"},
