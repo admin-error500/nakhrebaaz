@@ -16,8 +16,8 @@ export function ProfileEditor({name:initialName,email,phone:initialPhone}:Props)
  // Keep customer profile in sync after navigation/server refresh.
  useEffect(()=>{
   setSaved({name:initialName,phone:initialPhone});
-  if(!editing){setName(initialName);setPhone(initialPhone);}
- },[initialName,initialPhone,editing]);
+  setName(initialName);setPhone(initialPhone);
+ },[initialName,initialPhone]);
 
  function cancel(){
   setName(saved.name);setPhone(saved.phone);setEditing(false);setError("");
