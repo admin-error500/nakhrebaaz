@@ -8,7 +8,7 @@ type Order = { id: string; name: string; email: string; total: number; status: s
 const transitions: Record<string, { label: string; value: string }[]> = {
   PENDING: [{ label: 'Accept order', value: 'CONFIRMED' }, { label: 'Reject order', value: 'CANCELLED' }],
   CONFIRMED: [{ label: 'Mark packed', value: 'PACKED' }, { label: 'Cancel order', value: 'CANCELLED' }],
-  PACKED: [{ label: 'Mark shipped', value: 'SHIPPED' }, { label: 'Cancel order', value: 'CANCELLED' }],
+  PACKED: [{ label: 'Mark shipped', value: 'SHIPPED' }],
   SHIPPED: [{ label: 'Mark delivered', value: 'DELIVERED' }],
 };
 const money = (n: number) => '₹' + n.toLocaleString('en-IN');
