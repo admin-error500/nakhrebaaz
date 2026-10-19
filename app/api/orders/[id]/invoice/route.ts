@@ -210,7 +210,11 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     doc.fillColor(INK).font("Helvetica-Bold").fontSize(19)
       .text("TAX INVOICE", X, 40, { width: RIGHT - X, align: "center" });
 
-    const logoPath = path.join(process.cwd(), "public", "nakhrebaaz-logo.png");
+    // Dedicated invoice artwork supplied by the store owner; storefront logo stays unchanged.
+    const logoPath = path.join(process.cwd(), "public", "nakhrebaaz-invoice-logo.png");
+    if (fs.existsSync(logoPath)) {
+      doc.image(logoPath, X, 35, { fit: [132, 48] });
+    }
 
     const detailsHeadingY = 95;
     const detailsBodyY = 115;
