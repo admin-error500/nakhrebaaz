@@ -42,8 +42,8 @@ export function FeaturedSlider({products}:{products:SlideProduct[]}){
    </Link>)}
   </div>
   <div className="featured-slider-controls" aria-label="Featured design carousel controls">
-   <button type="button" aria-label="Previous designs" disabled={edges.start} onClick={()=>scroll(-1)}>←</button>
-   <button type="button" aria-label="Next designs" disabled={edges.end} onClick={()=>scroll(1)}>→</button>
+   <button type="button" aria-label="Previous designs" disabled={edges.start} onClick={()=>scroll(-1)}>&lt;</button>
+   <button type="button" aria-label="Next designs" disabled={edges.end} onClick={()=>scroll(1)}>&gt;</button>
   </div>
   </div>
   <p className="featured-swipe-hint">SWIPE TO DISCOVER MORE DESIGNS →</p>
