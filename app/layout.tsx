@@ -26,7 +26,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
               <Link href="/shop">SHOP ALL</Link>
             </nav>
             <div className="header-actions">
-              {user ? <Link href="/account" aria-label="My account">ACCOUNT</Link> : <Link href="/login">LOGIN</Link>}
+              {user ? <Link href="/account/profile" aria-label="My profile">MY PROFILE</Link> : <Link href="/login">LOGIN</Link>}
               {user?.role === 'ADMIN' && <Link href="/admin">ADMIN</Link>}
               <Link className="bag-link" href="/cart" aria-label="Shopping bag">BAG <span className="bag-count"><CartCount /></span></Link>
             </div>
