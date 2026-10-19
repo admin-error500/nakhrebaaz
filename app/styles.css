@@ -470,3 +470,36 @@ body{background:#fffaf2;color:#151515}
 .policy-page h1{font-size:clamp(32px,5vw,54px);line-height:1.08}
 .policy-page h2{font-size:22px;margin-top:30px}.policy-page p,.policy-page li{font-size:15px}
 .policy-page a{text-decoration:underline}.footer-column a{display:block}
+
+/* Full-viewport admin layout: no secondary horizontal scroller */
+.admin-multipage-shell.admin-dashboard-shell{width:100%;max-width:none;margin:0;padding:24px clamp(12px,2vw,36px) 70px;min-width:0}
+.admin-multipage-shell .admin-multipage-main,.admin-multipage-shell .admin-block,.admin-multipage-shell .admin-dashboard,.admin-multipage-shell .admin-order-list{width:100%;max-width:none;min-width:0}
+.admin-multipage-shell .admin-multipage-nav{width:100%;min-width:0;overflow:visible}
+.admin-multipage-shell .admin-order-card,.admin-multipage-shell .admin-order-columns>*{min-width:0;overflow-wrap:anywhere}
+.admin-multipage-shell .admin-order-columns{grid-template-columns:repeat(3,minmax(0,1fr));min-width:0}
+.admin-multipage-shell .tablewrap{width:100%;max-width:100%;overflow-x:visible;overflow-y:visible}
+.admin-multipage-shell .tablewrap table{width:100%;table-layout:fixed}
+.admin-multipage-shell .tablewrap th,.admin-multipage-shell .tablewrap td{min-width:0;overflow-wrap:anywhere;word-break:break-word;white-space:normal;vertical-align:top}
+.admin-multipage-shell .tablewrap th:first-child,.admin-multipage-shell .tablewrap td:first-child{width:36%}
+.admin-multipage-shell .admin-form,.admin-multipage-shell .inventory-edit-grid{min-width:0}
+.admin-multipage-shell .admin-form>*,.admin-multipage-shell .inventory-edit-grid>*{min-width:0}
+@media(max-width:850px){
+ .admin-multipage-shell .admin-order-columns{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-multipage-shell .tablewrap table{font-size:12px}
+ .admin-multipage-shell .tablewrap th,.admin-multipage-shell .tablewrap td{padding:10px 6px}
+ .admin-multipage-shell .tablewrap .inventory-edit-trigger{white-space:normal;flex-wrap:wrap}
+}
+@media(max-width:600px){
+ .admin-multipage-shell.admin-dashboard-shell{padding:14px 10px 45px}
+ .admin-multipage-shell .admin-order-columns{grid-template-columns:1fr}
+ .admin-multipage-shell .tablewrap th,.admin-multipage-shell .tablewrap td{padding:8px 4px;font-size:11px}
+ .admin-multipage-shell .tablewrap th:first-child,.admin-multipage-shell .tablewrap td:first-child{width:30%}
+ .admin-multipage-shell .tablewrap .inventory-edit-trigger{padding:7px 4px;font-size:10px}
+}
+/* Carousel navigation occupies reserved space outside product cards. */
+.featured-slider-stage{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px}
+.featured-slider-stage .featured-slider-track{min-width:0}
+.featured-slider-edge-button{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;padding:0;background:#171717;color:#ffae19;font-size:25px;font-weight:900;line-height:1;cursor:pointer;box-shadow:0 3px 16px #0002}
+.featured-slider-edge-button:hover:not(:disabled),.featured-slider-edge-button:focus-visible{background:#ffae19;color:#171717}
+.featured-slider-edge-button:disabled{opacity:.28;cursor:not-allowed;box-shadow:none}
+@media(max-width:760px){.featured-slider-stage{grid-template-columns:34px minmax(0,1fr) 34px;gap:4px}.featured-slider-edge-button{width:34px;height:40px;font-size:21px}}
