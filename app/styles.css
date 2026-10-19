@@ -487,3 +487,11 @@ body{background:#fffaf2;color:#151515}
 .featured-slider-controls button{width:42px;height:42px;font-size:21px;line-height:1}
 .featured-slider-controls button:disabled{opacity:.32}
 @media(max-width:760px){.featured-slider-stage{padding-inline:24px}.featured-slider-controls button{width:38px;height:38px}}
+
+/* Keep merchant tables within the available page width without a sideways bar. */
+@media(min-width:761px){
+ .admin-multipage-main .tablewrap table{width:100%;table-layout:fixed}
+ .admin-multipage-main .tablewrap th,.admin-multipage-main .tablewrap td{overflow-wrap:anywhere;white-space:normal;vertical-align:top}
+}
+.admin-multipage-main .admin-order-top,.admin-multipage-main .admin-order-columns{min-width:0}
+.admin-multipage-main .admin-order-card{min-width:0;overflow-wrap:anywhere}
