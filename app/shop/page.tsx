@@ -6,6 +6,7 @@ import {loadMerchandising,curate} from '@/lib/merchandising';
 import {AdSlot} from '@/components/ad-slot';
 import {shopBatch,normalizeShopFilters,shopWhere} from '@/lib/shop-catalog';
 import {ShopProductList} from '@/components/shop-product-list';
+import {ProductCardDetails} from '@/components/product-card-details';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,7 +34,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   const shelfIds=[...new Set([...merch.topIds,...merch.newIds])];
   const shelfProducts=shelfIds.length?await db.product.findMany({
     where:{...shopWhere({category:selectedCategory,type:selectedType,festival:selectedFestival,q}),id:{in:shelfIds}},
-    select:{id:true,name:true,image:true,price:true,category:true,festival:true,saleDiscountPercent:true},
+    select:{id:true,name:true,description:true,image:true,price:true,category:true,festival:true,saleDiscountPercent:true},
   }):[];
   const firstBatch=await shopBatch(normalizeShopFilters({category:selectedCategory,type:selectedType,festival:selectedFestival,q}));
   const curatedTop=curate(shelfProducts,merch.topIds,merch.shuffleTop).filter(p=>merch.topIds.includes(p.id)).slice(0,8);
@@ -42,11 +43,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
     <main className="shop-catalogue-page">
       {curatedTop.length>0 && <section className="section storefront-shelf" aria-label="Top collection">
         <div className="editorial-heading"><div><span className="eyebrow">HANDPICKED</span><h2>TOP <em>COLLECTION.</em></h2></div></div>
-        <div className="products">{curatedTop.map(p=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link>)}</div>
+        <div className="products">{curatedTop.map(p=><article className="product-card-shell" key={p.id}><Link href={`/product/${p.id}`} className="product"><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link><ProductCardDetails description={p.description} productName={p.name}/></article>)}</div>
       </section>}
       {curatedNew.length>0 && <section className="section storefront-shelf" aria-label="New arrivals">
         <div className="editorial-heading"><div><span className="eyebrow">JUST LANDED</span><h2>NEW <em>ARRIVALS.</em></h2></div></div>
-        <div className="products">{curatedNew.map(p=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link>)}</div>
+        <div className="products">{curatedNew.map(p=><article className="product-card-shell" key={p.id}><Link href={`/product/${p.id}`} className="product"><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link><ProductCardDetails description={p.description} productName={p.name}/></article>)}</div>
       </section>}
       <section className="section shop-section" id="shop">
         <div className="editorial-heading shop-heading"><div><span className="eyebrow">THE GOOD STUFF</span><h2>{selectedFestival ? selectedFestival.toUpperCase() : selectedCategory ? selectedCategory==='Accessories'?'ACCESSORIES':`${selectedCategory.toUpperCase()}'S` : 'THE'} <em>COLLECTION.</em></h2><p>Easy fits. Bold prints. A little extra Nakhra.</p></div><ShopSearch q={q || ''} category={selectedCategory} type={selectedType} festival={selectedFestival}/></div>

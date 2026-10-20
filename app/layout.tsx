@@ -76,7 +76,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <Link href="/policies/cancellation">Cancellation Policy</Link>
     <Link href="/policies/returns">Return Policy</Link>
     <Link href="/policies/refunds">Refund Policy</Link>
-    <p>Contact details will be published before launch</p>
+    <p>For custom event designs, use the Email or WhatsApp links on product pages (available once our contact details are configured).</p>
   </div>
 
   <small className="footer-copyright">

@@ -2,6 +2,20 @@
 
 This edition uses **MongoDB + Prisma** instead of SQLite. The MongoDB database must be a replica set (MongoDB Atlas clusters already support this).
 
+## Custom designs: email and WhatsApp
+
+Set the following public environment variables in the website deployment (for example Vercel) and redeploy:
+
+```env
+NEXT_PUBLIC_CUSTOMIZATION_EMAIL=
+NEXT_PUBLIC_CUSTOMIZATION_WHATSAPP_NUMBER=
+```
+
+- Use a **verified, monitored business email inbox** and **a verified WhatsApp number in international format** (for India: `91` plus the 10-digit number, no leading `+` necessary).
+- The website will show working Email (`mailto:`) and WhatsApp (`wa.me`) buttons under each product and on its product page once valid details are configured. Both contacts are optional, and a missing/invalid value is never replaced by a guessed address or phone number.
+- The buttons prefill a product-specific custom-event enquiry. They do **not** create an order or accept an uploaded design; merchant and customer must agree on the customized design and terms separately.
+- Personalized clothing is generally non-returnable for change of mind once customized or produced. Legal remedies for defective, damaged, incorrect or materially different goods still apply; see the Return Policy.
+
 ## Quick start (Ubuntu)
 
 1. Install Node.js 20.9+ and npm.

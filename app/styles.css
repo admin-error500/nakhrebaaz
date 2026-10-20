@@ -578,3 +578,23 @@ body{background:#fffaf2;color:#151515}
 .variant-mug-choice{display:inline-flex;align-items:center;gap:8px}
 @media(max-width:700px){.accessories-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.accessory-tile:nth-child(3){grid-column:1/-1;min-height:140px;flex-direction:row;align-items:center}}
 @media(max-width:360px){.accessories-grid{grid-template-columns:1fr}.accessory-tile:nth-child(3){grid-column:auto}}
+
+/* Product copy and event-customization contact CTAs across every storefront card */
+.product-card-shell{min-width:0;display:flex;flex-direction:column}
+.product-card-shell>.product{display:block;min-width:0}
+.product-card-details{margin-top:10px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.product-card-description{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-height:2.8em;margin:0;font-size:11px;font-weight:400;line-height:1.4;color:#635d54;overflow-wrap:anywhere}
+.product-event-customization{margin:0;padding:8px 10px;border-left:3px solid #ffae19;background:#fff5db;color:#383027;font-size:10px;font-weight:800;line-height:1.4;letter-spacing:.1px;overflow-wrap:anywhere}
+.customization-contact-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:3px}
+.customization-contact-links a{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:8px 12px;background:#171717;color:#fff;border-radius:4px;font-size:11px;font-weight:800;text-decoration:none}
+.customization-contact-links .customization-contact-whatsapp{background:#126a3b;color:#fff}
+.customization-contact-links a:focus-visible{outline:3px solid #e99e17;outline-offset:2px}
+.product-customization-info{background:#fff3d9;border:1px solid #edce91;padding:15px 17px;border-radius:6px;margin:17px 0}
+.product-customization-info strong{font-size:12px;letter-spacing:1px}
+.product-customization-info p{font-size:13px;line-height:1.55;margin:8px 0}
+.product-customization-info .product-customization-policy{font-size:12px}
+.product-customization-policy a{font-weight:900;text-decoration:underline}
+.admin-form .admin-product-description{grid-column:span 2;max-width:100%;width:100%;font:inherit;min-height:80px;resize:vertical;border:1px solid #ddd;background:#fff;padding:13px;border-radius:3px}
+.featured-slider-track .product-card-shell.featured-slide{display:flex}
+@media(max-width:700px){.product-card-description{font-size:10px}.product-event-customization{font-size:9px;padding:7px 8px}.product-customization-info{padding:12px}.customization-contact-links a{flex:1 1 auto;font-size:10px;padding:8px}}
+@media(max-width:480px){.admin-form .admin-product-description{grid-column:1/-1}}

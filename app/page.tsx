@@ -96,7 +96,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
           <Link className="btn dark" href="/shop">SEE MORE</Link>
         </div>
         <FeaturedSlider products={homeProducts.map(p=>({
-          id:p.id,name:p.name,image:p.image,category:p.category,
+          id:p.id,name:p.name,description:p.description,image:p.image,category:p.category,
           originalPrice:p.price,price:salePrice(p.price,p.saleDiscountPercent??0,sale.live),
           discountPercent:sale.live?(p.saleDiscountPercent??0):0,
           stock:p.variants.reduce((sum,v)=>sum+v.stock,0),variantCount:p.variants.length,

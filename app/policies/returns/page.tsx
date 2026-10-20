@@ -5,8 +5,12 @@ export default function ReturnPolicy(){return <main className="policy-page">
  <p>We accept return requests for products that arrive damaged or defective. We do not offer returns for change of mind, personal preference, or other non-damage reasons, subject to applicable consumer rights.</p>
  <h2>When is a return eligible?</h2>
  <p>A product is eligible for review when it arrived damaged, defective, or materially different from what was ordered. Please report the problem as soon as possible after delivery.</p>
+ <h2>Customized and personalized clothing</h2>
+ <p>Clothes made or printed specifically to a customer-approved design—for example, with an event name, date, photo, logo or bespoke artwork—are <strong>not eligible for return or exchange for change of mind, personal preference, or an incorrect size selected by the customer</strong> once they have been customized or produced.</p>
+ <p>This exclusion does <strong>not</strong> apply if a customized item arrives damaged, defective, is the wrong item, or is materially different from the confirmed design or order. Such concerns will be reviewed and resolved as required by applicable consumer protection laws. Your statutory rights are not affected.</p>
+ <p>Please check the design proof, spelling, event details, measurements and requested colours carefully before approving a customized clothing order.</p>
  <h2>How to request a return</h2>
- <p>Contact our support team with the order ID, a description of the issue, and clear photographs of the product and packaging. Please keep the item and its packaging available while we review the request. Support contact details must be published before the store launches.</p>
+ <p>Contact our support team with the order ID, a description of the issue, and clear photographs of the product and packaging. Please keep the item and its packaging available while we review the request. You can also contact us through the email or WhatsApp options shown on the product page once merchant contact details are configured.</p>
  <p>We will review the evidence and provide instructions for an approved return. No return should be shipped without confirmation from support.</p>
  <h2>Refund on approved return</h2>
  <p>Once a valid return is received and approved, refund processing follows our <Link href="/policies/refunds">Refund Policy</Link>. Applicable statutory rights remain unaffected.</p>
