@@ -210,7 +210,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     // Avoid overlap and preserve aspect ratio when drawing the owner-provided logo.
     const logoPath = path.join(process.cwd(), "public", "nakhrebaaz-invoice-logo.png");
     if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, X, 39, { fit: [205, 67], align: "left", valign: "center" });
+      doc.image(logoPath, X, 39, { fit: [205, 67], valign: "center" });
     }
     doc.fillColor(INK).font("Helvetica-Bold").fontSize(19)
       .text("TAX INVOICE", 303, 57, { width: RIGHT - 303, align: "right", lineBreak: false });
