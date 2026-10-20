@@ -53,9 +53,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   <div className="footer-column">
     <strong>EXPLORE</strong>
-    <Link href="/?category=Men#shop">Men</Link>
-    <Link href="/?category=Women#shop">Women</Link>
-    <Link href="/?category=Kids#shop">Kids</Link>
+    <Link href="/shop?category=Men#shop">Men</Link>
+    <Link href="/shop?category=Women#shop">Women</Link>
+    <Link href="/shop?category=Kids#shop">Kids</Link>
     <Link href="/shop?category=Accessories#shop">Accessories</Link>
     <Link href="/shop?category=Accessories&type=Mugs#shop">Mugs</Link>
     <Link href="/shop?category=Accessories&type=Keychains#shop">Keychains</Link>

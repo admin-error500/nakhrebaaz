@@ -11,12 +11,12 @@ export async function GET(req:Request){
   category:params.get("category")??undefined,type:params.get("type")??undefined,
   festival:params.get("festival")??undefined,q:params.get("q")??undefined,
  });
- // Check cursor belongs to the active filtered catalogue, rather than allowing a mismatched cursor.
- if(cursor){
-  const existing=await db.product.findFirst({where:{...shopWhere(filters),id:cursor},select:{id:true}});
-  if(!existing)return NextResponse.json({error:"Products changed. Refresh the catalogue."},{status:409});
- }
  try{
+  // Reuse exactly the same normalized predicate as the initial page and pagination.
+  if(cursor){
+   const existing=await db.product.findFirst({where:{...shopWhere(filters),id:cursor},select:{id:true}});
+   if(!existing)return NextResponse.json({error:"Products changed. Refresh the catalogue."},{status:409});
+  }
   const data=await shopBatch(filters,cursor);
   return NextResponse.json(data,{headers:{"Cache-Control":"no-store"}});
  }catch(e){
