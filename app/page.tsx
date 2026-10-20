@@ -10,8 +10,8 @@ import {FeaturedSlider} from '@/components/featured-slider';
 export const dynamic = 'force-dynamic';
 
 type Search = { category?: string; q?: string; type?: string; festival?: string };
-const categories = ['Men', 'Women', 'Kids'];
-const types = ['T-Shirts', 'Hoodies', 'Sweatshirts'];
+const categories = ['Men', 'Women', 'Kids', 'Accessories'];
+const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Magic Mugs', 'Keychains'];
 const festivals = ['Diwali', 'Holi', 'Navratri', 'Raksha Bandhan', 'Eid', 'Christmas'];
 const photo = {
   men: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=850&q=85',
@@ -54,7 +54,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
           <div className="hero-stamp">THE NAKHRA CLUB · EST. 2026</div>
           <div className="hero-kicker">LOUD FITS. BIG MOODS.</div>
           <h1>WEAR<br/>YOUR <em>NAKHRA.</em></h1>
-          <p>Graphic tees, cozy hoodies and statement sweatshirts for people who never do boring.</p>
+          <p>Graphic tees, cozy hoodies, mugs and keychains for people who never do boring.</p>
           <Link className="btn dark hero-button" href="/shop">SHOP THE DROP <span>↗</span></Link>
           <div className="hero-note">YOUR STYLE. YOUR RULES. ✳</div>
         </div>
@@ -68,6 +68,23 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
           {[{name:'MEN',image:photo.men,tag:'THE BOLD EDIT',cat:'Men'}, {name:'WOMEN',image:photo.women,tag:'THE MAIN CHARACTER EDIT',cat:'Women'}, {name:'KIDS',image:photo.kids,tag:'THE LITTLE REBELS',cat:'Kids'}].map(c=><Link key={c.cat} className="category-tile" href={url(c.cat)}><img src={c.image} alt={`${c.cat} fashion`}/><div className="category-shade"/><span className="category-tag">{c.tag}</span><div className="category-label"><strong>{c.name}</strong><span>SHOP NOW ↗</span></div></Link>)}
         </div>
       </section>
+      <section className="accessories-section" aria-labelledby="accessories-title">
+        <div className="editorial-heading"><div><span className="eyebrow">NAKHRA BEYOND THE OUTFIT</span><h2 id="accessories-title">EVERYDAY <em>NAKHRA.</em></h2></div><p>Same attitude. More ways to show it.</p></div>
+        <div className="accessories-grid">
+          <Link className="accessory-tile" href="/shop?category=Accessories&type=Mugs#shop">
+            <span className="accessory-copy"><span className="accessory-kicker">SIP WITH ATTITUDE</span><strong>NAKHRA MUGS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
+            <span className="accessory-symbol" aria-hidden="true">☕</span>
+          </Link>
+          <Link className="accessory-tile" href="/shop?category=Accessories&type=Magic+Mugs#shop">
+            <span className="accessory-copy"><span className="accessory-kicker">WATCH YOUR NAKHRA APPEAR</span><strong>MAGIC MUGS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
+            <span className="accessory-symbol" aria-hidden="true">✨</span>
+          </Link>
+          <Link className="accessory-tile" href="/shop?category=Accessories&type=Keychains#shop">
+            <span className="accessory-copy"><span className="accessory-kicker">TAKE IT EVERYWHERE</span><strong>NAKHRA KEYCHAINS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
+            <span className="accessory-symbol" aria-hidden="true">🔑</span>
+          </Link>
+        </div>
+      </section>
       <section className="festival-section" id="festivals">
         <div className="editorial-heading"><div><span className="eyebrow">CELEBRATE IN STYLE</span><h2>SHOP BY <em>FESTIVAL.</em></h2></div><p>Festive prints. Maximum nakhra.</p></div>
         <div className="festival-grid">{festivals.map((f, i) => <Link key={f} className={`festival-tile festival-${i}`} href={`/shop?festival=${encodeURIComponent(f)}#shop`}><span className="festival-symbol">{['🪔','🎨','💃','🎁','🌙','🎄'][i]}</span><strong>{f.toUpperCase()}</strong><span>EXPLORE COLLECTION ↗</span></Link>)}</div>
@@ -79,7 +96,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
           <Link className="btn dark" href="/shop">SEE MORE</Link>
         </div>
         <FeaturedSlider products={homeProducts.map(p=>({
-          id:p.id,name:p.name,image:p.image,category:p.category,
+          id:p.id,name:p.name,description:p.description,image:p.image,category:p.category,
           originalPrice:p.price,price:salePrice(p.price,p.saleDiscountPercent??0,sale.live),
           discountPercent:sale.live?(p.saleDiscountPercent??0):0,
           stock:p.variants.reduce((sum,v)=>sum+v.stock,0),variantCount:p.variants.length,

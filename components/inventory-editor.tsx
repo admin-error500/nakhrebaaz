@@ -6,12 +6,16 @@ function X({size=20}:InventoryIconProps){return <svg width={size} height={size} 
 function Trash2({size=19}:InventoryIconProps){return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg>;}
 function Plus({size=16}:InventoryIconProps){return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>;}
 import { useRouter } from "next/navigation";
+import { MUG_COLORS, isMugCategory } from "@/lib/mug-options";
 
 export type InventoryVariant={id:string;size:string;color:string;stock:number;sku:string;sold:number};
 export type InventoryProduct={id:string;name:string;description:string;image:string;price:number;category:string;festival:string|null;active:boolean;sold:number;variants:InventoryVariant[]};
 type DraftVariant={id?:string;size:string;color:string;stock:number;sku:string;addStock:number};
 type Draft={name:string;description:string;image:string;price:number;category:string;festival:string;active:boolean;variants:DraftVariant[]};
-const emptyVariant=():DraftVariant=>({size:'',color:'',stock:0,sku:'',addStock:0});
+const emptyVariant=(category:string,existing:DraftVariant[]):DraftVariant=>{
+  const color=isMugCategory(category)?MUG_COLORS.find(c=>!existing.some(v=>v.color===c.name))?.name??'':'';
+  return {size:isMugCategory(category)?'One Size':'',color,stock:0,sku:'',addStock:0};
+};
 const toDraft=(p:InventoryProduct):Draft=>({
   name:p.name,description:p.description,image:p.image,price:p.price,
   category:p.category,festival:p.festival??'',active:p.active,
@@ -107,23 +111,24 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
       <div className="inventory-edit-grid">
         <label>Product name<input required minLength={3} value={draft.name} onChange={e=>change('name',e.target.value)}/></label>
         <label>Price (₹)<input required type="number" min="1" step="1" value={draft.price} onChange={e=>change('price',Number(e.target.value))}/></label>
-        <label>Category<select value={draft.category} onChange={e=>change('category',e.target.value)}>{['Men','Women','Kids'].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>Category<select value={draft.category} onChange={e=>change('category',e.target.value)}>{['Men','Women','Kids','Mugs','Magic Mugs','Keychains'].map(v=><option key={v}>{v}</option>)}</select></label>
         <label>Festival<select value={draft.festival} onChange={e=>change('festival',e.target.value)}>{['','Diwali','Holi','Navratri','Raksha Bandhan','Eid','Christmas'].map(v=><option key={v} value={v}>{v||'Everyday / None'}</option>)}</select></label>
         <label className="inventory-wide">Description<textarea required minLength={5} rows={4} value={draft.description} onChange={e=>change('description',e.target.value)} /></label>
         <label className="inventory-wide">Product image URL (Cloudinary HTTPS link)<input required type="url" value={draft.image} onChange={e=>change('image',e.target.value)}/></label>
         <label className="inventory-wide inventory-visibility"><input type="checkbox" checked={draft.active} onChange={e=>change('active',e.target.checked)} /> Active — show product on website</label>
       </div>
-      <h4>Size, Color, SKU & Stock</h4>
+      {isMugCategory(draft.category)&&<datalist id="available-mug-colours">{MUG_COLORS.map(c=><option key={c.code} value={c.name}/>)}</datalist>}
+      <h4>Variant, Color, SKU & Stock</h4>
       <p className="admin-packing-note">Set Stock replaces current quantity. Add Stock increases it when you save. Example: current 0 + add 5 = 5.</p>
       {draft.variants.map((v,i)=><div key={v.id??'new-'+i} className="inventory-variant-row">
-        <label>Size<input required value={v.size} onChange={e=>changeVariant(i,'size',e.target.value)}/></label>
-        <label>Color<input required value={v.color} onChange={e=>changeVariant(i,'color',e.target.value)}/></label>
+        <label>Size / Option<input required value={v.size} onChange={e=>changeVariant(i,'size',e.target.value)}/></label>
+        <label>Color<input required list={isMugCategory(draft.category)?'available-mug-colours':undefined} value={v.color} onChange={e=>changeVariant(i,'color',e.target.value)}/></label>
         <label>SKU<input required minLength={3} value={v.sku} onChange={e=>changeVariant(i,'sku',e.target.value)}/></label>
         <label>Set Stock<input required type="number" min="0" step="1" value={v.stock} onChange={e=>changeVariant(i,'stock',Number(e.target.value))}/></label>
         <label>Add Stock (+)<input type="number" min="0" step="1" value={v.addStock} onChange={e=>changeVariant(i,'addStock',Number(e.target.value))}/></label>
         <button type="button" className="inventory-icon-button inventory-remove-variant" aria-label={"Remove size "+v.size+" color "+v.color} title={draft.variants.length<=1?"At least one size/color is required":"Remove size/color"} disabled={draft.variants.length<=1||working} onClick={()=>setDraft(d=>d?{...d,variants:d.variants.filter((_,idx)=>idx!==i)}:d)}><Trash2 size={19} aria-hidden="true"/></button>
       </div>)}
-      <button type="button" className="admin-action inventory-add-variant" onClick={()=>setDraft(d=>d?{...d,variants:[...d.variants,emptyVariant()]}:d)} disabled={working}><Plus size={16} aria-hidden="true"/> Add</button>
+      <button type="button" className="admin-action inventory-add-variant" onClick={()=>setDraft(d=>d?{...d,variants:[...d.variants,emptyVariant(d.category,d.variants)]}:d)} disabled={working}><Plus size={16} aria-hidden="true"/> Add</button>
       {error&&<p role="alert" className="error">{error}</p>}
       <div className="inventory-edit-actions">
         <button type="submit" className="btn dark" disabled={working}>{working?'SAVING...':'Update'}</button>

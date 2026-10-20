@@ -8,7 +8,7 @@ import { FREE_SHIPPING_THRESHOLD } from '@/lib/shipping';
 
 export const metadata = {
   title: 'Nakhrebaaz | Wear Your Nakhra',
-  description: 'Expressive T-shirts, hoodies and sweatshirts for men, women and kids.',
+  description: 'Expressive tees, hoodies, mugs and keychains that show off your Nakhra.',
 };
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
@@ -26,6 +26,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
               <Link href="/shop?category=Women#shop">WOMEN</Link>
               <Link href="/shop?category=Kids#shop">KIDS</Link>
               <Link href="/shop">SHOP ALL</Link>
+              <Link href="/shop?category=Accessories#shop">ACCESSORIES</Link>
             </nav>
             <div className="header-actions">
               {user ? <Link className="header-account-link" href="/account" aria-label="My profile">MY PROFILE</Link> : <Link className="header-account-link" href="/login">LOGIN</Link>}
@@ -55,6 +56,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <Link href="/?category=Men#shop">Men</Link>
     <Link href="/?category=Women#shop">Women</Link>
     <Link href="/?category=Kids#shop">Kids</Link>
+    <Link href="/shop?category=Accessories#shop">Accessories</Link>
+    <Link href="/shop?category=Accessories&type=Mugs#shop">Mugs</Link>
+    <Link href="/shop?category=Accessories&type=Magic+Mugs#shop">Magic Mugs</Link>
+    <Link href="/shop?category=Accessories&type=Keychains#shop">Keychains</Link>
   </div>
 
   <div className="footer-column">
@@ -71,7 +76,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <Link href="/policies/cancellation">Cancellation Policy</Link>
     <Link href="/policies/returns">Return Policy</Link>
     <Link href="/policies/refunds">Refund Policy</Link>
-    <p>Contact details will be published before launch</p>
+    <p>For custom event designs, use the Email or WhatsApp links on product pages (available once our contact details are configured).</p>
   </div>
 
   <small className="footer-copyright">

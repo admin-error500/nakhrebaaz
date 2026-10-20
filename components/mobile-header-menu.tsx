@@ -34,13 +34,16 @@ export function MobileHeaderMenu({ signedIn, isAdmin }: { signedIn: boolean; isA
         <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
           {open ? <path d="M5 5L19 19M19 5L5 19" /> : <path d="M4 6H20M4 12H20M4 18H20" />}
         </svg>
-        <span className="mobile-menu-text">{open ? "CLOSE" : "MENU"}</span>
-      </button>
+              </button>
       <nav id="mobile-site-navigation" className={open ? "mobile-site-nav is-open" : "mobile-site-nav"} aria-label="Mobile navigation">
         <Link href="/shop?category=Men#shop" onClick={() => setOpen(false)}>MEN</Link>
         <Link href="/shop?category=Women#shop" onClick={() => setOpen(false)}>WOMEN</Link>
         <Link href="/shop?category=Kids#shop" onClick={() => setOpen(false)}>KIDS</Link>
         <Link href="/shop" onClick={() => setOpen(false)}>SHOP ALL</Link>
+        <Link href="/shop?category=Accessories#shop" onClick={() => setOpen(false)}>ACCESSORIES</Link>
+        <Link href="/shop?category=Accessories&type=Mugs#shop" onClick={() => setOpen(false)}>MUGS</Link>
+        <Link href="/shop?category=Accessories&type=Magic+Mugs#shop" onClick={() => setOpen(false)}>MAGIC MUGS</Link>
+        <Link href="/shop?category=Accessories&type=Keychains#shop" onClick={() => setOpen(false)}>KEYCHAINS</Link>
         <Link href={signedIn ? "/account" : "/login"} onClick={() => setOpen(false)}>{signedIn ? "MY PROFILE" : "LOGIN"}</Link>
         {isAdmin && <Link href="/admin" onClick={() => setOpen(false)}>ADMIN</Link>}
       </nav>
