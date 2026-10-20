@@ -500,3 +500,37 @@ body{background:#fffaf2;color:#151515}
 .brand-logo-img{width:clamp(170px,17vw,220px);height:74px;object-fit:contain;object-position:left center}
 .footer-logo-img{width:230px;max-width:100%;height:auto;object-fit:contain}
 @media(max-width:760px){.brand-logo-img{width:170px;height:62px}}
+
+
+/* Compact, accessible mobile header and shipping promotion */
+.mobile-menu-toggle{display:none}
+.header .mobile-site-nav{display:none}
+.announcement .announcement-primary,.announcement .announcement-secondary{color:inherit;margin:0}
+.announcement .announcement-divider{color:#151515;margin:0 14px;opacity:.6}
+@media(max-width:760px){
+ .announcement{display:flex;align-items:center;justify-content:center;min-height:36px;padding:9px 12px;font-size:11px;line-height:1.4;letter-spacing:.4px;text-align:center}
+ .announcement .announcement-divider,.announcement .announcement-secondary{display:none}
+ .header{position:sticky;top:0;display:flex;flex-wrap:nowrap;align-items:center;gap:10px;min-height:66px;padding:7px 14px}
+ .header .logo{flex:0 1 auto;min-width:0}
+ .brand-logo-img{width:clamp(125px,34vw,160px);height:52px}
+ .header .main-nav{display:none}
+ .header-actions{margin-left:auto;gap:10px;flex-shrink:0}
+ .header-actions .header-account-link,.header-actions .header-admin-link{display:none}
+ .header-actions .bag-link{min-height:44px;gap:5px;font-size:10px}
+ .header-actions .bag-count{width:23px;height:23px;flex:0 0 23px}
+ .mobile-menu-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:7px 11px;border:1px solid #ffae19;border-radius:5px;color:#ffae19;background:#080808;font-size:10px;font-weight:900;letter-spacing:.5px;cursor:pointer}
+ .mobile-menu-toggle svg{width:21px;height:21px;stroke:currentColor}
+ .mobile-menu-toggle:focus-visible,.header .mobile-site-nav a:focus-visible{outline:2px solid #ffae19;outline-offset:2px}
+ .header .mobile-site-nav{position:absolute;top:100%;left:0;right:0;width:100%;padding:10px 16px 16px;background:#080808;border-bottom:2px solid #ffae19;box-shadow:0 12px 20px #0004;flex-direction:column;align-items:stretch;gap:0;white-space:normal;z-index:30}
+ .header .mobile-site-nav.is-open{display:flex}
+ .header .mobile-site-nav a{display:flex;align-items:center;min-height:46px;padding:13px 12px;color:#fff;border-bottom:1px solid #ffffff24;font-size:12px;font-weight:900;letter-spacing:1px}
+ .header .mobile-site-nav a:hover,.header .mobile-site-nav a:focus-visible{color:#ffae19;background:#ffffff0d}
+ .header .mobile-site-nav a:last-child{border-bottom:0}
+}
+@media(max-width:360px){
+ .header{padding-inline:9px;gap:6px}
+ .brand-logo-img{width:118px;height:46px}
+ .header-actions{gap:6px}
+ .mobile-menu-toggle{padding:7px 9px}
+ .mobile-menu-text{display:none}
+}

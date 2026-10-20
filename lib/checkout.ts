@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { db } from "./db";
 import { loadSale, salePrice } from "./sale";
+import { shippingForSubtotal } from "./shipping";
 
 export const checkoutSchema = z.object({
   expectedTotal: z.number().int().positive(),
@@ -121,7 +122,7 @@ export async function priceCart(items: CheckoutItem[]) {
     throw new Error("Invalid cart subtotal");
   }
 
-  const shipping = subtotal >= 1499 ? 0 : 99;
+  const shipping = shippingForSubtotal(subtotal);
   const total = subtotal + shipping;
 
   let allocatedShipping = 0;

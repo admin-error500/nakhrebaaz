@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { currentUser } from '@/lib/auth';
 import { CartProvider, CartCount } from '@/components/cart';
+import { MobileHeaderMenu } from '@/components/mobile-header-menu';
+import { FREE_SHIPPING_THRESHOLD } from '@/lib/shipping';
 
 export const metadata = {
   title: 'Nakhrebaaz | Wear Your Nakhra',
@@ -16,7 +18,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       <body>
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && /^ca-pub-\d{16}$/.test(process.env.NEXT_PUBLIC_ADSENSE_CLIENT) && <Script async strategy="afterInteractive" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`} crossOrigin="anonymous" />}
         <CartProvider>
-          <div className="announcement">FREE SHIPPING ABOVE ₹1,499 <span>✦</span> NEW DROPS EVERY WEEK <span>✦</span> WEAR YOUR NAKHRA</div>
+          <div className="announcement"><span className="announcement-primary">FREE SHIPPING ON ₹{FREE_SHIPPING_THRESHOLD.toLocaleString("en-IN")}+ ORDERS</span><span className="announcement-divider" aria-hidden="true">✦</span><span className="announcement-secondary">NEW DROPS EVERY WEEK</span><span className="announcement-divider" aria-hidden="true">✦</span><span className="announcement-secondary">WEAR YOUR NAKHRA</span></div>
           <header className="header">
             <Link className="logo" href="/" aria-label="Nakhrebaaz home"><img src="/nakhrebaaz-brand-v2.png" alt="NakhreBaaz" className="brand-logo-img"/></Link>
             <nav aria-label="Main navigation" className="main-nav">
@@ -26,9 +28,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
               <Link href="/shop">SHOP ALL</Link>
             </nav>
             <div className="header-actions">
-              {user ? <Link href="/account" aria-label="My profile">MY PROFILE</Link> : <Link href="/login">LOGIN</Link>}
-              {user?.role === 'ADMIN' && <Link href="/admin">ADMIN</Link>}
+              {user ? <Link className="header-account-link" href="/account" aria-label="My profile">MY PROFILE</Link> : <Link className="header-account-link" href="/login">LOGIN</Link>}
+              {user?.role === 'ADMIN' && <Link className="header-admin-link" href="/admin">ADMIN</Link>}
               <Link className="bag-link" href="/cart" aria-label="Shopping bag">BAG <span className="bag-count"><CartCount /></span></Link>
+              <MobileHeaderMenu signedIn={Boolean(user)} isAdmin={user?.role === "ADMIN"} />
             </div>
           </header>
           {children}

@@ -50,6 +50,6 @@ export function ShopProductList({initial,nextCursor:initialCursor,filters}:{init
   </Link>)}</div>
   {items.length===0&&<div className="empty-products"><h3>No styles found yet.</h3><p>Try another category or search term.</p><Link href="/shop" className="btn dark">VIEW ALL STYLES</Link></div>}
   {error&&<p role="alert" className="error">{error}</p>}
-  {cursor&&<button type="button" aria-expanded="false" className="load-next-batch" onClick={()=>void next()} disabled={busy}>{busy?"LOADING PRODUCTS…":"SHOW NEXT 10 DESIGNS ↓"}</button>}
+  {cursor&&<button type="button" className="load-next-batch" onClick={()=>void next()} disabled={busy}>{busy?"LOADING PRODUCTS…":"SEE MORE"}</button>}
  </div>;
 }
