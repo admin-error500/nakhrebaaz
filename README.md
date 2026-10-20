@@ -16,6 +16,15 @@ NEXT_PUBLIC_CUSTOMIZATION_WHATSAPP_NUMBER=
 - The buttons prefill a product-specific custom-event enquiry. They do **not** create an order or accept an uploaded design; merchant and customer must agree on the customized design and terms separately.
 - Personalized clothing is generally non-returnable for change of mind once customized or produced. Legal remedies for defective, damaged, incorrect or materially different goods still apply; see the Return Policy.
 
+## Nakhra Mugs, Caps and product-detail customization
+
+- New mugs are created under one **Mugs** category and can include **Regular** and **Magic** types (selected on the detail page), plus the existing White, Black, Yellow, Pink and Blue colours.
+- Type is tracked in the variant size field. Each type/colour combination has its own SKU and stock. The current data model stores a single product price, so Regular and Magic variants of the same design share a price.
+- Historic Magic Mugs products remain discoverable inside the Mugs collection to avoid breaking order history; new products should use Mugs.
+- Caps are available as a new accessory category, with editable cap fit, colour, stock, SKU, pricing, image and Sale Management.
+- Product listing cards show product name, price and stock/options only. **Full product description, custom event offer and Email/WhatsApp enquiry buttons appear only after opening a product.**
+- No inventory, images, merchant contacts or demo products were invented.
+
 ## Quick start (Ubuntu)
 
 1. Install Node.js 20.9+ and npm.

@@ -8,7 +8,7 @@ import { FREE_SHIPPING_THRESHOLD } from '@/lib/shipping';
 
 export const metadata = {
   title: 'Nakhrebaaz | Wear Your Nakhra',
-  description: 'Expressive tees, hoodies, mugs and keychains that show off your Nakhra.',
+  description: 'Expressive tees, hoodies, Nakhra Mugs, keychains and caps that show off your style.',
 };
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
@@ -58,8 +58,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <Link href="/?category=Kids#shop">Kids</Link>
     <Link href="/shop?category=Accessories#shop">Accessories</Link>
     <Link href="/shop?category=Accessories&type=Mugs#shop">Mugs</Link>
-    <Link href="/shop?category=Accessories&type=Magic+Mugs#shop">Magic Mugs</Link>
     <Link href="/shop?category=Accessories&type=Keychains#shop">Keychains</Link>
+    <Link href="/shop?category=Accessories&type=Caps#shop">Caps</Link>
   </div>
 
   <div className="footer-column">

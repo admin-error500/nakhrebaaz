@@ -12,14 +12,6 @@ export function CustomizationLinks({productName}:{productName:string}){
  </div>;
 }
 
-export function ProductCardDetails({description,productName}:{description:string;productName:string}){
- return <div className="product-card-details">
-  <p className="product-card-description">{description.trim()||"Wear your Nakhra, your way."}</p>
-  <p className="product-event-customization">✳ {CUSTOMIZATION_MESSAGE}</p>
-  <CustomizationLinks productName={productName}/>
- </div>;
-}
-
 export function ProductDetailCustomization({productName}:{productName:string}){
  return <section className="product-customization-info" aria-label="Custom event designs">
   <strong>MAKE IT YOUR NAKHRA ✳</strong>

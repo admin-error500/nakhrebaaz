@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 type Search = { category?: string; q?: string; type?: string; festival?: string };
 const categories = ['Men', 'Women', 'Kids', 'Accessories'];
-const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Magic Mugs', 'Keychains'];
+const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Keychains', 'Caps'];
 const festivals = ['Diwali', 'Holi', 'Navratri', 'Raksha Bandhan', 'Eid', 'Christmas'];
 const photo = {
   men: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=850&q=85',
@@ -72,12 +72,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
         <div className="editorial-heading"><div><span className="eyebrow">NAKHRA BEYOND THE OUTFIT</span><h2 id="accessories-title">EVERYDAY <em>NAKHRA.</em></h2></div><p>Same attitude. More ways to show it.</p></div>
         <div className="accessories-grid">
           <Link className="accessory-tile" href="/shop?category=Accessories&type=Mugs#shop">
-            <span className="accessory-copy"><span className="accessory-kicker">SIP WITH ATTITUDE</span><strong>NAKHRA MUGS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
+            <span className="accessory-copy"><span className="accessory-kicker">REGULAR &amp; MAGIC MUG OPTIONS</span><strong>NAKHRA MUGS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
             <span className="accessory-symbol" aria-hidden="true">☕</span>
           </Link>
-          <Link className="accessory-tile" href="/shop?category=Accessories&type=Magic+Mugs#shop">
-            <span className="accessory-copy"><span className="accessory-kicker">WATCH YOUR NAKHRA APPEAR</span><strong>MAGIC MUGS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
-            <span className="accessory-symbol" aria-hidden="true">✨</span>
+          <Link className="accessory-tile" href="/shop?category=Accessories&type=Caps#shop">
+            <span className="accessory-copy"><span className="accessory-kicker">TOP OFF YOUR NAKHRA</span><strong>NAKHRA CAPS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
+            <span className="accessory-symbol" aria-hidden="true">🧢</span>
           </Link>
           <Link className="accessory-tile" href="/shop?category=Accessories&type=Keychains#shop">
             <span className="accessory-copy"><span className="accessory-kicker">TAKE IT EVERYWHERE</span><strong>NAKHRA KEYCHAINS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
@@ -96,7 +96,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
           <Link className="btn dark" href="/shop">SEE MORE</Link>
         </div>
         <FeaturedSlider products={homeProducts.map(p=>({
-          id:p.id,name:p.name,description:p.description,image:p.image,category:p.category,
+          id:p.id,name:p.name,image:p.image,category:p.category,
           originalPrice:p.price,price:salePrice(p.price,p.saleDiscountPercent??0,sale.live),
           discountPercent:sale.live?(p.saleDiscountPercent??0):0,
           stock:p.variants.reduce((sum,v)=>sum+v.stock,0),variantCount:p.variants.length,
