@@ -20,7 +20,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <CartProvider>
           <div className="announcement"><span className="announcement-primary">FREE SHIPPING ON ₹{FREE_SHIPPING_THRESHOLD.toLocaleString("en-IN")}+ ORDERS</span><span className="announcement-divider" aria-hidden="true">✦</span><span className="announcement-secondary">NEW DROPS EVERY WEEK</span><span className="announcement-divider" aria-hidden="true">✦</span><span className="announcement-secondary">WEAR YOUR NAKHRA</span></div>
           <header className="header">
-            <Link className="logo" href="/" aria-label="Nakhrebaaz home"><img src="/nakhrebaaz-brand-v2.png" alt="NakhreBaaz" className="brand-logo-img"/></Link>
+            <Link className="logo" href="/" aria-label="Nakhrebaaz home"><img src="/nakhrebaaz-brand-v2.png" alt="NakhreBaaz" width={320} height={120} className="brand-logo-img"/></Link>
             <nav aria-label="Main navigation" className="main-nav">
               <Link href="/shop?category=Men#shop">MEN</Link>
               <Link href="/shop?category=Women#shop">WOMEN</Link>

@@ -511,8 +511,8 @@ body{background:#fffaf2;color:#151515}
  .announcement{display:flex;align-items:center;justify-content:center;min-height:36px;padding:9px 12px;font-size:11px;line-height:1.4;letter-spacing:.4px;text-align:center}
  .announcement .announcement-divider,.announcement .announcement-secondary{display:none}
  .header{position:sticky;top:0;display:flex;flex-wrap:nowrap;align-items:center;gap:10px;min-height:66px;padding:7px 14px}
- .header .logo{flex:0 1 auto;min-width:0}
- .brand-logo-img{width:clamp(125px,34vw,160px);height:52px}
+ .header .logo{display:flex;align-items:center;flex:0 1 auto;min-width:0;max-width:calc(100% - 128px)}
+ .brand-logo-img{display:block;width:clamp(140px,42vw,180px);max-width:100%;height:auto;object-fit:contain;object-position:left center}
  .header .main-nav{display:none}
  .header-actions{margin-left:auto;gap:10px;flex-shrink:0}
  .header-actions .header-account-link,.header-actions .header-admin-link{display:none}
@@ -529,7 +529,7 @@ body{background:#fffaf2;color:#151515}
 }
 @media(max-width:360px){
  .header{padding-inline:9px;gap:6px}
- .brand-logo-img{width:118px;height:46px}
+ .brand-logo-img{width:clamp(136px,42vw,152px);height:auto}
  .header-actions{gap:6px}
  .mobile-menu-toggle{padding:7px 9px}
  .mobile-menu-text{display:none}
