@@ -76,7 +76,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
       <section className="section shop-section home-featured-section" id="shop">
         <div className="editorial-heading shop-heading">
           <div><span className="eyebrow">HANDPICKED FOR YOU</span><h2>FEATURED <em>DESIGNS.</em></h2><p>Just a taste of NakhreBaaz. Explore every style in the full shop.</p></div>
-          <Link className="btn dark" href="/shop">EXPLORE ALL PRODUCTS ↗</Link>
+          <Link className="btn dark" href="/shop">SEE MORE</Link>
         </div>
         <FeaturedSlider products={homeProducts.map(p=>({
           id:p.id,name:p.name,image:p.image,category:p.category,
@@ -84,10 +84,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
           discountPercent:sale.live?(p.saleDiscountPercent??0):0,
           stock:p.variants.reduce((sum,v)=>sum+v.stock,0),variantCount:p.variants.length,
         }))}/>
-        <div className="home-shop-more"><Link className="btn dark" href="/shop">VIEW FULL COLLECTION ↗</Link></div>
+        <div className="home-shop-more"><Link className="btn dark" href="/shop">SEE MORE</Link></div>
       </section>
       <AdSlot />
-      <section className="bottom-banner"><span>THE NAKHREBAAZ MANIFESTO</span><h2>TOO MUCH<br/><em>PERSONALITY?</em><br/>NEVER.</h2><p>For every mood that refuses to blend in.</p><Link className="btn dark" href="/shop">EXPLORE THE COLLECTION ↗</Link></section>
+      <section className="bottom-banner"><span>THE NAKHREBAAZ MANIFESTO</span><h2>TOO MUCH<br/><em>PERSONALITY?</em><br/>NEVER.</h2><p>For every mood that refuses to blend in.</p><Link className="btn dark" href="/shop">SEE MORE</Link></section>
     </main>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCart } from "@/components/cart";
+import { shippingForSubtotal } from "@/lib/shipping";
 
 type Price = {variantId:string;price:number;originalPrice:number;discountPercent:number;stock:number;available:boolean};
 export function useLiveCartPrices(){
@@ -24,6 +25,6 @@ export function useLiveCartPrices(){
  useEffect(()=>{const ac=new AbortController();void reload(ac.signal);const onFocus=()=>void reload();window.addEventListener("focus",onFocus);return()=>{ac.abort();window.removeEventListener("focus",onFocus);};},[reload]);
  const unavailable=items.some(i=>!prices[i.variantId]||!prices[i.variantId].available||prices[i.variantId].stock<i.quantity);
  const subtotal=items.reduce((sum,i)=>sum+(prices[i.variantId]?.price??0)*i.quantity,0);
- const shipping=subtotal>=1499?0:99;
+ const shipping=shippingForSubtotal(subtotal);
  return {prices,loading,error,unavailable,subtotal,shipping,total:subtotal+shipping,reload};
 }
