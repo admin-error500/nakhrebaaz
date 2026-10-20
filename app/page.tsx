@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 type Search = { category?: string; q?: string; type?: string; festival?: string };
 const categories = ['Men', 'Women', 'Kids', 'Accessories'];
-const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Keychains'];
+const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Magic Mugs', 'Keychains'];
 const festivals = ['Diwali', 'Holi', 'Navratri', 'Raksha Bandhan', 'Eid', 'Christmas'];
 const photo = {
   men: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=850&q=85',
@@ -74,6 +74,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
           <Link className="accessory-tile" href="/shop?category=Accessories&type=Mugs#shop">
             <span className="accessory-copy"><span className="accessory-kicker">SIP WITH ATTITUDE</span><strong>NAKHRA MUGS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
             <span className="accessory-symbol" aria-hidden="true">☕</span>
+          </Link>
+          <Link className="accessory-tile" href="/shop?category=Accessories&type=Magic+Mugs#shop">
+            <span className="accessory-copy"><span className="accessory-kicker">WATCH YOUR NAKHRA APPEAR</span><strong>MAGIC MUGS</strong><span className="accessory-cta">SEE MORE ↗</span></span>
+            <span className="accessory-symbol" aria-hidden="true">✨</span>
           </Link>
           <Link className="accessory-tile" href="/shop?category=Accessories&type=Keychains#shop">
             <span className="accessory-copy"><span className="accessory-kicker">TAKE IT EVERYWHERE</span><strong>NAKHRA KEYCHAINS</strong><span className="accessory-cta">SEE MORE ↗</span></span>

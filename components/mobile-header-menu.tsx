@@ -42,6 +42,7 @@ export function MobileHeaderMenu({ signedIn, isAdmin }: { signedIn: boolean; isA
         <Link href="/shop" onClick={() => setOpen(false)}>SHOP ALL</Link>
         <Link href="/shop?category=Accessories#shop" onClick={() => setOpen(false)}>ACCESSORIES</Link>
         <Link href="/shop?category=Accessories&type=Mugs#shop" onClick={() => setOpen(false)}>MUGS</Link>
+        <Link href="/shop?category=Accessories&type=Magic+Mugs#shop" onClick={() => setOpen(false)}>MAGIC MUGS</Link>
         <Link href="/shop?category=Accessories&type=Keychains#shop" onClick={() => setOpen(false)}>KEYCHAINS</Link>
         <Link href={signedIn ? "/account" : "/login"} onClick={() => setOpen(false)}>{signedIn ? "MY PROFILE" : "LOGIN"}</Link>
         {isAdmin && <Link href="/admin" onClick={() => setOpen(false)}>ADMIN</Link>}

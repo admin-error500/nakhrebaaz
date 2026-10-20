@@ -4,8 +4,8 @@ import type {Prisma} from "@prisma/client";
 
 export const SHOP_BATCH_SIZE=10;
 export const CATEGORIES=["Men","Women","Kids","Accessories"] as const;
-export const PRODUCT_CATEGORIES=["Men","Women","Kids","Mugs","Keychains"] as const;
-export const GARMENT_TYPES=["T-Shirts","Hoodies","Sweatshirts","Mugs","Keychains"] as const;
+export const PRODUCT_CATEGORIES=["Men","Women","Kids","Mugs","Magic Mugs","Keychains"] as const;
+export const GARMENT_TYPES=["T-Shirts","Hoodies","Sweatshirts","Mugs","Magic Mugs","Keychains"] as const;
 export const FESTIVALS=["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"] as const;
 
 export type ShopFilters={category?:string;type?:string;festival?:string;q?:string};
@@ -28,11 +28,13 @@ export function shopWhere(query:ShopFilters):Prisma.ProductWhereInput{
  const conditions:Prisma.ProductWhereInput[]=[];
  if(filter.category){
   conditions.push(filter.category==="Accessories"
-   ?{category:{in:["Mugs","Keychains"]}}
+   ?{category:{in:["Mugs","Magic Mugs","Keychains"]}}
    :{category:filter.category});
  }
  if(filter.type){
-  conditions.push(filter.type==="Mugs"||filter.type==="Keychains"
+  conditions.push(filter.type==="Mugs"
+   ?{category:{in:["Mugs","Magic Mugs"]}}
+   :filter.type==="Magic Mugs"||filter.type==="Keychains"
    ?{category:filter.type}
    :{name:{contains:filter.type==="T-Shirts"?"T-Shirt":filter.type==="Hoodies"?"Hoodie":"Sweatshirt",mode:"insensitive"}});
  }

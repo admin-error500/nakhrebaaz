@@ -559,3 +559,22 @@ body{background:#fffaf2;color:#151515}
  .accessory-tile{min-height:145px;flex-direction:row;align-items:center}
 }
 @media(prefers-reduced-motion:reduce){.accessory-tile{transition:none}}
+
+/* Mug / magic mug design and stock controls in the admin dashboard */
+.accessories-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.mug-variant-fieldset{grid-column:1/-1;min-width:0;margin:4px 0 12px;padding:20px;border:1px solid #d8c8ac;border-radius:6px;background:#fffaf1}
+.mug-variant-fieldset legend{font-weight:900;font-size:15px;padding:0 8px}
+.mug-variant-fieldset .muted{font-size:12px;line-height:1.6}
+.mug-sku-prefix{display:flex;flex-direction:column;align-items:flex-start;gap:7px;font-size:12px;font-weight:900;margin:18px 0;max-width:400px}
+.mug-sku-prefix input{width:100%}
+.mug-color-rows{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.mug-color-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;background:#fff;border:1px solid #e1d3c0;border-radius:6px}
+.mug-color-option{display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer}
+.mug-color-option input{width:16px;height:16px;accent-color:#111}
+.mug-color-option small{color:#777}
+.mug-color-swatch,.variant-mug-swatch{width:21px;height:21px;flex:0 0 21px;border-radius:50%;border:1px solid #bdbdbd;display:inline-block}
+.mug-color-stock{display:flex;align-items:center;gap:5px;font-weight:800;font-size:11px}
+.mug-color-stock input{width:72px;padding:7px}
+.variant-mug-choice{display:inline-flex;align-items:center;gap:8px}
+@media(max-width:700px){.accessories-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.accessory-tile:nth-child(3){grid-column:1/-1;min-height:140px;flex-direction:row;align-items:center}}
+@media(max-width:360px){.accessories-grid{grid-template-columns:1fr}.accessory-tile:nth-child(3){grid-column:auto}}

@@ -58,6 +58,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <Link href="/?category=Kids#shop">Kids</Link>
     <Link href="/shop?category=Accessories#shop">Accessories</Link>
     <Link href="/shop?category=Accessories&type=Mugs#shop">Mugs</Link>
+    <Link href="/shop?category=Accessories&type=Magic+Mugs#shop">Magic Mugs</Link>
     <Link href="/shop?category=Accessories&type=Keychains#shop">Keychains</Link>
   </div>
 
