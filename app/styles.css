@@ -598,3 +598,25 @@ body{background:#fffaf2;color:#151515}
 .featured-slider-track .product-card-shell.featured-slide{display:flex}
 @media(max-width:700px){.product-card-description{font-size:10px}.product-event-customization{font-size:9px;padding:7px 8px}.product-customization-info{padding:12px}.customization-contact-links a{flex:1 1 auto;font-size:10px;padding:8px}}
 @media(max-width:480px){.admin-form .admin-product-description{grid-column:1/-1}}
+
+
+/* Full-width Sale Management on its dedicated admin page.
+   Keep the shared sale component's layout unchanged on other admin views. */
+.admin-multipage-main > #sale-management{width:100%;max-width:none;min-width:0}
+.admin-multipage-main > #sale-management .sale-admin-form{
+  width:100%;
+  max-width:none;
+  min-width:0;
+}
+.admin-multipage-main > #sale-management .sale-admin-form > *,
+.admin-multipage-main > #sale-management .sale-admin-fields > *,
+.admin-multipage-main > #sale-management .sale-products-list,
+.admin-multipage-main > #sale-management .sale-product-row{
+  min-width:0;
+  max-width:none;
+}
+@media(min-width:1200px){
+  .admin-multipage-main > #sale-management .sale-admin-fields{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
