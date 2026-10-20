@@ -3,8 +3,9 @@ import {loadSale,salePrice} from "@/lib/sale";
 import type {Prisma} from "@prisma/client";
 
 export const SHOP_BATCH_SIZE=10;
-export const CATEGORIES=["Men","Women","Kids"] as const;
-export const GARMENT_TYPES=["T-Shirts","Hoodies","Sweatshirts"] as const;
+export const CATEGORIES=["Men","Women","Kids","Accessories"] as const;
+export const PRODUCT_CATEGORIES=["Men","Women","Kids","Mugs","Keychains"] as const;
+export const GARMENT_TYPES=["T-Shirts","Hoodies","Sweatshirts","Mugs","Keychains"] as const;
 export const FESTIVALS=["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"] as const;
 
 export type ShopFilters={category?:string;type?:string;festival?:string;q?:string};
@@ -24,12 +25,22 @@ export function normalizeShopFilters(query:ShopFilters):ShopFilters{
 }
 export function shopWhere(query:ShopFilters):Prisma.ProductWhereInput{
  const filter=normalizeShopFilters(query);
+ const conditions:Prisma.ProductWhereInput[]=[];
+ if(filter.category){
+  conditions.push(filter.category==="Accessories"
+   ?{category:{in:["Mugs","Keychains"]}}
+   :{category:filter.category});
+ }
+ if(filter.type){
+  conditions.push(filter.type==="Mugs"||filter.type==="Keychains"
+   ?{category:filter.type}
+   :{name:{contains:filter.type==="T-Shirts"?"T-Shirt":filter.type==="Hoodies"?"Hoodie":"Sweatshirt",mode:"insensitive"}});
+ }
+ if(filter.q)conditions.push({name:{contains:filter.q,mode:"insensitive"}});
  return {
   active:true,
-  ...(filter.category?{category:filter.category}:{}),
   ...(filter.festival?{festival:filter.festival}:{}),
-  ...(filter.type?{name:{contains:filter.type==="T-Shirts"?"T-Shirt":filter.type==="Hoodies"?"Hoodie":"Sweatshirt",mode:"insensitive" as const}}:{}),
-  ...(filter.q?{AND:[{name:{contains:filter.q,mode:"insensitive" as const}}]}:{}),
+  ...(conditions.length?{AND:conditions}:{}),
  };
 }
 export async function shopBatch(filters:ShopFilters,cursor?:string){

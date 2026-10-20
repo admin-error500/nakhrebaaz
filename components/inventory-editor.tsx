@@ -107,16 +107,16 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
       <div className="inventory-edit-grid">
         <label>Product name<input required minLength={3} value={draft.name} onChange={e=>change('name',e.target.value)}/></label>
         <label>Price (₹)<input required type="number" min="1" step="1" value={draft.price} onChange={e=>change('price',Number(e.target.value))}/></label>
-        <label>Category<select value={draft.category} onChange={e=>change('category',e.target.value)}>{['Men','Women','Kids'].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>Category<select value={draft.category} onChange={e=>change('category',e.target.value)}>{['Men','Women','Kids','Mugs','Keychains'].map(v=><option key={v}>{v}</option>)}</select></label>
         <label>Festival<select value={draft.festival} onChange={e=>change('festival',e.target.value)}>{['','Diwali','Holi','Navratri','Raksha Bandhan','Eid','Christmas'].map(v=><option key={v} value={v}>{v||'Everyday / None'}</option>)}</select></label>
         <label className="inventory-wide">Description<textarea required minLength={5} rows={4} value={draft.description} onChange={e=>change('description',e.target.value)} /></label>
         <label className="inventory-wide">Product image URL (Cloudinary HTTPS link)<input required type="url" value={draft.image} onChange={e=>change('image',e.target.value)}/></label>
         <label className="inventory-wide inventory-visibility"><input type="checkbox" checked={draft.active} onChange={e=>change('active',e.target.checked)} /> Active — show product on website</label>
       </div>
-      <h4>Size, Color, SKU & Stock</h4>
+      <h4>Variant, Color, SKU & Stock</h4>
       <p className="admin-packing-note">Set Stock replaces current quantity. Add Stock increases it when you save. Example: current 0 + add 5 = 5.</p>
       {draft.variants.map((v,i)=><div key={v.id??'new-'+i} className="inventory-variant-row">
-        <label>Size<input required value={v.size} onChange={e=>changeVariant(i,'size',e.target.value)}/></label>
+        <label>Size / Option<input required value={v.size} onChange={e=>changeVariant(i,'size',e.target.value)}/></label>
         <label>Color<input required value={v.color} onChange={e=>changeVariant(i,'color',e.target.value)}/></label>
         <label>SKU<input required minLength={3} value={v.sku} onChange={e=>changeVariant(i,'sku',e.target.value)}/></label>
         <label>Set Stock<input required type="number" min="0" step="1" value={v.stock} onChange={e=>changeVariant(i,'stock',Number(e.target.value))}/></label>

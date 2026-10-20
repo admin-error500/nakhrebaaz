@@ -10,8 +10,8 @@ import {ShopProductList} from '@/components/shop-product-list';
 export const dynamic = 'force-dynamic';
 
 type Search = { category?: string; q?: string; type?: string; festival?: string };
-const categories = ['Men', 'Women', 'Kids'];
-const types = ['T-Shirts', 'Hoodies', 'Sweatshirts'];
+const categories = ['Men', 'Women', 'Kids', 'Accessories'];
+const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Keychains'];
 const festivals = ['Diwali', 'Holi', 'Navratri', 'Raksha Bandhan', 'Eid', 'Christmas'];
 const photo = {
   men: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=850&q=85',
@@ -25,7 +25,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   const selectedFestival = festivals.includes(festival || '') ? festival : undefined;
   const selectedCategory = categories.includes(category || '') ? category : undefined;
   const selectedType = types.includes(type || '') ? type : undefined;
-  const filterUrl = (nextCategory?:string,nextType?:string) => '/shop?' + new URLSearchParams({ ...(nextCategory?{category:nextCategory}:{}), ...(nextType?{type:nextType}:{}), ...(selectedFestival?{festival:selectedFestival}:{}), ...(q?.trim()?{q:q.trim()}:{}), }).toString() + '#shop';
+  const filterUrl = (nextCategory?:string,nextType?:string) => {
+    const categoryForType=(nextType==='Mugs'||nextType==='Keychains')?'Accessories':(nextCategory==='Accessories'&&nextType?undefined:nextCategory);
+    return '/shop?' + new URLSearchParams({ ...(categoryForType?{category:categoryForType}:{}), ...(nextType?{type:nextType}:{}), ...(selectedFestival?{festival:selectedFestival}:{}), ...(q?.trim()?{q:q.trim()}:{}), }).toString() + '#shop';
+  };
   const [sale,merch]=await Promise.all([loadSale(),loadMerchandising()]);
   const shelfIds=[...new Set([...merch.topIds,...merch.newIds])];
   const shelfProducts=shelfIds.length?await db.product.findMany({
@@ -46,9 +49,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
         <div className="products">{curatedNew.map(p=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link>)}</div>
       </section>}
       <section className="section shop-section" id="shop">
-        <div className="editorial-heading shop-heading"><div><span className="eyebrow">THE GOOD STUFF</span><h2>{selectedFestival ? selectedFestival.toUpperCase() : selectedCategory ? `${selectedCategory.toUpperCase()}'S` : 'THE'} <em>COLLECTION.</em></h2><p>Easy fits. Bold prints. A little extra Nakhra.</p></div><ShopSearch q={q || ''} category={selectedCategory} type={selectedType} festival={selectedFestival}/></div>
-        <div className="tabs" aria-label="Shop by category">{[['ALL',undefined],['MEN','Men'],['WOMEN','Women'],['KIDS','Kids']].map(([label,value])=><Link key={label} className={selectedCategory===value?'active':''} href={filterUrl(value,selectedType)}>{label}</Link>)}</div>
-        <div className="type-tabs" aria-label="Shop by clothing type">{[['ALL STYLES',undefined],['T-SHIRTS','T-Shirts'],['HOODIES','Hoodies'],['SWEATSHIRTS','Sweatshirts']].map(([label,value])=><Link key={label} className={selectedType===value?'active':''} href={filterUrl(selectedCategory,value)}>{label}</Link>)}</div>
+        <div className="editorial-heading shop-heading"><div><span className="eyebrow">THE GOOD STUFF</span><h2>{selectedFestival ? selectedFestival.toUpperCase() : selectedCategory ? selectedCategory==='Accessories'?'ACCESSORIES':`${selectedCategory.toUpperCase()}'S` : 'THE'} <em>COLLECTION.</em></h2><p>Easy fits. Bold prints. A little extra Nakhra.</p></div><ShopSearch q={q || ''} category={selectedCategory} type={selectedType} festival={selectedFestival}/></div>
+        <div className="tabs" aria-label="Shop by category">{[['ALL',undefined],['MEN','Men'],['WOMEN','Women'],['KIDS','Kids'],['ACCESSORIES','Accessories']].map(([label,value])=><Link key={label} className={selectedCategory===value?'active':''} href={filterUrl(value,selectedType)}>{label}</Link>)}</div>
+        <div className="type-tabs" aria-label="Shop by clothing type">{(selectedCategory==='Accessories'?[['ALL ACCESSORIES',undefined],['MUGS','Mugs'],['KEYCHAINS','Keychains']]:[['ALL STYLES',undefined],['T-SHIRTS','T-Shirts'],['HOODIES','Hoodies'],['SWEATSHIRTS','Sweatshirts'],['MUGS','Mugs'],['KEYCHAINS','Keychains']]).map(([label,value])=><Link key={label} className={selectedType===value?'active':''} href={filterUrl(selectedCategory,value)}>{label}</Link>)}</div>
         {selectedFestival && <div className="festival-active"><span>FESTIVAL: {selectedFestival}</span><Link href="/shop">CLEAR FILTER ✕</Link></div>}
         <ShopProductList key={[selectedCategory,selectedType,selectedFestival,q].join("|")} initial={firstBatch.products} nextCursor={firstBatch.nextCursor} filters={{category:selectedCategory,type:selectedType,festival:selectedFestival,q}} />
       </section>
