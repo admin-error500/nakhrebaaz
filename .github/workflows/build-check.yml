@@ -22,6 +22,8 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - name: Shop filters, navigation and search regression tests
+        run: npm run test:shop
       - run: npx prisma generate
       - name: TypeScript validation
         run: npx tsc --noEmit

@@ -1,0 +1,14 @@
+import type {Prisma} from "@prisma/client";
+export type ShopFilters={category?:string;type?:string;festival?:string;q?:string};
+export declare const CATEGORIES:readonly string[];
+export declare const CLOTHING_TYPES:readonly string[];
+export declare const ACCESSORY_TYPES:readonly string[];
+export declare const GARMENT_TYPES:readonly string[];
+export declare const FESTIVALS:readonly string[];
+export declare function normalizeShopFilters(raw?:ShopFilters):ShopFilters;
+export declare function shopQueryParams(filters?:ShopFilters):URLSearchParams;
+export declare function shopHref(filters?:ShopFilters):string;
+export declare function categoryHref(current:ShopFilters,nextCategory?:string):string;
+export declare function typeHref(current:ShopFilters,nextType?:string):string;
+export declare function searchHref(text:string):string;
+export declare function shopWhere(raw?:ShopFilters):Prisma.ProductWhereInput;

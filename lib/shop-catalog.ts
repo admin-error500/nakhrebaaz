@@ -1,50 +1,22 @@
 import {db} from "@/lib/db";
 import {loadSale,salePrice} from "@/lib/sale";
-import type {Prisma} from "@prisma/client";
+import {shopWhere} from "./shop-filters.mjs";
+import type {ShopFilters} from "./shop-filters.mjs";
+
+export {
+ CATEGORIES,CLOTHING_TYPES,ACCESSORY_TYPES,GARMENT_TYPES,FESTIVALS,
+ normalizeShopFilters,shopWhere,shopQueryParams,shopHref,categoryHref,typeHref,searchHref
+} from "./shop-filters.mjs";
+export type {ShopFilters} from "./shop-filters.mjs";
 
 export const SHOP_BATCH_SIZE=10;
-export const CATEGORIES=["Men","Women","Kids","Accessories"] as const;
 export const PRODUCT_CATEGORIES=["Men","Women","Kids","Mugs","Magic Mugs","Keychains","Caps"] as const;
-export const GARMENT_TYPES=["T-Shirts","Hoodies","Sweatshirts","Mugs","Keychains","Caps"] as const;
-export const FESTIVALS=["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"] as const;
 
-export type ShopFilters={category?:string;type?:string;festival?:string;q?:string};
 export type ShopProduct={
  id:string;name:string;description:string;image:string;category:string;festival:string|null;
  price:number;originalPrice:number;discountPercent:number;stock:number;variantCount:number;
 };
 
-export function normalizeShopFilters(query:ShopFilters):ShopFilters{
- const trimmed=query.q?.trim().slice(0,80);
- return {
-  ...(CATEGORIES.some(v=>v===query.category)?{category:query.category}:{}),
-  ...(GARMENT_TYPES.some(v=>v===query.type)?{type:query.type}:{}),
-  ...(FESTIVALS.some(v=>v===query.festival)?{festival:query.festival}:{}),
-  ...(trimmed?{q:trimmed}:{}),
- };
-}
-export function shopWhere(query:ShopFilters):Prisma.ProductWhereInput{
- const filter=normalizeShopFilters(query);
- const conditions:Prisma.ProductWhereInput[]=[];
- if(filter.category){
-  conditions.push(filter.category==="Accessories"
-   ?{category:{in:["Mugs","Magic Mugs","Keychains","Caps"]}}
-   :{category:filter.category});
- }
- if(filter.type){
-  conditions.push(filter.type==="Mugs"
-   ?{category:{in:["Mugs","Magic Mugs"]}}
-   :filter.type==="Keychains"||filter.type==="Caps"
-   ?{category:filter.type}
-   :{name:{contains:filter.type==="T-Shirts"?"T-Shirt":filter.type==="Hoodies"?"Hoodie":"Sweatshirt",mode:"insensitive"}});
- }
- if(filter.q)conditions.push({name:{contains:filter.q,mode:"insensitive"}});
- return {
-  active:true,
-  ...(filter.festival?{festival:filter.festival}:{}),
-  ...(conditions.length?{AND:conditions}:{}),
- };
-}
 export async function shopBatch(filters:ShopFilters,cursor?:string){
  const where=shopWhere(filters);
  const sale=await loadSale();

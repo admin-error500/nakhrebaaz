@@ -2,6 +2,7 @@
 import Link from "next/link";
 import {useEffect,useRef,useState} from "react";
 import type {ShopFilters,ShopProduct} from "@/lib/shop-catalog";
+import {shopQueryParams} from "@/lib/shop-filters.mjs";
 
 export function ShopProductList({initial,nextCursor:initialCursor,filters}:{initial:ShopProduct[];nextCursor:string|null;filters:ShopFilters}){
  const [items,setItems]=useState(initial);
@@ -20,11 +21,7 @@ export function ShopProductList({initial,nextCursor:initialCursor,filters}:{init
   if(!cursor||isFetching.current)return;
   isFetching.current=true;setBusy(true);setError("");
   const id=requestId.current;
-  const search=new URLSearchParams();
-  if(filters.category)search.set("category",filters.category);
-  if(filters.type)search.set("type",filters.type);
-  if(filters.festival)search.set("festival",filters.festival);
-  if(filters.q)search.set("q",filters.q);
+  const search=shopQueryParams(filters);
   search.set("cursor",cursor);
   try{
    const response=await fetch("/api/shop/products?"+search.toString(),{cache:"no-store"});
