@@ -18,7 +18,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <CartProvider>
           <div className="announcement">FREE SHIPPING ABOVE ₹1,499 <span>✦</span> NEW DROPS EVERY WEEK <span>✦</span> WEAR YOUR NAKHRA</div>
           <header className="header">
-            <Link className="logo" href="/" aria-label="Nakhrebaaz home"><img src="/nakhrebaaz-logo.png" alt="NakhreBaaz" className="brand-logo-img"/></Link>
+            <Link className="logo" href="/" aria-label="Nakhrebaaz home"><img src="/nakhrebaaz-brand-v2.png" alt="NakhreBaaz" className="brand-logo-img"/></Link>
             <nav aria-label="Main navigation" className="main-nav">
               <Link href="/shop?category=Men#shop">MEN</Link>
               <Link href="/shop?category=Women#shop">WOMEN</Link>
@@ -36,7 +36,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 <footer className="site-footer">
   <div className="footer-brand">
     <img
-      src="/nakhrebaaz-logo.png"
+      src="/nakhrebaaz-brand-v2.png"
       alt="NakhreBaaz"
       className="footer-logo-img"
     />
