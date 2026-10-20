@@ -5,7 +5,7 @@
  */
 const email=(process.env.NEXT_PUBLIC_CUSTOMIZATION_EMAIL || "").trim();
 const rawWhatsApp=(process.env.NEXT_PUBLIC_CUSTOMIZATION_WHATSAPP_NUMBER || "").trim();
-export const customizationEmail=/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)?email:null;
+export const customizationEmail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)?email:null;
 const number=rawWhatsApp.replace(/[^0-9]/g,"");
 export const customizationWhatsApp=/^[1-9][0-9]{9,14}$/.test(number)?number:null;
 
