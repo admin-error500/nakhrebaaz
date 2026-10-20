@@ -620,3 +620,17 @@ body{background:#fffaf2;color:#151515}
     grid-template-columns:repeat(3,minmax(0,1fr));
   }
 }
+
+/* Owner-approved storefront mark: compact desktop sizing matching localhost screenshot. */
+.header .logo{display:flex;align-items:center;flex:0 1 auto;min-width:0}
+.header .brand-logo-img{display:block;width:240px;height:70px;max-width:100%;object-fit:contain;object-position:left center}
+.site-footer .footer-logo-img{display:block;width:240px;max-width:100%;height:auto;object-fit:contain}
+@media(max-width:760px){
+ .header .logo{max-width:calc(100% - 130px);flex:0 1 auto;min-width:0}
+ .header .brand-logo-img{width:clamp(140px,38vw,176px);height:54px;max-width:100%;object-fit:contain;object-position:left center}
+ .header .header-actions{flex-shrink:0;margin-left:auto}
+}
+@media(max-width:360px){
+ .header .logo{max-width:calc(100% - 118px)}
+ .header .brand-logo-img{width:138px;height:49px;max-width:100%}
+}

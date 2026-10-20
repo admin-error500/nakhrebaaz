@@ -206,22 +206,21 @@ export async function GET(_request: NextRequest, context: RouteContext) {
       doc.on("error", reject);
     });
 
-    // Header: centered invoice title, logo, and aligned seller/customer columns.
-    doc.fillColor(INK).font("Helvetica-Bold").fontSize(19)
-      .text("TAX INVOICE", X, 40, { width: RIGHT - X, align: "center" });
-
-    // Dedicated invoice artwork supplied by the store owner; storefront logo stays unchanged.
+    // Reserve separate columns for the brand artwork and invoice heading.
+    // Avoid overlap and preserve aspect ratio when drawing the owner-provided logo.
     const logoPath = path.join(process.cwd(), "public", "nakhrebaaz-invoice-logo.png");
     if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, X, 35, { fit: [132, 48] });
+      doc.image(logoPath, X, 39, { fit: [205, 67], align: "left", valign: "center" });
     }
+    doc.fillColor(INK).font("Helvetica-Bold").fontSize(19)
+      .text("TAX INVOICE", 303, 57, { width: RIGHT - 303, align: "right", lineBreak: false });
 
-    const detailsHeadingY = 95;
-    const detailsBodyY = 115;
+    const detailsHeadingY = 137;
+    const detailsBodyY = 157;
     const sellerX = X;
-    const customerX = 310;
-    const sellerWidth = 235;
-    const customerWidth = 240;
+    const customerX = 356;
+    const sellerWidth = 275;
+    const customerWidth = RIGHT - customerX;
 
     doc.fillColor(INK).font("Helvetica-Bold").fontSize(10)
       .text("SELLER DETAILS", sellerX, detailsHeadingY, { width: sellerWidth });
@@ -353,7 +352,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     // The brand logo occupies the signature area; the owner can sign directly on it.
     // No pre-printed signature image is included.
     if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, 393, y, { fit: [140, 48], align: "center", valign: "center" });
+      doc.image(logoPath, 407, y, { fit: [126, 48], align: "center", valign: "center" });
     }
     doc.moveTo(380, y + 54).lineTo(540, y + 54).strokeColor(INK).stroke();
     doc.fillColor(INK).font("Helvetica-Bold").fontSize(9)
