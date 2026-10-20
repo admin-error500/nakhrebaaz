@@ -495,3 +495,8 @@ body{background:#fffaf2;color:#151515}
 }
 .admin-multipage-main .admin-order-top,.admin-multipage-main .admin-order-columns{min-width:0}
 .admin-multipage-main .admin-order-card{min-width:0;overflow-wrap:anywhere}
+
+/* Updated NakhreBaaz orange/white logo: keep legible on the dark site header. */
+.brand-logo-img{width:clamp(170px,17vw,220px);height:74px;object-fit:contain;object-position:left center}
+.footer-logo-img{width:230px;max-width:100%;height:auto;object-fit:contain}
+@media(max-width:760px){.brand-logo-img{width:170px;height:62px}}
