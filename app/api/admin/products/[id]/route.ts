@@ -15,7 +15,7 @@ const variantSchema = z.object({
 const schema = z.object({
   name: z.string().trim().min(3),
   description: z.string().trim().min(5),
-  category: z.enum(['Men','Women','Kids','Mugs','Magic Mugs','Keychains']),
+  category: z.enum(['Men','Women','Kids','Mugs','Magic Mugs','Keychains','Caps']),
   festival: z.enum(['Diwali','Holi','Navratri','Raksha Bandhan','Eid','Christmas']).nullable(),
   image: z.string().url().refine(v=>v.startsWith('https://'),'Image URL must start with https://'),
   price: z.number().int().min(1),

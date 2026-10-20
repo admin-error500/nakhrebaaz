@@ -7,5 +7,9 @@ export const MUG_COLORS = [
 ] as const;
 
 export type MugColor = (typeof MUG_COLORS)[number]["name"];
-export const isMugCategory = (category: string) => category === "Mugs" || category === "Magic Mugs";
+export const MUG_STYLES=[{name:"Regular",code:"REG"},{name:"Magic",code:"MAG"}] as const;
+// Historic Magic Mugs products must remain readable after removing the separate storefront category.
+export const isMugCategory=(category:string)=>category==="Mugs"||category==="Magic Mugs";
+export const mugVariantStyle=(size:string,category:string)=>
+  category==="Magic Mugs"||/magic/i.test(size)?"Magic":"Regular";
 export const mugSwatch = (color: string) => MUG_COLORS.find(c => c.name.toLowerCase() === color.toLowerCase())?.hex ?? "#dedede";

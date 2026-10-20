@@ -6,13 +6,12 @@ import {loadMerchandising,curate} from '@/lib/merchandising';
 import {AdSlot} from '@/components/ad-slot';
 import {shopBatch,normalizeShopFilters,shopWhere} from '@/lib/shop-catalog';
 import {ShopProductList} from '@/components/shop-product-list';
-import {ProductCardDetails} from '@/components/product-card-details';
 
 export const dynamic = 'force-dynamic';
 
 type Search = { category?: string; q?: string; type?: string; festival?: string };
 const categories = ['Men', 'Women', 'Kids', 'Accessories'];
-const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Magic Mugs', 'Keychains'];
+const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Keychains', 'Caps'];
 const festivals = ['Diwali', 'Holi', 'Navratri', 'Raksha Bandhan', 'Eid', 'Christmas'];
 const photo = {
   men: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=850&q=85',
@@ -27,7 +26,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
   const selectedCategory = categories.includes(category || '') ? category : undefined;
   const selectedType = types.includes(type || '') ? type : undefined;
   const filterUrl = (nextCategory?:string,nextType?:string) => {
-    const categoryForType=(nextType==='Mugs'||nextType==='Magic Mugs'||nextType==='Keychains')?'Accessories':(nextCategory==='Accessories'&&nextType?undefined:nextCategory);
+    const categoryForType=(nextType==='Mugs'||nextType==='Keychains'||nextType==='Caps')?'Accessories':(nextCategory==='Accessories'&&nextType?undefined:nextCategory);
     return '/shop?' + new URLSearchParams({ ...(categoryForType?{category:categoryForType}:{}), ...(nextType?{type:nextType}:{}), ...(selectedFestival?{festival:selectedFestival}:{}), ...(q?.trim()?{q:q.trim()}:{}), }).toString() + '#shop';
   };
   const [sale,merch]=await Promise.all([loadSale(),loadMerchandising()]);
@@ -43,16 +42,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
     <main className="shop-catalogue-page">
       {curatedTop.length>0 && <section className="section storefront-shelf" aria-label="Top collection">
         <div className="editorial-heading"><div><span className="eyebrow">HANDPICKED</span><h2>TOP <em>COLLECTION.</em></h2></div></div>
-        <div className="products">{curatedTop.map(p=><article className="product-card-shell" key={p.id}><Link href={`/product/${p.id}`} className="product"><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link><ProductCardDetails description={p.description} productName={p.name}/></article>)}</div>
+        <div className="products">{curatedTop.map(p=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link>)}</div>
       </section>}
       {curatedNew.length>0 && <section className="section storefront-shelf" aria-label="New arrivals">
         <div className="editorial-heading"><div><span className="eyebrow">JUST LANDED</span><h2>NEW <em>ARRIVALS.</em></h2></div></div>
-        <div className="products">{curatedNew.map(p=><article className="product-card-shell" key={p.id}><Link href={`/product/${p.id}`} className="product"><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link><ProductCardDetails description={p.description} productName={p.name}/></article>)}</div>
+        <div className="products">{curatedNew.map(p=><Link href={`/product/${p.id}`} className="product" key={p.id}><div className="product-img"><img src={p.image} alt={p.name} loading="lazy"/></div><div className="product-line"><b>{p.name}</b><strong>₹{salePrice(p.price,p.saleDiscountPercent??0,sale.live).toLocaleString('en-IN')}</strong></div><small>{p.category.toUpperCase()}</small></Link>)}</div>
       </section>}
       <section className="section shop-section" id="shop">
         <div className="editorial-heading shop-heading"><div><span className="eyebrow">THE GOOD STUFF</span><h2>{selectedFestival ? selectedFestival.toUpperCase() : selectedCategory ? selectedCategory==='Accessories'?'ACCESSORIES':`${selectedCategory.toUpperCase()}'S` : 'THE'} <em>COLLECTION.</em></h2><p>Easy fits. Bold prints. A little extra Nakhra.</p></div><ShopSearch q={q || ''} category={selectedCategory} type={selectedType} festival={selectedFestival}/></div>
         <div className="tabs" aria-label="Shop by category">{[['ALL',undefined],['MEN','Men'],['WOMEN','Women'],['KIDS','Kids'],['ACCESSORIES','Accessories']].map(([label,value])=><Link key={label} className={selectedCategory===value?'active':''} href={filterUrl(value,selectedType)}>{label}</Link>)}</div>
-        <div className="type-tabs" aria-label="Shop by clothing type">{(selectedCategory==='Accessories'?[['ALL ACCESSORIES',undefined],['MUGS','Mugs'],['MAGIC MUGS','Magic Mugs'],['KEYCHAINS','Keychains']]:[['ALL STYLES',undefined],['T-SHIRTS','T-Shirts'],['HOODIES','Hoodies'],['SWEATSHIRTS','Sweatshirts'],['MUGS','Mugs'],['KEYCHAINS','Keychains']]).map(([label,value])=><Link key={label} className={selectedType===value?'active':''} href={filterUrl(selectedCategory,value)}>{label}</Link>)}</div>
+        <div className="type-tabs" aria-label="Shop by clothing type">{(selectedCategory==='Accessories'?[['ALL ACCESSORIES',undefined],['MUGS','Mugs'],['KEYCHAINS','Keychains'],['CAPS','Caps']]:[['ALL STYLES',undefined],['T-SHIRTS','T-Shirts'],['HOODIES','Hoodies'],['SWEATSHIRTS','Sweatshirts'],['MUGS','Mugs'],['KEYCHAINS','Keychains'],['CAPS','Caps']]).map(([label,value])=><Link key={label} className={selectedType===value?'active':''} href={filterUrl(selectedCategory,value)}>{label}</Link>)}</div>
         {selectedFestival && <div className="festival-active"><span>FESTIVAL: {selectedFestival}</span><Link href="/shop">CLEAR FILTER ✕</Link></div>}
         <ShopProductList key={[selectedCategory,selectedType,selectedFestival,q].join("|")} initial={firstBatch.products} nextCursor={firstBatch.nextCursor} filters={{category:selectedCategory,type:selectedType,festival:selectedFestival,q}} />
       </section>

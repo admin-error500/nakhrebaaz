@@ -7,7 +7,7 @@ import { z } from 'zod';
 const schema = z.object({
   name: z.string().trim().min(3, 'Product name must be at least 3 characters'),
   description: z.string().trim().min(5, 'Description must be at least 5 characters'),
-  category: z.enum(['Men', 'Women', 'Kids', 'Mugs', 'Magic Mugs', 'Keychains']),
+  category: z.enum(['Men', 'Women', 'Kids', 'Mugs', 'Keychains', 'Caps']),
   festival: z.enum(['Diwali', 'Holi', 'Navratri', 'Raksha Bandhan', 'Eid', 'Christmas']).nullable().optional(),
   image: z.string().url('Please enter a valid image URL'),
   price: z.number().int().min(1, 'Price must be at least ₹1'),

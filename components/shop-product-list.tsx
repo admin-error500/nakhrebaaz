@@ -2,7 +2,6 @@
 import Link from "next/link";
 import {useEffect,useRef,useState} from "react";
 import type {ShopFilters,ShopProduct} from "@/lib/shop-catalog";
-import {ProductCardDetails} from "@/components/product-card-details";
 
 export function ShopProductList({initial,nextCursor:initialCursor,filters}:{initial:ShopProduct[];nextCursor:string|null;filters:ShopFilters}){
  const [items,setItems]=useState(initial);
@@ -42,13 +41,13 @@ export function ShopProductList({initial,nextCursor:initialCursor,filters}:{init
  }
  return <div>
   <div className="product-meta"><span>{items.length} STYLES LOADED</span><span>✳ MORE TO EXPLORE</span></div>
-  <div className="products" id="filtered-products">{items.map((p,i)=><article className="product-card-shell" key={p.id}><Link href={`/product/${p.id}`} className="product">
+  <div className="products" id="filtered-products">{items.map((p,i)=><Link href={`/product/${p.id}`} className="product" key={p.id}>
    <div className="product-img"><img src={p.image} alt={p.name} loading={i<4?"eager":"lazy"}/>
     <span className="pill">{p.stock===0?"SOLD OUT":p.discountPercent>0?`${p.discountPercent}% OFF`:p.festival||(i%3===0?"BESTSELLER":"NEW DROP")}</span><span className="product-arrow">↗</span>
    </div>
    <div className="product-line"><b>{p.name}</b><span className="sale-price-pair">{p.discountPercent>0&&<del>₹{p.originalPrice.toLocaleString("en-IN")}</del>}<strong>₹{p.price.toLocaleString("en-IN")}</strong></span></div>
    <small>{p.category.toUpperCase()} · {p.stock===0?"OUT OF STOCK":`${p.variantCount} OPTIONS`}</small>
-  </Link><ProductCardDetails description={p.description} productName={p.name}/></article>)}</div>
+  </Link>)}</div>
   {items.length===0&&<div className="empty-products"><h3>No styles found yet.</h3><p>Try another category or search term.</p><Link href="/shop" className="btn dark">VIEW ALL STYLES</Link></div>}
   {error&&<p role="alert" className="error">{error}</p>}
   {cursor&&<button type="button" className="load-next-batch" onClick={()=>void next()} disabled={busy}>{busy?"LOADING PRODUCTS…":"SEE MORE"}</button>}

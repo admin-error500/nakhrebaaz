@@ -14,7 +14,7 @@ type DraftVariant={id?:string;size:string;color:string;stock:number;sku:string;a
 type Draft={name:string;description:string;image:string;price:number;category:string;festival:string;active:boolean;variants:DraftVariant[]};
 const emptyVariant=(category:string,existing:DraftVariant[]):DraftVariant=>{
   const color=isMugCategory(category)?MUG_COLORS.find(c=>!existing.some(v=>v.color===c.name))?.name??'':'';
-  return {size:isMugCategory(category)?'One Size':'',color,stock:0,sku:'',addStock:0};
+  return {size:isMugCategory(category)?'Regular':category==='Caps'?'Adjustable':'',color,stock:0,sku:'',addStock:0};
 };
 const toDraft=(p:InventoryProduct):Draft=>({
   name:p.name,description:p.description,image:p.image,price:p.price,
@@ -111,17 +111,17 @@ export function InventoryEditor({products,totalSold,totalAvailable,initialEditId
       <div className="inventory-edit-grid">
         <label>Product name<input required minLength={3} value={draft.name} onChange={e=>change('name',e.target.value)}/></label>
         <label>Price (₹)<input required type="number" min="1" step="1" value={draft.price} onChange={e=>change('price',Number(e.target.value))}/></label>
-        <label>Category<select value={draft.category} onChange={e=>change('category',e.target.value)}>{['Men','Women','Kids','Mugs','Magic Mugs','Keychains'].map(v=><option key={v}>{v}</option>)}</select></label>
+        <label>Category<select value={draft.category} onChange={e=>change('category',e.target.value)}>{['Men','Women','Kids','Mugs','Keychains','Caps',...(draft.category==='Magic Mugs'?['Magic Mugs']:[])].map(v=><option key={v}>{v}</option>)}</select></label>
         <label>Festival<select value={draft.festival} onChange={e=>change('festival',e.target.value)}>{['','Diwali','Holi','Navratri','Raksha Bandhan','Eid','Christmas'].map(v=><option key={v} value={v}>{v||'Everyday / None'}</option>)}</select></label>
         <label className="inventory-wide">Description<textarea required minLength={5} rows={4} value={draft.description} onChange={e=>change('description',e.target.value)} /></label>
         <label className="inventory-wide">Product image URL (Cloudinary HTTPS link)<input required type="url" value={draft.image} onChange={e=>change('image',e.target.value)}/></label>
         <label className="inventory-wide inventory-visibility"><input type="checkbox" checked={draft.active} onChange={e=>change('active',e.target.checked)} /> Active — show product on website</label>
       </div>
-      {isMugCategory(draft.category)&&<datalist id="available-mug-colours">{MUG_COLORS.map(c=><option key={c.code} value={c.name}/>)}</datalist>}
+      {isMugCategory(draft.category)&&<><datalist id="available-mug-colours">{MUG_COLORS.map(c=><option key={c.code} value={c.name}/>)}</datalist><datalist id="mug-type-options"><option value="Regular"/><option value="Magic"/><option value="One Size"/></datalist></>}
       <h4>Variant, Color, SKU & Stock</h4>
       <p className="admin-packing-note">Set Stock replaces current quantity. Add Stock increases it when you save. Example: current 0 + add 5 = 5.</p>
       {draft.variants.map((v,i)=><div key={v.id??'new-'+i} className="inventory-variant-row">
-        <label>Size / Option<input required value={v.size} onChange={e=>changeVariant(i,'size',e.target.value)}/></label>
+        <label>{isMugCategory(draft.category)?"Mug type (Regular / Magic)":draft.category==="Caps"?"Cap fit / Size":"Size / Option"}<input required list={isMugCategory(draft.category)?"mug-type-options":undefined} value={v.size} onChange={e=>changeVariant(i,'size',e.target.value)}/></label>
         <label>Color<input required list={isMugCategory(draft.category)?'available-mug-colours':undefined} value={v.color} onChange={e=>changeVariant(i,'color',e.target.value)}/></label>
         <label>SKU<input required minLength={3} value={v.sku} onChange={e=>changeVariant(i,'sku',e.target.value)}/></label>
         <label>Set Stock<input required type="number" min="0" step="1" value={v.stock} onChange={e=>changeVariant(i,'stock',Number(e.target.value))}/></label>

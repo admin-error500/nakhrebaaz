@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, useRef, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { InventoryEditor, type InventoryProduct } from './inventory-editor';
 import { MugVariantFields } from './mug-variant-fields';
-import { MUG_COLORS, isMugCategory } from '@/lib/mug-options';
+import { MUG_COLORS, MUG_STYLES, isMugCategory } from '@/lib/mug-options';
 import { SaleManagement, type SaleAdminCampaign } from './sale-management';
 type Product = InventoryProduct & {saleDiscountPercent:number};
 type Order = { id: string; name: string; email: string; total: number; status: string; paymentMethod: string; paymentStatus: string; addressJson: string; createdAt: string; items: { name: string; size: string; color: string; quantity: number }[] };
@@ -119,12 +119,12 @@ export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAva
     const d = Object.fromEntries(new FormData(form));
     const category=String(d.category);
     const variants=isMugCategory(category)
-      ?MUG_COLORS.filter(c=>d["mugColor"+c.code]==="on").map(c=>({
-        size:"One Size",color:c.name,stock:Number(d["mugStock"+c.code]??0),
-        sku:String(d.skuPrefix).trim().toUpperCase()+"-"+c.code,
-      }))
+      ?MUG_STYLES.flatMap(style=>MUG_COLORS.filter(c=>d["mugColor"+style.code+c.code]==="on").map(c=>({
+        size:style.name,color:c.name,stock:Number(d["mugStock"+style.code+c.code]??0),
+        sku:String(d.skuPrefix).trim().toUpperCase()+"-"+style.code+"-"+c.code,
+      })))
       :[{size:String(d.size),color:String(d.color),stock:Number(d.stock),sku:String(d.sku)}];
-    if(!variants.length){setCreatingProduct(false);setProductMessage({type:'error',text:'Select at least one mug colour.'});return;}
+    if(!variants.length){setCreatingProduct(false);setProductMessage({type:'error',text:'Select at least one mug type and colour.'});return;}
     const payload = { name: d.name, description: d.description, category, festival: d.festival || null, image: d.image, price: Number(d.price), variants };
     try {
       const r = await fetch('/api/admin/products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -219,7 +219,7 @@ export function AdminPanel({ products = [], orders = [], totalSold = 0, totalAva
     </section>
 </>}
     {(view === 'all' || view === 'new') && <>
-    <section className="admin-block" id="add-product"><div className="admin-heading"><div><span className="eyebrow">NEW ARRIVALS</span><h2>ADD PRODUCT</h2></div></div><form className="admin-form" onSubmit={create}><input name="name" placeholder="Product name" required/><textarea name="description" className="admin-product-description" rows={3} minLength={5} placeholder="Describe the product, design and any custom event options." required/><select name="category" aria-label="Product category" value={newProductCategory} onChange={e=>setNewProductCategory(e.target.value)}><option>Men</option><option>Women</option><option>Kids</option><option>Mugs</option><option>Magic Mugs</option><option>Keychains</option></select><select name="festival" aria-label="Festival collection"><option value="">No festival / Everyday</option>{["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"].map(f => <option key={f} value={f}>{f}</option>)}</select><input name="image" type="url" placeholder="Image URL (https://...)" required/><input name="price" type="number" min="1" placeholder="Price ₹" required/>{isMugCategory(newProductCategory)?<MugVariantFields key={newProductCategory} magic={newProductCategory==="Magic Mugs"}/>:<><input name="size" placeholder="Size e.g. M / One Size for accessories" required/><input name="color" placeholder="Color e.g. Black" required/><input name="stock" type="number" min="0" placeholder="Stock" required/><input name="sku" placeholder="Unique SKU" required/></>}<button className="btn dark" disabled={creatingProduct}>{creatingProduct ? 'ADDING PRODUCT...' : 'ADD PRODUCT'}</button></form>{productMessage && <p role={productMessage.type === 'error' ? 'alert' : 'status'} aria-live="polite" style={{ marginTop: 16, padding: 14, borderRadius: 6, border: `1px solid ${productMessage.type === 'error' ? '#dc2626' : '#15803d'}`, color: productMessage.type === 'error' ? '#991b1b' : '#166534', background: productMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', fontWeight: 600 }}>{productMessage.type === 'error' ? '⚠ ' : '✓ '}{productMessage.text}</p>}</section>
+    <section className="admin-block" id="add-product"><div className="admin-heading"><div><span className="eyebrow">NEW ARRIVALS</span><h2>ADD PRODUCT</h2></div></div><form className="admin-form" onSubmit={create}><input name="name" placeholder="Product name" required/><textarea name="description" className="admin-product-description" rows={3} minLength={5} placeholder="Describe the product, design and any custom event options." required/><select name="category" aria-label="Product category" value={newProductCategory} onChange={e=>setNewProductCategory(e.target.value)}><option>Men</option><option>Women</option><option>Kids</option><option>Mugs</option><option>Keychains</option><option>Caps</option></select><select name="festival" aria-label="Festival collection"><option value="">No festival / Everyday</option>{["Diwali","Holi","Navratri","Raksha Bandhan","Eid","Christmas"].map(f => <option key={f} value={f}>{f}</option>)}</select><input name="image" type="url" placeholder="Image URL (https://...)" required/><input name="price" type="number" min="1" placeholder="Price ₹" required/>{isMugCategory(newProductCategory)?<MugVariantFields key={newProductCategory}/>:<><input key={newProductCategory} name="size" defaultValue={newProductCategory==="Caps"?"Adjustable":""} placeholder={newProductCategory==="Caps"?"Cap fit e.g. Adjustable, One Size":"Size e.g. M / One Size for accessories"} required/><input name="color" placeholder="Color e.g. Black" required/><input name="stock" type="number" min="0" placeholder="Stock" required/><input name="sku" placeholder="Unique SKU" required/></>}<button className="btn dark" disabled={creatingProduct}>{creatingProduct ? 'ADDING PRODUCT...' : 'ADD PRODUCT'}</button></form>{productMessage && <p role={productMessage.type === 'error' ? 'alert' : 'status'} aria-live="polite" style={{ marginTop: 16, padding: 14, borderRadius: 6, border: `1px solid ${productMessage.type === 'error' ? '#dc2626' : '#15803d'}`, color: productMessage.type === 'error' ? '#991b1b' : '#166534', background: productMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', fontWeight: 600 }}>{productMessage.type === 'error' ? '⚠ ' : '✓ '}{productMessage.text}</p>}</section>
 </>}
   </>;
 }
