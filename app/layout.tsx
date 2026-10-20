@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { currentUser } from '@/lib/auth';
 import { CartProvider, CartCount } from '@/components/cart';
+import { MobileNavigation } from '@/components/mobile-navigation';
 
 export const metadata = {
   title: 'Nakhrebaaz | Wear Your Nakhra',
@@ -16,7 +17,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       <body>
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && /^ca-pub-\d{16}$/.test(process.env.NEXT_PUBLIC_ADSENSE_CLIENT) && <Script async strategy="afterInteractive" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`} crossOrigin="anonymous" />}
         <CartProvider>
-          <div className="announcement">FREE SHIPPING ABOVE ₹1,499 <span>✦</span> NEW DROPS EVERY WEEK <span>✦</span> WEAR YOUR NAKHRA</div>
+          <div className="announcement" aria-label="Store offers"><span className="announcement-shipping">FREE SHIPPING ABOVE ₹999</span><span className="announcement-separator" aria-hidden="true">✦</span><span className="announcement-message">NEW DROPS EVERY WEEK</span><span className="announcement-separator" aria-hidden="true">✦</span><span className="announcement-slogan">WEAR YOUR NAKHRA</span></div>
           <header className="header">
             <Link className="logo" href="/" aria-label="Nakhrebaaz home"><img src="/nakhrebaaz-brand-v2.png" alt="NakhreBaaz" className="brand-logo-img"/></Link>
             <nav aria-label="Main navigation" className="main-nav">
@@ -26,8 +27,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
               <Link href="/shop">SHOP ALL</Link>
             </nav>
             <div className="header-actions">
-              {user ? <Link href="/account" aria-label="My profile">MY PROFILE</Link> : <Link href="/login">LOGIN</Link>}
-              {user?.role === 'ADMIN' && <Link href="/admin">ADMIN</Link>}
+              <MobileNavigation signedIn={Boolean(user)} isAdmin={user?.role==="ADMIN"}/>
+              {user ? <Link className="header-account-link" href="/account" aria-label="My profile">MY PROFILE</Link> : <Link className="header-account-link" href="/login">LOGIN</Link>}
+              {user?.role === 'ADMIN' && <Link className="header-admin-link" href="/admin">ADMIN</Link>}
               <Link className="bag-link" href="/cart" aria-label="Shopping bag">BAG <span className="bag-count"><CartCount /></span></Link>
             </div>
           </header>
