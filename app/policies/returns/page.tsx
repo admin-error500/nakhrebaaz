@@ -12,7 +12,10 @@ export default function ReturnPolicy(){return <main className="policy-page">
  <h2>How to request a return</h2>
  <p>Contact our support team with the order ID, a description of the issue, and clear photographs of the product and packaging. Please keep the item and its packaging available while we review the request. You can also contact us through the email or WhatsApp options shown on the product page once merchant contact details are configured.</p>
  <p>We will review the evidence and provide instructions for an approved return. No return should be shipped without confirmation from support.</p>
+ <h2>Review and resolution</h2>
+ <p>Support may ask for additional photographs or order information to verify damage, defects, incorrect items or a material mismatch. Depending on the outcome and applicable rights, the resolution may include an appropriate replacement, return or refund. We will explain the next steps for each approved case.</p>
  <h2>Refund on approved return</h2>
  <p>Once a valid return is received and approved, refund processing follows our <Link href="/policies/refunds">Refund Policy</Link>. Applicable statutory rights remain unaffected.</p>
+ <p>For shipping-related issues, see our <Link href="/policies/shipping">Shipping Policy</Link>.</p>
  <p>To cancel an order before packing, see the <Link href="/policies/cancellation">Cancellation Policy</Link>.</p>
  </main>;}
