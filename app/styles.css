@@ -634,3 +634,10 @@ body{background:#fffaf2;color:#151515}
  .header .logo{max-width:calc(100% - 118px)}
  .header .brand-logo-img{width:138px;height:49px;max-width:100%}
 }
+
+/* Align curated Top Collection / New Arrivals with the main THE COLLECTION grid. */
+.shop-catalogue-page > .storefront-shelf{
+  max-width:1440px;
+  padding-left:4%;
+  padding-right:4%;
+}
