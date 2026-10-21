@@ -57,9 +57,6 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <Link href="/shop?category=Women#shop">Women</Link>
     <Link href="/shop?category=Kids#shop">Kids</Link>
     <Link href="/shop?category=Accessories#shop">Accessories</Link>
-    <Link href="/shop?category=Accessories&type=Mugs#shop">Mugs</Link>
-    <Link href="/shop?category=Accessories&type=Keychains#shop">Keychains</Link>
-    <Link href="/shop?category=Accessories&type=Caps#shop">Caps</Link>
   </div>
 
   <div className="footer-column">
@@ -71,16 +68,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   <div className="footer-column">
     <strong>GOOD TO KNOW</strong>
-    <p>Shipping across India</p>
-    <p>Secure checkout</p>
     <Link href="/policies/privacy">Privacy Policy</Link>
     <Link href="/policies/terms">Terms &amp; Conditions</Link>
-    <Link href="/policies/cancellation">Cancellation Policy</Link>
-    <Link href="/policies/returns">Return Policy</Link>
-    <Link href="/policies/refunds">Refund Policy</Link>
+    <Link href="/policies/returns">Refund &amp; Return Policy</Link>
     <Link href="/policies/shipping">Shipping Policy</Link>
     <Link href="/policies/disclaimer">Product Disclaimer</Link>
-    <p>For custom event designs, use the Email or WhatsApp links on product pages (available once our contact details are configured).</p>
   </div>
 
   <small className="footer-copyright">
