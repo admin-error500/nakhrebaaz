@@ -6,7 +6,7 @@ import {z} from "zod";
 import {codeMatches,MAX_EMAIL_CODE_ATTEMPTS} from "@/lib/email-verification";
 
 export const runtime="nodejs";
-const schema=z.object({email:z.string().trim().email().max(254),code:z.string().regex(/^\\d{6}$/)});
+const schema=z.object({email:z.string().trim().email().max(254),code:z.string().regex(/^\d{6}$/)});
 export async function POST(req:Request){
  const parsed=schema.safeParse(await req.json().catch(()=>null));
  if(!parsed.success)return NextResponse.json({error:"Enter the six-digit email code."},{status:400});
