@@ -50,7 +50,7 @@ export function AuthForm({mode}:{mode:"login"|"register"}){
    <>
     <p>We sent a 6-digit code to <strong>{pendingEmail}</strong>. The code expires in 10 minutes.</p>
     <form onSubmit={verify}>
-     <label>Verification code<input name="otp" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6} value={code} onChange={e=>setCode(e.target.value.replace(/\\D/g,"").slice(0,6))} required placeholder="123456"/></label>
+     <label>Verification code<input name="otp" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6} value={code} onChange={e=>setCode(e.target.value.replace(/\D/g,"").slice(0,6))} required placeholder="123456"/></label>
      {message&&<p role="status">{message}</p>}
      {error&&<p className="error" role="alert">{error}</p>}
      <button className="btn dark full" disabled={busy||code.length!==6}>{busy?"VERIFYING...":"VERIFY EMAIL & CREATE ACCOUNT"}</button>
