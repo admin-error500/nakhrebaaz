@@ -20,6 +20,19 @@ model User {
   createdAt    DateTime @default(now())
 }
 
+// Verification is required before a new user is created.
+model PendingEmailSignup {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  name         String
+  passwordHash String
+  codeHash     String
+  expiresAt    DateTime
+  attempts     Int      @default(0)
+  lastSentAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+}
+
 model Product {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String
