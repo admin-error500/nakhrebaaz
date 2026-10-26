@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const site = process.env.NEXT_PUBLIC_SITE_URL;
     if (!apiKey || !from || !site) {
       console.error("Password reset mail not configured (RESEND_API_KEY, EMAIL_FROM, NEXT_PUBLIC_SITE_URL)");
-      return NextResponse.json(generic);
+      return NextResponse.json({ error: "Password reset email is temporarily unavailable. Please try again later." }, { status: 503 });
     }
     const base = new URL(site);
     if (base.protocol !== "https:" && !(base.protocol === "http:" && base.hostname === "localhost")) {
@@ -40,10 +40,15 @@ export async function POST(req: Request) {
         html: `<p>We received a request to reset your NakhreBaaz password.</p><p><a href="${url.toString()}">Reset your password</a></p><p>This link expires in 30 minutes. If you didn't request this, ignore this email.</p>`,
       }),
     });
-    if (!response.ok) console.error("Password reset delivery failed", response.status);
+    if (!response.ok) {
+      const details = await response.json().catch(() => ({})) as { name?: string; message?: string };
+      // Log provider status and error category only, never API keys or reset tokens.
+      console.error("Password reset delivery failed", { status: response.status, providerError: details.name ?? "unknown" });
+      return NextResponse.json({ error: "We could not send your reset email. Please try again later or contact support." }, { status: 503 });
+    }
     return NextResponse.json(generic);
   } catch (err) {
-    console.error("Password reset request failed", err instanceof Error ? err.message : "unknown");
-    return NextResponse.json(generic);
+    console.error("Password reset request failed", err instanceof Error ? err.name : "unknown");
+    return NextResponse.json({ error: "Password reset email could not be processed. Please try again later." }, { status: 503 });
   }
 }
