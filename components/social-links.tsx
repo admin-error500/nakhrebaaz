@@ -1,7 +1,7 @@
 import type {ReactNode} from "react";
 
 const channels=[
- {name:"Instagram",env:process.env.NEXT_PUBLIC_INSTAGRAM_URL,host:"instagram.com",icon:"◎"},
+ {name:"Instagram",env:process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://www.instagram.com/nakhrebaaz.official/",host:"instagram.com",icon:"◎"},
  {name:"Facebook",env:process.env.NEXT_PUBLIC_FACEBOOK_URL,host:"facebook.com",icon:"f"},
  {name:"YouTube",env:process.env.NEXT_PUBLIC_YOUTUBE_URL,host:"youtube.com",icon:"▶"},
  {name:"X (Twitter)",env:process.env.NEXT_PUBLIC_X_URL,host:"x.com",icon:"𝕏"},
