@@ -1,4 +1,5 @@
 import './styles.css';
+import {SocialLinks} from '@/components/social-links';
 import Link from 'next/link';
 import Script from 'next/script';
 import { currentUser } from '@/lib/auth';
@@ -57,6 +58,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
     <Link href="/shop?category=Women#shop">Women</Link>
     <Link href="/shop?category=Kids#shop">Kids</Link>
     <Link href="/shop?category=Accessories#shop">Accessories</Link>
+  </div>
+
+  <div className="footer-column footer-social">
+    <strong>FOLLOW OUR NAKHRA</strong>
+    <SocialLinks />
   </div>
 
   <div className="footer-column">

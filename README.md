@@ -80,3 +80,18 @@ COD works without Razorpay keys. Orders and stock are stored in SQLite. Sample i
 This is a working **development starter**, not a fully launch-ready commerce platform. Before production: migrate to hosted PostgreSQL and a production database, implement Razorpay webhooks (verified signature, retries, refunds, reconciliation), release timed-out unpaid stock reservations, shipping/pincode validation and carrier tracking, refund/return flows, rate limits and anti-abuse protection, CSRF/origin checks on mutating requests, email verification/password resets, legal/privacy/GST invoice compliance, product image upload/storage, variant editing/deleting, real print assets, automated tests, observability, backups, accessibility audit and deployment. Do not use this version to accept real customer payments without completing these steps.
 
 **Note:** If a customer abandons Razorpay checkout after an order is reserved, stock stays reserved until manually reconciled; this must be addressed before launch. Client callback verification alone is not sufficient for reliable payment reconciliation. Sample size guide and policy/contact copy are placeholders.
+
+
+## Social links in the footer
+
+The footer supports official Instagram, Facebook, YouTube, X (Twitter), and WhatsApp channels. Configure whichever verified accounts the store owns as public environment variables in Vercel and redeploy:
+
+```env
+NEXT_PUBLIC_INSTAGRAM_URL=
+NEXT_PUBLIC_FACEBOOK_URL=
+NEXT_PUBLIC_YOUTUBE_URL=
+NEXT_PUBLIC_X_URL=
+NEXT_PUBLIC_WHATSAPP_URL=
+```
+
+Use complete HTTPS profile/channel links. A WhatsApp chat link should use `https://wa.me/<international-number>`. Unconfigured or invalid profiles are not linked to third-party accounts; the footer shows a placeholder when none is configured.
