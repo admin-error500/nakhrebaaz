@@ -14,9 +14,9 @@ const categories = ['Men', 'Women', 'Kids', 'Accessories'];
 const types = ['T-Shirts', 'Hoodies', 'Sweatshirts', 'Mugs', 'Keychains', 'Caps'];
 const festivals = ['Diwali', 'Holi', 'Navratri', 'Raksha Bandhan', 'Eid', 'Christmas'];
 const photo = {
-  men: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=850&q=85',
-  women: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=850&q=85',
-  kids: 'https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=850&q=85',
+  men: 'https://images.unsplash.com/photo-1539106274469-dc3f7f3d7b9e?auto=format&fit=crop&w=1100&q=88',
+  women: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1400&q=88',
+  kids: 'https://images.unsplash.com/photo-1503919005314-30d93d07d823?auto=format&fit=crop&w=1100&q=88',
 };
 const url = (category?: string, type?: string) => `/shop?${new URLSearchParams({ ...(category ? { category } : {}), ...(type ? { type } : {}) }).toString()}#shop`;
 
