@@ -145,3 +145,38 @@ model StorefrontMerchandising {
   shuffleNew  Boolean  @default(false)
   updatedAt   DateTime @updatedAt
 }
+
+// Business inventory records are deliberately separate from checkout stock.
+// Monetary amounts are recorded in INR paise (integer) for precise totals.
+model BusinessTransaction {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  kind String
+  date DateTime @default(now())
+  reference String?
+  supplier String?
+  channel String?
+  notes String?
+  productName String
+  size String?
+  color String?
+  unit String @default("pcs")
+  quantity Float
+  unitPricePaise Int
+  totalPaise Int
+  category String?
+  condition String?
+  createdAt DateTime @default(now())
+  @@index([kind, date])
+  @@index([productName, size, color])
+}
+
+model BusinessExpense {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  date DateTime @default(now())
+  category String
+  description String
+  amountPaise Int
+  reference String?
+  createdAt DateTime @default(now())
+  @@index([date])
+}
